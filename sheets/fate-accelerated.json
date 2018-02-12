@@ -1,0 +1,73 @@
+{
+  "Name": "",
+  "Description": "",
+  "Refresh": 0,
+  "Current_Fate_Points": 0,
+  "Aspects": {
+    "High_Concept": "",
+    "Trouble": "",
+    "Aspect": []
+  },
+  "Approach": [
+    {
+      "Name": "Careful",
+      "Value": 0
+    },
+    {
+      "Name": "Clever",
+      "Value": 0
+    },
+    {
+      "Name": "Flashy",
+      "Value": 0
+    },
+    {
+      "Name": "Forceful",
+      "Value": 0
+    },
+    {
+      "Name": "Quick",
+      "Value": 0
+    },
+    {
+      "Name": "Sneaky",
+      "Value": 0
+    }
+  ],
+  "Stunts": {},
+  "Stress": [
+    {
+      "Value": 1,
+      "Used": false
+    },
+    {
+      "Value": 2,
+      "Used": false
+    },
+    {
+      "Value": 2,
+      "Used": false
+    }
+  ],
+  "Consequences": [
+    {
+      "Name": "Mild",
+      "Value": 2,
+      "Description": ""
+    },
+    {
+      "Name": "Moderate",
+      "Value": 4,
+      "Description": ""
+    },
+    {
+      "Name": "Severe",
+      "Value": 6,
+      "Description": ""
+    }
+  ],
+  "Metadata": {
+    "CreatedOn": "2018-02-12T18:09:22.188Z",
+    "ModifiedOn": "2018-02-12T18:09:22.188Z"
+  }
+}

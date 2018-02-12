@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+    	
+	<link rel="shortcut icon" type="image/png" href="favicon.png"/>
+	
+	<!-- css libraries -->
+	<link rel="stylesheet" 
+			href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		  
+	<style>
+		.navbar-brand img {
+			max-height: 50px;
+		}
+	</style>
+
+	<title>Fate Character Sheet</title>	
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	  <a class="navbar-brand" href="#"><img src='http://www.faterpg.com/wp-content/uploads/2013/06/Powered-by-Fate-Final-Light-BG.png' /></a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+		  <li class="invisible nav-item">
+			<a id='my-characters' class="nav-link" href="#">My Characters</a>
+		  </li>
+		  <li class="invisible nav-item">
+			<a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
+		  </li>		 
+		</ul>		
+	  </div>
+	</nav>
+		
+	<div class="container-fluid mt-2">			
+		<div id="results">
+		</div>	
+	</div>
+	
+	<!-- 3rd party stuff -->
+	<div id="fb-root"></div>
+	
+	<!-- js libraries -->	
+    <script src="//sdk.amazonaws.com/js/aws-sdk-2.190.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-3.3.1.slim.min.js"
+		  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+		  crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
+			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+			crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        var appId = '189783225112476';
+        var roleArn = 'arn:aws:iam::210120940769:role/FateCharacterSheetUser';
+        var bucketName = 'fatechraactersheet';
+        AWS.config.region = 'us-east-1';
+		
+		var templateCharacter = `<div class='col-sm-3'>
+									<div class='card'>
+									  <div class='card-body'>
+										<h5 class='card-title'>{{name}}</h5>
+										<p class='card-text'>{{description}}</p>
+										<a href='#' class='btn btn-primary' data-id='{{id}}'>Play</a>
+										<a href='#' class='btn btn-danger js-delete' data-id='{{id}}'>Delete</a>
+									  </div>
+									</div>
+								</div>`;
+
+        var fbUserId;
+        var bucket = new AWS.S3({
+            params: {
+                Bucket: 'fatecharactersheet'
+            }
+        });
+
+        var fileChooser = document.getElementById('file-chooser');        
+        var results = $('#results');
+		
+        function listCharacters() {
+			results.empty();
+		
+            var prefix = 'facebook-' + fbUserId;
+            bucket.listObjects({
+                Prefix: prefix
+            }, function (err, data) {
+                if (err) {
+                    results.innerHTML = 'ERROR: ' + err;
+                } else {
+                    var objKeys = "";
+					
+					var rowContainer = results.append("<div class='row'></div>");
+                    data.Contents.forEach(function (obj) {					
+						var elem = templateCharacter.replace('{{name}}', obj.Key)
+										.replace(new RegExp('{{id}}'), obj.Key)
+						
+						$('.row', results).append(elem);
+                    });
+                }
+            });
+        }
+		
+		function getMetaData(key) {								
+			bucket.headObject({
+                Key: key
+            }, function(err, data) {
+				if (err) {
+					console.log(err, err.stack); // an error occurred
+				} else { 
+					console.log(data);           // successful response
+					
+					var elem = "<div class='row py-2 mx-0'><div class='col'>" + data.Metadata.sheetname + " (" + data.Metadata.system + ") </div><div class='col'><button type='button' class='js-character-template btn btn-primary' data-id='" + key + "'>Select</button><button type='button' class='js-sheet-preview btn btn-primary' data-id='" + key + "'>View Sheet</button></div></div>";
+					
+					results.append(elem);
+				
+				}
+			});
+		}
+		
+		function listSheets() {
+			results.empty();
+			
+            var prefix = 'sheets';
+            bucket.listObjects({
+                Prefix: prefix
+            }, function (err, data) {
+                if (err) {
+                    results.innerHTML = 'ERROR: ' + err;
+                } else {
+							
+                    var objKeys = "";
+                    data.Contents.forEach(function (obj) {									
+						if (obj.Key.indexOf('.json') != -1)
+						{
+							getMetaData(obj.Key);							
+						}
+                    });                    
+                }
+            });
+        }
+		
+		function showSheet(key) {
+			results.empty();
+		
+			bucket.getObject({ Key: key.replace('.json','.html') }, function(err, data)
+			{
+				if (!err)
+				{					
+					var sheetHtml = data.Body.toString();
+					results.html(sheetHtml);
+				}
+			});
+		}
+		
+		function deleteObject(key) {			
+            bucket.deleteObject({                
+				Key: key
+            }, function (err, data) {
+			   if (err) console.log(err, err.stack); // an error occurred
+			   else {
+				console.log(data);           // successful response
+				listCharacters();
+			   }			   
+			});
+		}
+		
+		$(document).on('click', '.js-delete', function() {
+			var key = $(this).data('id');
+			deleteObject(key);			
+		});
+		
+		$(document).on('click', '.js-sheet-preview', function() {
+			var key = $(this).data('id');
+			showSheet(key);			
+		});		
+		
+		$('#list-sheets').on('click', function() {
+			listSheets();		
+		});
+		
+		$('#my-characters').on('click', function() {
+			listCharacters();		
+		});
+					
+		
+        /*!
+         * Login to your application using Facebook.
+         * Uses the Facebook SDK for JavaScript available here:
+         * https://developers.facebook.com/docs/javascript/quickstart/
+         */
+
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: appId
+            });
+
+            FB.login(function (response) {
+                bucket.config.credentials = new AWS.WebIdentityCredentials({
+                    ProviderId: 'graph.facebook.com',
+                    RoleArn: roleArn,
+                    WebIdentityToken: response.authResponse.accessToken
+                });
+                fbUserId = response.authResponse.userID;
+                $('.invisible').removeClass('invisible');
+				
+				// list objects
+				listCharacters();
+            })
+        };
+
+         // Load the Facebook SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/all.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+</body>
+</html>
