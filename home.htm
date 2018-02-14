@@ -50,9 +50,9 @@
 	
 	<!-- js libraries -->	
     <script src="//sdk.amazonaws.com/js/aws-sdk-2.190.0.min.js"></script>
-	<script src="//code.jquery.com/jquery-3.3.1.slim.min.js"
-		  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-		  crossorigin="anonymous"></script>
+	<script src="//code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
 			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 			crossorigin="anonymous"></script>
@@ -66,16 +66,16 @@
         var bucketName = 'fatechraactersheet';
         AWS.config.region = 'us-east-1';
 		
-		var templateCharacter = `<div class='col-sm-3'>
-									<div class='card'>
-									  <div class='card-body'>
-										<h5 class='card-title'>{{name}}</h5>
-										<p class='card-text'>{{description}}</p>
-										<a href='#' class='btn btn-primary' data-id='{{id}}'>Play</a>
-										<a href='#' class='btn btn-danger js-delete' data-id='{{id}}'>Delete</a>
-									  </div>
-									</div>
-								</div>`;
+		var templateCharacter = "<div class='col-sm-3'>" +
+								"	<div class='card'>" +
+								"	  <div class='card-body'>" +
+								"		<h5 class='card-title'>{{name}}</h5>" +
+								"		<p class='card-text'>{{description}}</p>" +
+								"		<a href='#' class='btn btn-primary' data-id='{{id}}'>Play</a>" +
+								"		<a href='#' class='btn btn-danger js-delete' data-id='{{id}}'>Delete</a>" +
+								"	  </div>" +
+								"	</div>" +
+								"</div>";
 
         var fbUserId;
         var bucket = new AWS.S3({
@@ -137,12 +137,13 @@
                 if (err) {
                     results.innerHTML = 'ERROR: ' + err;
                 } else {
-							
                     var objKeys = "";
-                    data.Contents.forEach(function (obj) {									
-						if (obj.Key.indexOf('.json') != -1)
-						{
-							getMetaData(obj.Key);							
+                    data.Contents.forEach(function (obj) {
+						//look for top level child folders under sheets/
+						var isSheetFolder = (obj.Key.toString().substring(0, obj.Key.lastIndexOf("/"))).split('/').length == 2
+												&& obj.Key.lastIndexOf("/") + 1 == obj.Key.length
+						if (isSheetFolder ) {
+							getMetaData(obj.Key);
 						}
                     });                    
                 }
@@ -152,7 +153,7 @@
 		function showSheet(key) {
 			results.empty();
 		
-			bucket.getObject({ Key: key.replace('.json','.html') }, function(err, data)
+			bucket.getObject({ Key: key + 'sheet.html' }, function(err, data)
 			{
 				if (!err)
 				{					
@@ -198,10 +199,13 @@
          * Uses the Facebook SDK for JavaScript available here:
          * https://developers.facebook.com/docs/javascript/quickstart/
          */
-
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: appId
+		
+       $(function() {
+		  $.ajaxSetup({ cache: true });
+		  $.getScript('https://connect.facebook.net/en_US/sdk.js', function(){
+			FB.init({
+                appId: appId,
+				version: 'v2.7'
             });
 
             FB.login(function (response) {
@@ -216,19 +220,8 @@
 				// list objects
 				listCharacters();
             })
-        };
-
-         // Load the Facebook SDK asynchronously
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
-            }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/en_US/all.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
+		  });
+		});
     </script>
 </body>
 </html>
