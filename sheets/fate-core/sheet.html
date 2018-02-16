@@ -1,12 +1,12 @@
 <!-- css libraries -->
-
+<!--
 <link rel="stylesheet" 
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+-->
 
 <style>	
-    @import url('https://fonts.googleapis.com/css?family=Trade+Winds');
+    @import url('https://fonts.googleapis.com/css?family=Archivo+Black');
 
 	.sheet {
 		margin: 20px;
@@ -15,11 +15,12 @@
 	}
 	
 	.fate-logo {		
+		margin-top: -27px;
 		max-height: 130px;
 	}
 	
 	.fate-header {
-        font-family: 'Trade Winds', sans-serif;
+        font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		background-color: #000;
 		color: white;
@@ -30,15 +31,22 @@
 	}
 	
 	.col-form-label {
-        font-family: 'Trade Winds', sans-serif;
+        font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		font-size: 22px;
 		font-weigth: 700;
 	}
 	
-	.fate-approaches .form-group {
-		margin-bottom: 3px;
-		margin-top: 3px;
+	.fate-skills .form-group {
+		margin-bottom: 12px;
+		margin-top: 12px;
+	}
+	
+	.fate-skills .col-form-label {
+        font-family: 'Archivo Black', sans-serif;
+		font-size: 10px;
+		font-weigth: 600;
+		color: gray;
 	}
 	
 	.fate-aspects .form-group {
@@ -57,7 +65,7 @@
 	}
 	
 	.fate-consequences label {
-        font-family: 'Trade Winds', sans-serif;
+        font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		font-weight: 700;
 		font-size: 28px;		
@@ -67,7 +75,7 @@
 	}
 	
 	.fate-stress label {
-        font-family: 'Trade Winds', sans-serif;
+        font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		font-size: 30px;
 		font-weight: 700;
@@ -80,15 +88,15 @@
 	}
 	
 </style>
-
+<form>
 <div class="sheet">
-    <input type="hidden" id="sheetname" name="sheetname" value="fate-freeport" />
-    <input type="hidden" id="system" name="system" value="freeport" />
+    <input type="hidden" id="sheetname" name="sheetname" value="fate-core" />
+    <input type="hidden" id="system" name="system" value="core" />
 	<div class="row">
 		<div class="col-sm-6 col-md-4 order-md-2">
 			<div class="row">	
 				<div class="col text-center">
-					<img alt="FATE ACCELERATED" class="img-fluid fate-logo" src="https://fatecharactersheet.s3.amazonaws.com/sheets/fate-freeport/logo.png" />						
+					<img alt="FATE ACCELERATED" class="img-fluid fate-logo" src="https://fatecharactersheet.s3.amazonaws.com/sheets/fate-core/logo.png" />						
 				</div>
 			</div>
 			
@@ -118,7 +126,7 @@
 	
 	<div class="row">
 		<!-- aspects -->
-		<div class="col-sm-6 col-md-8 fate-aspects">
+		<div class="col-sm-12 col-md-4 fate-aspects">
 			<div class="form-group">
 				<div for="" class="fate-header">Aspects</div>
 			</div>
@@ -137,55 +145,105 @@
 			<div class="form-group">
 				<input type="text" class="form-control" value="" id="aspect[other3]" name="aspect[other3]" placeholder="Aspect" />
 			</div>
-			<div class="form-group">
-				<input type="text" class="form-control" value="" id="aspect[other4]" name="aspect[other4]" placeholder="Aspect" />
-			</div>
 		</div>
 		
-		<div class="col-sm-6 col-md-4 fate-approaches">
-			<div class="form-group">
-				<div class="fate-header col-12">Approaches</div>
+		<div class="col-sm-12 col-md-8 fate-skills">
+			<div class="form-group mt-0">
+				<div class="fate-header">Skills</div>
 			</div>
 			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Strength</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[strength]" name="approach[strength]" placeholder="+">
+			<div class="form-group row mr-0">
+			  <label class="col-2 col-form-label pr-0 ">Superb (+5)</label>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[superb][s1]" name="skill[superb][s1]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[superb][s2]" name="skill[superb][s2]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[superb][s3]" name="skill[superb][s3]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[superb][s4]" name="skill[superb][s4]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[superb][s5]" name="skill[superb][s5]" placeholder="">
 			  </div>
 			</div>
 			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Dexterity</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[dexterity]" name="approach[dexterity]" placeholder="+">
+			<div class="form-group row mr-0">
+			  <label class="col-2 col-form-label pr-0">Great (+4)</label>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[great][s1]" name="skill[great][s1]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[great][s2]" name="skill[great][s2]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[great][s3]" name="skill[great][s3]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[great][s4]" name="skill[great][s4]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[great][s5]" name="skill[great][s5]" placeholder="">
 			  </div>
 			</div>
 			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Constitution</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[constitution]" name="approach[constitution]" placeholder="+">
+			<div class="form-group row mr-0">
+			  <label class="col-2 col-form-label pr-0">Good (+3)</label>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[good][s1]" name="skill[good][s1]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[good][s2]" name="skill[good][s2]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[good][s3]" name="skill[good][s3]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[good][s4]" name="skill[good][s4]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[good][s5]" name="skill[good][s5]" placeholder="">
 			  </div>
 			</div>
 			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Intelligence</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[intelligence]" name="approach[intelligence]" placeholder="+">
+			<div class="form-group row mr-0">
+			  <label class="col-2 col-form-label pr-0">Fair (+2)</label>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[fair][s1]" name="skill[fair][s1]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[fair][s2]" name="skill[fair][s2]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[fair][s3]" name="skill[fair][s3]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[fair][s4]" name="skill[fair][s4]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[fair][s5]" name="skill[fair][s5]" placeholder="">
 			  </div>
 			</div>
 			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Wisdom</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[wisdom]" name="approach[wisdom]" placeholder="+">
+			<div class="form-group row mr-0">
+			  <label class="col-2 col-form-label pr-0">Average (+1)</label>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[average][s1]" name="skill[average][s1]" placeholder="">
 			  </div>
-			</div>
-			
-			<div class="form-group row">
-			  <label class="col-9 col-form-label">Charisma</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[charisma]" name="approach[charisma]" placeholder="+">
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[average][s2]" name="skill[average][s2]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[average][s3]" name="skill[average][s3]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[average][s4]" name="skill[average][s4]" placeholder="">
+			  </div>
+			  <div class="col-2 px-0">
+				<input class="form-control" type="text" value="" id="skill[average][s5]" name="skill[average][s5]" placeholder="">
 			  </div>
 			</div>
 		</div>
@@ -194,14 +252,14 @@
 	<div class="row">		
 		<div class="col-sm-12 col-md-6">
 			<div class="form-group">
-				<div for="stunts" class="fate-header">Stunts & Gear</div>
-				<textarea class="form-control" id="stunts" name="stunts" rows="15" placeholder="Stunts & Gear"></textarea>
+				<div for="stunts" class="fate-header">Stunts</div>
+				<textarea class="form-control" id="stunts" name="stunts" rows="25" placeholder="Stunts"></textarea>
 			</div>			
 		</div>
 		<div class="col-sm-12 col-md-6">
 			<div class="form-group">
-				<div for="stunts" class="fate-header">Spells</div>
-				<textarea class="form-control" id="spells" name="spells" rows="15" placeholder="Spells"></textarea>
+				<div for="stunts" class="fate-header">Extras</div>
+				<textarea class="form-control" id="extras" name="extras" rows="25" placeholder="Extras"></textarea>
 			</div>			
 		</div>
 	</div>
@@ -275,41 +333,6 @@
 					  <input type="checkbox" value="3" id="stress[mental4]" name="stress[mental4]">			 
 					</div>
 				</div>
-				
-				<!-- corruption -->
-				<div class="form-group">
-					<div for="" class="fate-header">Corruption</div>
-				</div>
-				<div class="row">
-					<div class="col">
-					  <label for="stress">
-						&nbsp;&nbsp;
-					  </label>
-					  <input type="checkbox" value="1" id="corruption[corruption1]" name="corruption[corruption1]">
-					</div>
-					
-					<div class="col">
-					  <label for="stress">
-						&nbsp;&nbsp;
-					  </label>
-					  <input type="checkbox" value="2" id="corruption[corruption1]" name="corruption[corruption1]">			 
-					</div>
-					
-					<div class="col">
-					  <label class="" for="stress">
-						&nbsp;&nbsp;
-					  </label>
-					  <input type="checkbox" value="3" id="corruption[corruption1]" name="corruption[corruption1]">			 
-					</div>
-					
-					<div class="col">
-					  <label class="" for="stress">
-						&nbsp;&nbsp;
-					  </label>
-					  <input type="checkbox" value="3" id="corruption[corruption1]" name="corruption[corruption1]">			 
-					</div>
-				</div>
-			
 		</div>
 		<div class="col-md-6 col-sm-12 fate-consequences">
 			<div class="form-group">
@@ -342,33 +365,10 @@
 			  <div class="col-10">
 				<input class="form-control" type="text" value="" id="consequence[mild2]" name="consequence[mild2]" placeholder="Mild">
 			  </div>
-			</div>
-			
-			<div class="form-group row">
-			  <label class="col-2 col-form-label stat-requirement">4</label>
-			  <div class="col-10">
-				<input class="form-control" type="text" value="" id="consequence[moderate2]" name="consequence[moderate2]" placeholder="Moderate">
-			  </div>
-			</div>
-			
-			<div class="form-group row">
-			  <label class="col-2 col-form-label stat-requirement">6</label>
-			  <div class="col-10">
-				<input class="form-control" type="text" value="" id="consequence[severe2]" name="consequence[severe2]" placeholder="Severe">
-			  </div>
-			</div>
-			
-			<div class="form-group">
-				<div class="fate-header col-12">Insanity</div>
-			</div>
-			
-			<div class="form-group row">
-				<div class="col">			
-					<textarea class="form-control" id="spells" name="insanity" rows="2" placeholder="insanity"></textarea>
-				</div>
 			</div>	
 		</div>
 		
 	</div>
 	
 </div>
+</form>
