@@ -399,7 +399,7 @@
 		return 0;
 	}
 	
-	function autcalc() {		
+	function autocalc() {		
 		var $physique = $('select').filter(function() { return $(':selected', this).val() == 'Physique' });				
 		var $will = $('select').filter(function() { return $(':selected', this).val() == 'Will' });
 		
@@ -460,10 +460,8 @@
 	
 	$(function() {		
 		$(document).on('change', 'select', function(){
-			autcalc();
+			autocalc();
 		});
-		
 		populateSkillList();
-		autcalc();
 	});
 </script>

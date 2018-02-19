@@ -237,6 +237,12 @@
                         var character = JSON.parse(data.Body.toString());
 
                         $('form').populate(character);
+						
+						//check if there is an autocalc function and runit
+						if(typeof autocalc !== "undefined")
+						{
+							autocalc();
+						}
                     }
                 });
 

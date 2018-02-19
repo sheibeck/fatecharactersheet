@@ -377,7 +377,7 @@
 
 <script type="text/javascript">
 	// autocalculate stuff
-	function autcalc() {
+	function autocalc() {
 		var constitution = $('input[name="approach[constitution]"]').val();
 		var wisdom = $('input[name="approach[wisdom]"]').val();
 		
@@ -416,9 +416,7 @@
 	
 	$(function() {			
 		$(document).on('change', 'input[name="approach[constitution]"], input[name="approach[wisdom]"]', function(){
-			autcalc();
-		});
-		
-		autcalc();
+			autocalc();
+		});		
 	});
 </script>
