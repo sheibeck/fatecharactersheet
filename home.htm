@@ -18,6 +18,15 @@
 			max-height: 50px;
 		}
 
+		.card-columns {
+		  @include media-breakpoint-only(lg) {
+			column-count: 4;
+		  }
+		  @include media-breakpoint-only(xl) {
+			column-count: 5;
+		  }
+		}
+
         @media print {
           button {
             display: none;
@@ -34,7 +43,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><img src='http://www.faterpg.com/wp-content/uploads/2013/06/Powered-by-Fate-Final-Light-BG.png' /></a>
+        <a class="navbar-brand" href="#"><img src='https://s3.amazonaws.com/fatecharactersheet/powered-by-fate.png' /></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -48,8 +57,10 @@
                     <a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
                 </li>
             </ul>
-            <input id="search-text" class="form-control my-2 my-lg-0 col-6" type="search" placeholder="Search" aria-label="Search">
-            <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+			<div class="form-inline my-2 my-lg-0">
+			  <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
+			  <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+			</div>
         </div>
     </nav>
 
@@ -132,34 +143,37 @@
                 characterList: "<div class='card'>" +
                                     "	  <div class='card-body'>" +
                                     "		<h5 class='card-title'>{{name}}</h5>" +
-                                    "		<p class='card-text'>{{description}}</p>" +
+                                    "		<p class='card-text'>{{highconcept}}</p>" +
+									"		<p class='card-note font-italic small'>({{description}})</p>" +
                                     "		<a href='#' class='btn btn-primary js-play' data-id='{{id}}'>Play</a>" +
                                     "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteConfirm'>Delete</a>" +
                                     "	  </div>" +
                                     "     <div class='card-footer text-muted'>" +
-                                    "           {{sheetname}} &mdash; {{system}}" +
+                                    "           {{sheetname}}" +
                                     "     </div>" +
                                    "</div>",                                 
-                sheetList: "<div class='row py-2 mx-0'>" +
-                                   "    <div class='col h2'> {{sheetname}} <small>({{system}})</small></div>" +
-                                   "    <div class='col'>" +
-                                   "        <button type='button' class='js-sheet-preview btn btn-primary' data-id='{{id}}'>Create Character</button>" +
-                                   "    </div></div>",
+                sheetList: "<div class='card'>" +
+								   "	<div class='card-body'>" +
+                                   "		<h5 class='card-title'>{{sheetname}}</h5>" +
+                                   //"		<p class='card-text'>{{system}}</p>" +
+								   "		<a href='#' class='btn btn-primary js-sheet-preview' data-id='{{id}}'>Create Character</a>" +
+                                   "	</div>" +
+                                   "</div>",
             }
 
             fatesheet.navigation = {
                 character: "<hr/><div class='row'><div class='col'>" +
-                            "    <button type='button' class='btn btn-success js-save-character'>Save Character</button>" +
+                            "    <button type='button' class='btn btn-success js-save-character d-print-none'>Save Character</button>" +
                             "</div></div>",
                 sheet: "<hr/><div class='row'><div class='col'>" +
-                        "    <button type='button' class='btn btn-success js-create-character'>Save Character</button>" +
+                        "    <button type='button' class='btn btn-success js-create-character d-print-none'>Save Character</button>" +
                         "</div></div>",
             }
 
 
             var results = $('#results');
 
-            function getMetaData(key) {
+            function getSheetListInfo(key) {
                 /// get character sheet meta data information
                 fatesheet.config.awsBucket.headObject({
                     Key: key
@@ -173,7 +187,34 @@
                                         .replaceAll('{{system}}', data.Metadata.system)
                                         .replaceAll('{{id}}', key);
 
-                        results.append(elem);
+                        $('.card-deck', results).append(elem);
+                    }
+                });
+            }			
+			
+            fatesheet.listSheets = function () {
+                /// show a list of available character sheets
+                results.empty();
+
+                var prefix = 'sheets';
+                fatesheet.config.awsBucket.listObjects({
+                    Prefix: prefix
+                }, function (err, data) {
+                    if (err) {
+                        results.innerHTML = 'ERROR: ' + err;
+                    } else {
+                        var objKeys = "";
+						
+						var rowContainer = results.append("<div class='card-deck'></div>");
+						
+                        data.Contents.forEach(function (obj) {
+                            //look for top level child folders under sheets/
+                            var isSheetFolder = (obj.Key.toString().substring(0, obj.Key.lastIndexOf("/"))).split('/').length == 2
+                                                    && obj.Key.lastIndexOf("/") + 1 == obj.Key.length
+                            if (isSheetFolder) {
+                                getSheetListInfo(obj.Key);
+                            }
+                        });
                     }
                 });
             }
@@ -197,6 +238,12 @@
                         var character = JSON.parse(data.Body.toString());
 
                         $('form').populate(character);
+						
+						//check if there is an autocalc function and runit
+						if(typeof autocalc !== "undefined")
+						{
+							autocalc();
+						}
                     }
                 });
 
@@ -213,13 +260,14 @@
                         console.log(data);           // successful response
 
                         var elem = fatesheet.templates.characterList
-                                            .replaceAll('{{name}}', data.Metadata.name)
-                                            .replaceAll('{{description}}', data.Metadata.description)
-                                            .replaceAll('{{sheetname}}', data.Metadata.sheetname)
-                                            .replaceAll('{{system}}', data.Metadata.system)
+                                            .replaceAll('{{name}}', (data.Metadata.name || ''))
+                                            .replaceAll('{{highconcept}}', (data.Metadata.highconcept || ''))
+											.replaceAll('{{description}}', (data.Metadata.description || ''))
+                                            .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
+                                            .replaceAll('{{system}}', (data.Metadata.system || ''))
                                             .replaceAll('{{id}}', key)
 
-                        $('.card-deck', results).append(elem);
+                        $('.card-columns', results).append(elem);
                     }
                 });
 
@@ -236,47 +284,35 @@
                     if (err) {
                         results.innerHTML = 'ERROR: ' + err;
                     } else {
-                        var objKeys = "";
+						if (data.Contents.length === 0)
+						{
+							fatesheet.listSheets();
+						}
+						else {
+							var objKeys = "";
 
-                        var rowContainer = results.append("<div class='card-deck'></div>");
-                        data.Contents.forEach(function (obj) {
-                            fatesheet.getCharacterListInfo(obj.Key);
-                        });
+							var rowContainer = results.append("<div class='card-columns'></div>");
+							data.Contents.forEach(function (obj) {
+								fatesheet.getCharacterListInfo(obj.Key);
+							});
+						};
                     }
                 });
             }
 
 
-            fatesheet.listSheets = function () {
-                /// show a list of available character sheets
-                results.empty();
-
-                var prefix = 'sheets';
-                fatesheet.config.awsBucket.listObjects({
-                    Prefix: prefix
-                }, function (err, data) {
-                    if (err) {
-                        results.innerHTML = 'ERROR: ' + err;
-                    } else {
-                        var objKeys = "";
-                        data.Contents.forEach(function (obj) {
-                            //look for top level child folders under sheets/
-                            var isSheetFolder = (obj.Key.toString().substring(0, obj.Key.lastIndexOf("/"))).split('/').length == 2
-                                                    && obj.Key.lastIndexOf("/") + 1 == obj.Key.length
-                            if (isSheetFolder) {
-                                getMetaData(obj.Key);
-                            }
-                        });
-                    }
-                });
-            }
-
-            function uuidv4() {
-                /// generate a unique id
-                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-                )
-            }
+			
+			function generateUUID () { // Public Domain/MIT
+				var d = new Date().getTime();
+				if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+					d += performance.now(); //use high-precision timer if available
+				}
+				return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+					var r = (d + Math.random() * 16) % 16 | 0;
+					d = Math.floor(d / 16);
+					return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+				});
+			}
 
             function addNav(navBar) {
                 /// add nav bars to a character sheet so we know what actions are available
@@ -310,9 +346,20 @@
             fatesheet.loadCharacter = function (key) {
                 /// load a character and then show the sheet by the id stored in the character
                 fatesheet.config.awsBucket.getObject({ Key: key }, function (err, data) {
+					
                     if (!err) {
                         var character = JSON.parse(data.Body.toString());
-                        fatesheet.showSheet('sheets/' + character.sheetname + '/', key);
+						var sheet = 'sheets/' + character.sheetname + '/';
+                        fatesheet.showSheet(sheet, key);
+						
+						var params = {};
+						params[FB.AppEvents.ParameterNames.CONTENT_TYPE] = 'Character'; //sheetname
+						params[FB.AppEvents.ParameterNames.CONTENT_ID] = key // character key
+						FB.AppEvents.logEvent(
+						  FB.AppEvents.EventNames.VIEWED_CONTENT,
+						  null,  // numeric value for this event - in this case, none
+						  params
+						);
                     }
                 });
             }
@@ -323,13 +370,17 @@
                 var dataObj = JSON.parse(data);
 
                 //set characterid
-                if (isNew) { fatesheet.config.characterId = null; }
-                fatesheet.config.characterId = fatesheet.config.characterId == null ? uuidv4() : fatesheet.config.characterId;
+                if (isNew) { 
+					fatesheet.config.characterId = null;
+					FB.AppEvents.logEvent('createdACharacter'+dataObj.sheetname);					
+				}
+                fatesheet.config.characterId = fatesheet.config.characterId == null ? generateUUID() : fatesheet.config.characterId;
 
                 var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
                 var metadata = {
                     name: dataObj.name,
-                    description: dataObj.aspect.highconcept || dataObj.description || 'Uknown',
+                    highconcept: dataObj.aspect.highconcept || 'Uknown',
+					description: dataObj.description || '',
                     sheetname: dataObj.sheetname,
                     system: dataObj.system
                 }
@@ -425,8 +476,9 @@
                     var filter = $('#search-text').val(); // get the value of the input, which we filter on
 
                     // filter by character name and description
-                    $(".card-title:contains('" + filter + "'), .card-text:contains('" + filter + "')")
+                    $(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')")
                         .parent().parent().show();
+						
 
                     // filter by footer content
                     $(".card-footer:contains('" + filter + "')")
@@ -446,7 +498,9 @@
                         appId: fatesheet.config.appId,
                         version: 'v2.7'
                     });
-
+					
+					FB.AppEvents.logPageView();
+					
                     FB.login(function (response) {
                         fatesheet.config.awsBucket.config.credentials = new AWS.WebIdentityCredentials({
                             ProviderId: 'graph.facebook.com',
