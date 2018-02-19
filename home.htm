@@ -143,7 +143,8 @@
                 characterList: "<div class='card'>" +
                                     "	  <div class='card-body'>" +
                                     "		<h5 class='card-title'>{{name}}</h5>" +
-                                    "		<p class='card-text'>{{description}}</p>" +
+                                    "		<p class='card-text'>{{highconcept}}</p>" +
+									"		<p class='card-note font-italic small'>({{description}})</p>" +
                                     "		<a href='#' class='btn btn-primary js-play' data-id='{{id}}'>Play</a>" +
                                     "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteConfirm'>Delete</a>" +
                                     "	  </div>" +
@@ -259,10 +260,11 @@
                         console.log(data);           // successful response
 
                         var elem = fatesheet.templates.characterList
-                                            .replaceAll('{{name}}', data.Metadata.name)
-                                            .replaceAll('{{description}}', data.Metadata.description)
-                                            .replaceAll('{{sheetname}}', data.Metadata.sheetname)
-                                            .replaceAll('{{system}}', data.Metadata.system)
+                                            .replaceAll('{{name}}', (data.Metadata.name || ''))
+                                            .replaceAll('{{highconcept}}', (data.Metadata.highconcept || ''))
+											.replaceAll('{{description}}', (data.Metadata.description || ''))
+                                            .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
+                                            .replaceAll('{{system}}', (data.Metadata.system || ''))
                                             .replaceAll('{{id}}', key)
 
                         $('.card-columns', results).append(elem);
@@ -377,7 +379,8 @@
                 var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
                 var metadata = {
                     name: dataObj.name,
-                    description: dataObj.aspect.highconcept || dataObj.description || 'Uknown',
+                    highconcept: dataObj.aspect.highconcept || 'Uknown',
+					description: dataObj.description || '',
                     sheetname: dataObj.sheetname,
                     system: dataObj.system
                 }
@@ -473,8 +476,9 @@
                     var filter = $('#search-text').val(); // get the value of the input, which we filter on
 
                     // filter by character name and description
-                    $(".card-title:contains('" + filter + "'), .card-text:contains('" + filter + "')")
+                    $(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')")
                         .parent().parent().show();
+						
 
                     // filter by footer content
                     $(".card-footer:contains('" + filter + "')")
