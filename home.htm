@@ -14,6 +14,14 @@
             crossorigin="anonymous">
 		  
 	<style>
+        @font-face {
+            font-family: 'fate_core_glyphsregular';
+            src: url('https://s3.amazonaws.com/fatecharactersheet/fate_core_font-webfont.woff2') format('woff2'),
+                 url('https://s3.amazonaws.com/fatecharactersheet/fate_core_font-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+
+        }
 		.navbar-brand img {
 			max-height: 50px;
 		}
@@ -52,6 +60,18 @@
 		textarea:-ms-input-placeholder {
 			color: #C0C0C0 !important;
 		}
+
+        .roll-modifier {
+            background-color:lightgray;
+        }
+
+        .dice {
+            font-family: 'fate_core_glyphsregular';
+        }
+
+        .current-roll {
+            background-color: yellow;;
+        }
 
         @media print {
           button {
@@ -114,6 +134,12 @@
                 <li class="invisible nav-item">
                     <a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
                 </li>
+				<li class="nav-item">
+                    <a class="nav-link" target="_blank" href="https://fate-srd.com/">Fate SRD</a>
+                </li>
+				<li class="nav-item">
+                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'>Roll <span class="dice">+-0+</span></a>
+                </li>				
             </ul>
 			<div class="form-inline my-2 my-lg-0">
 			  <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
@@ -126,6 +152,7 @@
         <div id="results">
         </div>
 
+        <!-- delete confirmation modal-->
         <div class="modal fade" id="modalDeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -140,6 +167,30 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger js-delete">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- dice tray -->
+        <div class="modal fade" id="modalDiceRoller" tabindex="-1" role="dialog" aria-labelledby="diceRollerLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="diceRollerLabel"> <span class="dice">+</span> Fate Dice Roller <span class="dice">-</span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="row px-0 mx-0 pt-1 pb-1 roll-modifier">
+                        <label class="col-4 h5 pt-2">Roll Modifier</label> <input class="form-control col-2 text-center" type="number" id="rollModifier">
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="fatesheet.diceRoller()">Roll</button>
+                        <button type="button" class="btn btn-warning" onclick="fatesheet.clearDiceTray()">Clear</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -166,6 +217,8 @@
             crossorigin="anonymous"></script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+	
+	<script src="//cdn.rawgit.com/GreenImp/rpg-dice-roller/aba8ad5f/dice-roller.js"></script>
 
 
     <script type="text/javascript">
@@ -178,12 +231,13 @@
         /* populate function ala Dave Stewart - http://davestewart.io/plugins/jquery/jquery-populate/ */
         jQuery.fn.populate = function (g, h) { function parseJSON(a, b) { b = b || ''; if (a == undefined) { } else if (a.constructor == Object) { for (var c in a) { var d = b + (b == '' ? c : '[' + c + ']'); parseJSON(a[c], d) } } else if (a.constructor == Array) { for (var i = 0; i < a.length; i++) { var e = h.useIndices ? i : ''; e = h.phpNaming ? '[' + e + ']' : e; var d = b + e; parseJSON(a[i], d) } } else { if (k[b] == undefined) { k[b] = a } else if (k[b].constructor != Array) { k[b] = [k[b], a] } else { k[b].push(a) } } }; function debug(a) { if (window.console && console.log) { console.log(a) } } function getElementName(a) { if (!h.phpNaming) { a = a.replace(/\[\]$/, '') } return a } function populateElement(a, b, c) { var d = h.identifier == 'id' ? '#' + b : '[' + h.identifier + '="' + b + '"]'; var e = jQuery(d, a); c = c.toString(); c = c == 'null' ? '' : c; e.html(c) } function populateFormElement(a, b, c) { var b = getElementName(b); var d = a[b]; if (d == undefined) { d = jQuery('#' + b, a); if (d) { d.html(c); return true } if (h.debug) { debug('No such element as ' + b) } return false } if (h.debug) { _populate.elements.push(d) } elements = d.type == undefined && d.length ? d : [d]; for (var e = 0; e < elements.length; e++) { var d = elements[e]; if (!d || typeof d == 'undefined' || typeof d == 'function') { continue } switch (d.type || d.tagName) { case 'radio': d.checked = (d.value != '' && c.toString() == d.value); case 'checkbox': var f = c.constructor == Array ? c : [c]; for (var j = 0; j < f.length; j++) { d.checked |= d.value == f[j] } break; case 'select-multiple': var f = c.constructor == Array ? c : [c]; for (var i = 0; i < d.options.length; i++) { for (var j = 0; j < f.length; j++) { d.options[i].selected |= d.options[i].value == f[j] } } break; case 'select': case 'select-one': d.value = c.toString() || c; break; case 'text': case 'button': case 'textarea': case 'submit': default: c = c == null ? '' : c; d.value = c } } } if (g === undefined) { return this }; var h = jQuery.extend({ phpNaming: true, phpIndices: false, resetForm: true, identifier: 'id', debug: false }, h); if (h.phpIndices) { h.phpNaming = true } var k = []; parseJSON(g); if (h.debug) { _populate = { arr: k, obj: g, elements: [] } } this.each(function () { var a = this.tagName.toLowerCase(); var b = a == 'form' ? populateFormElement : populateElement; if (a == 'form' && h.resetForm) { this.reset() } for (var i in k) { b(this, i, k[i]) } }); return this };
 
-        (function (fatesheet, $, undefined) {
-            String.prototype.replaceAll = function (search, replacement) {
-                var target = this;
-                return target.replace(new RegExp(search, 'g'), replacement);
-            };
+        String.prototype.replaceAll = function (search, replacement) {
+            var target = this;
+            return target.replace(new RegExp(search, 'g'), replacement);
+        };
 
+        (function (fatesheet, $, undefined) {
+        
             fatesheet.config = {
                 appId: '189783225112476',
                 roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
@@ -194,6 +248,7 @@
                 }),
                 fbUserId: null,
                 characterId: null,
+                diceRoller: new DiceRoller()
             }
 
             fatesheet.templates = {
@@ -357,9 +412,7 @@
                     }
                 });
             }
-
-
-			
+		
 			function generateUUID () { // Public Domain/MIT
 				var d = new Date().getTime();
 				if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
@@ -476,6 +529,45 @@
                 });
             }
 
+            fatesheet.diceRoller = function () {
+
+                $('.current-roll').removeClass('current-roll');
+
+                var $diceTray = $('.modal-body', '#modalDiceRoller');
+                var modifier = $('#rollModifier').val();
+                // affixe a + on front of the modifier if it's missing
+                modifier = (modifier !== '' && modifier.indexOf('-') === -1) ? "+" + modifier : modifier;
+
+                fatesheet.config.diceRoller.roll('4dF.2'+modifier);
+
+                // get the latest dice rolls from the log
+                var latestRoll = fatesheet.config.diceRoller.getLog().shift();
+                var displayDice = '';
+
+                $.each(latestRoll.rolls[0], function (key, value) {
+                    switch (value) {
+                        case -1:
+                            displayDice += '<span class="dice">-</span>';
+                            break;
+                        case 1:
+                            displayDice += '<span class="dice">+</span>';
+                            break;
+                        default:
+                            displayDice += '<span class="dice">0</span>';
+                            break;
+                    }
+                });
+
+                var rollElem = "<p class='dice-roll current-roll'>" + displayDice + (modifier !== '' ? ' (' + modifier + ')' : '') + " = " + latestRoll.getTotal()  + "</p>";
+                $diceTray.prepend(rollElem);
+            }
+
+            fatesheet.clearDiceTray = function () {
+                fatesheet.config.diceRoller.clearLog();
+                var $diceTray = $('.modal-body', '#modalDiceRoller');
+                $diceTray.empty();
+            }
+
             function configAWS() {
                 AWS.config.region = 'us-east-1';
             }
@@ -573,7 +665,7 @@
                     })
                 });
             }
-
+			
             fatesheet.init = function () {
                 domEvents();
                 configAWS();
