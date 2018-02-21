@@ -9,15 +9,15 @@
 	
 	<!-- css libraries -->
 	<link rel="stylesheet" 
-		    href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+		    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
 			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
             crossorigin="anonymous">
 		  
 	<style>
         @font-face {
             font-family: 'fate_core_glyphsregular';
-            src: url('https://s3.amazonaws.com/fatecharactersheet/fate_core_font-webfont.woff2') format('woff2'),
-                 url('https://s3.amazonaws.com/fatecharactersheet/fate_core_font-webfont.woff') format('woff');
+            src: url('fate_core_font-webfont.woff2') format('woff2'),
+                 url('fate_core_font-webfont.woff') format('woff');
             font-weight: normal;
             font-style: normal;
 
@@ -121,30 +121,33 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><img src='https://s3.amazonaws.com/fatecharactersheet/powered-by-fate.png' /></a>
+        <a class="navbar-brand" href="#"><img src='powered-by-fate.png' /></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="https://fate-srd.com/">Fate SRD</a>
+                </li>
+                <li class="nav-item">
+                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'>Roll <span class="dice">+-0+</span></a>
+                </li>
+                <li class="nav-item">
+                    <a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
+                </li>
                 <li class="invisible nav-item">
                     <a id='my-characters' class="nav-link" href="#">My Characters</a>
                 </li>
-                <li class="invisible nav-item">
-                    <a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
-                </li>
-				<li class="nav-item">
-                    <a class="nav-link" target="_blank" href="https://fate-srd.com/">Fate SRD</a>
-                </li>
-				<li class="nav-item">
-                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'>Roll <span class="dice">+-0+</span></a>
-                </li>				
             </ul>
-			<div class="form-inline my-2 my-lg-0">
-			  <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
-			  <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
-			</div>
+            <div class="form-inline my-2 my-lg-0 login-button">
+                <button type="button" class="btn btn-primary" onclick="fatesheet.authenticateFacebook()">Login with Facebook</button>
+            </div>
+            <div class="form-inline my-2 my-lg-0">
+                <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+            </div>
         </div>
     </nav>
 
@@ -202,23 +205,23 @@
     <div id="fb-root"></div>
 
     <!-- js libraries -->
-    <script src="//sdk.amazonaws.com/js/aws-sdk-2.190.0.min.js"></script>
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.190.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"
             integrity="sha256-tSRROoGfGWTveRpDHFiWVz+UXt+xKNe90wwGn25lpw8="
             crossorigin="anonymous"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
 	
-	<script src="//cdn.rawgit.com/GreenImp/rpg-dice-roller/aba8ad5f/dice-roller.js"></script>
+	<script src="https://cdn.rawgit.com/GreenImp/rpg-dice-roller/aba8ad5f/dice-roller.js"></script>
 
 
     <script type="text/javascript">
@@ -239,6 +242,7 @@
         (function (fatesheet, $, undefined) {
         
             fatesheet.config = {
+                isAuthenticated: false,
                 appId: '189783225112476',
                 roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
                 awsBucket: new AWS.S3({
@@ -314,7 +318,8 @@
                     Prefix: prefix
                 }, function (err, data) {
                     if (err) {
-                        results.innerHTML = 'ERROR: ' + err;
+                        results.innerHTML = 'ERROR: ' + err.message;
+                        //document.location.href = 'error.htm';
                     } else {
                         var objKeys = "";
 						
@@ -476,42 +481,47 @@
             }
 
             fatesheet.saveCharacter = function (isNew) {
-                /// save a character
-                var data = $('form').serializeJSON();
-                var dataObj = JSON.parse(data);
+                if (fatesheet.config.isAuthenticated) {
 
-                //set characterid
-                if (isNew) { 
-					fatesheet.config.characterId = null;
-					FB.AppEvents.logEvent('createdACharacter'+dataObj.sheetname);					
-				}
-                fatesheet.config.characterId = fatesheet.config.characterId == null ? generateUUID() : fatesheet.config.characterId;
+                    /// save a character
+                    var data = $('form').serializeJSON();
+                    var dataObj = JSON.parse(data);
 
-                var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
-                var metadata = {
-                    name: dataObj.name,
-                    highconcept: dataObj.aspect.highconcept || 'Uknown',
-					description: dataObj.description || '',
-                    sheetname: dataObj.sheetname,
-                    system: dataObj.system
+                    //set characterid
+                    if (isNew) {
+                        fatesheet.config.characterId = null;
+                        FB.AppEvents.logEvent('createdACharacter' + dataObj.sheetname);
+                    }
+                    fatesheet.config.characterId = fatesheet.config.characterId == null ? generateUUID() : fatesheet.config.characterId;
+
+                    var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
+                    var metadata = {
+                        name: dataObj.name,
+                        highconcept: dataObj.aspect.highconcept || 'Uknown',
+                        description: dataObj.description || '',
+                        sheetname: dataObj.sheetname,
+                        system: dataObj.system
+                    }
+
+                    fatesheet.config.awsBucket.putObject({
+                        Key: key,
+                        Body: data,
+                        Metadata: metadata,
+                    }, function (err, data) {
+                        if (!err) {
+                            console.log('character saved.');
+
+                            $.notify('Character Saved.', 'success');
+                        }
+                        else {
+                            console.log(err);
+                        }
+                    });
                 }
-
-                fatesheet.config.awsBucket.putObject({
-                    Key: key,
-                    Body: data,
-                    Metadata: metadata,
-                }, function (err, data) {
-                    if (!err) {
-                        console.log('character saved.');
-
-                        $.notify('Character Saved.', 'success');
-                    }
-                    else {
-                        console.log(err);
-                    }
-                });
-
-
+                else
+                {
+                    window.print();
+                }
             }
 
             fatesheet.deleteCharacter = function (key) {
@@ -642,28 +652,56 @@
                 * https://developers.facebook.com/docs/javascript/quickstart/
                 */
             function authenticate() {
-                $.ajaxSetup({ cache: true });
-                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                    FB.init({
-                        appId: fatesheet.config.appId,
-                        version: 'v2.7'
-                    });
-					
-					FB.AppEvents.logPageView();
-					
-                    FB.login(function (response) {
-                        fatesheet.config.awsBucket.config.credentials = new AWS.WebIdentityCredentials({
-                            ProviderId: 'graph.facebook.com',
-                            RoleArn: fatesheet.config.roleArn,
-                            WebIdentityToken: response.authResponse.accessToken
-                        });
-                        fatesheet.config.fbUserId = response.authResponse.userID;
-                        $('.invisible').removeClass('invisible');
 
-                        // list objects
-                        fatesheet.listCharacters();
-                    })
+                //see if we're already logged into facebook
+                FB.getLoginStatus(function (response) {
+                    console.log(response);
+                    if (response.status === 'connected') {
+                        fatesheet.config.isAuthenticated = true;
+                        fatesheet.setupAuthorizedUser(response);
+                    } else {
+                        fatesheet.config.isAuthenticated = false;
+                        fatesheet.setupUnAuthorizedUser();
+                    }
+                }, true);              
+            }
+
+            fatesheet.setupUnAuthorizedUser = function() {
+                // supply anonymous access credentials
+                fatesheet.config.awsBucket.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
+
+                var sts = new AWS.STS();
+                sts.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
+                sts.getSessionToken(function (err, data) {
+                    if (err) console.log("Error getting credentials");
+                    else {
+                        fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
+                        fatesheet.listSheets();
+                    }
                 });
+            }
+
+            fatesheet.setupAuthorizedUser = function(response) {
+                fatesheet.config.awsBucket.config.credentials = new AWS.WebIdentityCredentials({
+                    ProviderId: 'graph.facebook.com',
+                    RoleArn: fatesheet.config.roleArn,
+                    WebIdentityToken: response.authResponse.accessToken
+                });
+                fatesheet.config.fbUserId = response.authResponse.userID;                
+                $('.invisible').removeClass('invisible');
+                $('.login-button').remove();
+
+                // list objects
+                fatesheet.listCharacters();
+            }
+
+            fatesheet.authenticateFacebook = function() {
+                
+                FB.login(function (response) {
+                    if (response.authResponse) {
+                        fatesheet.setupAuthorizedUser(response);
+                    }					    
+                })
             }
 			
             fatesheet.init = function () {
@@ -675,7 +713,20 @@
         })(window.fatesheet = window.fatesheet || {}, jQuery);
 
         $(function () {
-            fatesheet.init();
+            $.ajaxSetup({ cache: true });
+            $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                FB.init({
+                    appId: fatesheet.config.appId,
+                    autoLogAppEvents: true,
+                    status: true,
+                    cookie: true,
+                    xfbml: true,
+                    oauth: true,
+                    version: 'v2.12'
+                });
+                FB.AppEvents.logPageView();
+                fatesheet.init();
+            });
         });
     </script>
 </body>
