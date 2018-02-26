@@ -76,10 +76,6 @@
         .current-roll {
             background-color: #ffc107;
         }
-
-        #gameTable #canvas {
-            min-height: 768px;
-        }
         
         .modal-header {
             background-color: darkgrey;
@@ -89,12 +85,11 @@
             color: white;
         }
 
-        /* game room */
-        video {
-            width: 100%;
+        .roll-20 {
+            height: 20px;
         }
 
-        /* print styles */
+            /* print styles */
         @media print {
           button {
             display: none;
@@ -151,20 +146,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <a id='list-sheets' class="nav-link" href="#"><span class="dice">C</span>Character Sheets</a>
+                </li>
+                <li class="hidden nav-item requires-auth">
+                    <a id='my-characters' class="nav-link" href="#"><span class="dice">D</span>My Characters</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" target="_blank" href="https://fate-srd.com/"><span class="dice">O</span> Fate SRD</a>
                 </li>
                 <li class="nav-item">
                     <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'><span class="dice">+</span> Roll Dice</a>
                 </li>
                 <li class="nav-item">
-                    <a id="play-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalGameTable'><span class="dice">A</span> Play Fate<sup style='color:orange'>beta</sup></a>
-                </li>
-                <li class="nav-item">
-                    <a id='list-sheets' class="nav-link" href="#"><span class="dice">C</span>Character Sheets</a>
-                </li>
-                <li class="hidden nav-item requires-auth">
-                    <a id='my-characters' class="nav-link" href="#"><span class="dice">D</span>My Characters</a>
-                </li>
+                    <a id="play-fate" class="nav-link" target="_blank" href="https://app.roll20.net/lfg/search/?playingstructured=fate"><img src="roll20logo.png" alt="Roll20 logo" class="roll-20"> Play Fate</a>
+                </li>                
             </ul>
 
             <div class="form-inline login-button requires-noauth hidden">
@@ -185,44 +180,7 @@
     <div class="container-fluid mt-2">
         <div id="results">
         </div>
-
-        <div class="row hidden" id="gameTable">
-            <div class="col-sm-12 col-md-9" id="canvas">
-
-            </div>
-            <div class="col-sm-12 col-md-3">
-                <div id="localVideo" class="col-12">
-
-                </div>
-
-                <div id="remoteVideo" class="col-12">
-
-                </div>
-            </div>
-
-            <div class="col-12 mt-2">
-                <div class="form-group row">
-                    <div class="col-sm-12 col-md-2">
-                        <button class="btn btn-warning" onclick="fatesheet.leaveGameTable()"><i class='fa fa-power-off'></i>Leave Table</button>
-                    </div>
-                    <div class="col-sm-12 col-md-2">
-                        <button onclick="fatesheet.config.gameTable.canvas.sync()" class="btn btn-warning"><i class='fa fa-power-off'></i>Sync Table</button>
-                    </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" id="gameTableUrl" placeholder="Table Name">
-                        <small id="gameTableHelp" class="form-text text-muted">Send this to your friends so they can join you at the table.</small>
-                    </div>
-                    <div class="col-1">
-                        <!-- Trigger -->
-                        <button class="btn" id="copyGameUrl" data-clipboard-target="#gameTableUrl">
-                            <i class="fa fa-copy"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+      
         <!-- delete confirmation modal-->
         <div class="modal fade" id="modalDeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -266,36 +224,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- game table  -->
-        <div class="modal fade" id="modalGameTable" tabindex="-1" role="dialog" aria-labelledby="gameTableLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="gameTableLabel"> <span class="dice">+</span> Play Fate <span class="dice">-</span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group row">
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="gameRoomName" aria-describedby="gameTableHelp" placeholder="Table Name">
-                                <small id="gameTableHelp" class="form-text text-muted">Create a private game room for you and your friends</small>
-                            </div>
-                            <div class="col-sm-4">
-                                <button id="createNewTable" class="btn btn-primary">New Table</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="fatesheet.initGameTable()">Play!</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div>    
     </div>
 
     <!-- 3rd party stuff -->
@@ -354,12 +283,7 @@
                 }),
                 fbUserId: null,
                 characterId: null,
-                diceRoller: new DiceRoller(),
-                gameTable: {
-                    canvas: null,
-                    webrtc: null,
-                    roomname: null,
-                }
+                diceRoller: new DiceRoller()              
             }
 
             fatesheet.templates = {
@@ -591,26 +515,19 @@
                     switch (myfolder) {
                         case 'sheets':
                             fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
-                            break;
+                            break;                        
+                    }
+                }
 
-                        case 'gametable':
-                            configGameTable(mylocation);
-                            fatesheet.initGameTable();
+                if (lochash) {
+                    switch (lochash) {
+                        case 'sheetlist':
+                            fatesheet.listSheets();
                             break;
                     }
                 }
             }
-
-            fatesheet.getTableName = function (roomName) {
-                if (!roomName) {
-                    roomName = fatesheet.readCookie('fatecharactersheet_table_name') || generateShortUID();
-                }
-
-                fatesheet.createCookie('fatecharactersheet_table_name', roomName, 365);
-
-                return roomName;
-            }
-
+     
             // Create cookie
             fatesheet.createCookie = function (name, value, days) {
                 var expires;
@@ -831,17 +748,7 @@
                 $(document).on('click', '.js-save-character', function (e) {
                     e.preventDefault();
                     fatesheet.saveCharacter(false);
-                });
-
-                $(document).on('click', '.play-fate', function (e) {
-                    e.preventDefault();
-                    fatesheet.initGameTable();
-                });
-
-                $(document).on('click', '#createNewTable', function (e) {
-                    e.preventDefault();
-                    configGameTable(generateShortUID());
-                });
+                });           
 
                 $("#search-text").keyup(function (event) {
                     if (event.keyCode === 13) {
@@ -871,6 +778,10 @@
                     $(".card-footer:contains('" + filter + "')")
                         .parent().show();
                 });
+
+                window.onpopstate = function (e) {
+                    //getKeyFromHashTag();
+                }
             }
 
             /*!
@@ -954,7 +865,7 @@
 
             function navigateToUrl() {
                 //if we specified a hashtag then navigate to it
-                getKeyFromHashTag();
+                //getKeyFromHashTag();
             }
 
             function setupForDevelopment() {
@@ -965,117 +876,6 @@
                     }
                 });
                 $('body').prepend('<h1>DEVELOPMENT</h1>');
-            }
-
-            function configGameTable(roomName) {
-                fatesheet.config.gameTable.roomname = fatesheet.getTableName(roomName);
-                $('#gameRoomName').val(fatesheet.config.gameTable.roomname);
-            };
-
-            fatesheet.initGameTable = function () {
-                
-                if (!fatesheet.config.gameTable.canvas || !fatesheet.config.gameTable.canvas.iframe) {
-                    fatesheet.config.gameTable.canvas = new CanvasDesigner();
-                    // both links are mandatory
-                    // widget.html will internally use widget.js
-                    fatesheet.config.gameTable.widgetHtmlURL = 'widget.html'; // you can place this file anywhere
-                    fatesheet.config.gameTable.widgetJsURL = 'widget.min.js';     // you can place this file anywhere
-
-
-                    fatesheet.config.gameTable.webrtc = new SimpleWebRTC({
-                        // the id/element dom element that will hold "our" video
-                        localVideoEl: 'localVideo',
-                        // the id/element dom element that will hold remote videos
-                        remoteVideosEl: '',
-                        // immediately ask for camera access
-                        autoRequestMedia: true
-                    });
-
-                    // a peer video has been added
-                    fatesheet.config.gameTable.webrtc.on('videoAdded', function (video, peer) {
-                        console.log('video added', peer);
-                        var remotes = document.getElementById('remoteVideo');
-                        if (remotes) {
-                            var container = document.createElement('div');
-                            container.className = 'videoContainer';
-                            container.id = 'container_' + fatesheet.config.gameTable.webrtc.getDomId(peer);
-                            container.appendChild(video);
-
-                            // suppress contextmenu
-                            video.oncontextmenu = function () { return false; };
-
-                            remotes.appendChild(container);
-                        }
-                    });
-
-                    // a peer video was removed
-                    fatesheet.config.gameTable.webrtc.on('videoRemoved', function (video, peer) {
-                        console.log('video removed ', peer);
-                        var remotes = document.getElementById('remoteVideo');
-                        var el = document.getElementById(peer ? 'container_' + fatesheet.config.gameTable.webrtc.getDomId(peer) : 'localScreenContainer');
-                        if (remotes && el) {
-                            remotes.removeChild(el);
-                        }
-                    });
-
-                    fatesheet.config.gameTable.webrtc.connection.on('message', function (event) {
-                        if (event.payload && event.payload.message) {
-                            fatesheet.config.gameTable.canvas.syncData(event.payload.message);
-                        }
-                    });
-
-                    fatesheet.config.gameTable.canvas.addSyncListener(function (data) {
-                        fatesheet.config.gameTable.webrtc.sendToAll('gametable', { message: data });
-                    });
-
-                    // show the canvase
-                    fatesheet.config.gameTable.canvas.appendTo(document.getElementById('canvas'));
-
-                    // we have to wait until it's ready
-                    fatesheet.config.gameTable.webrtc.on('readyToCall', function () {
-                        // you can name it anything
-                        fatesheet.config.gameTable.webrtc.joinRoom(fatesheet.config.gameTable.roomname);
-                    });
-
-                    // we have to wait until it's ready
-                    fatesheet.config.gameTable.webrtc.on('connectionReady', function () {
-                        // initialize canvas sync
-                        setTimeout(fatesheet.config.gameTable.canvas.sync, 1000);
-                    });
-                               
-                    //populate share link
-                    $('#gameTableUrl').val(getTableUrl());
-                }
-
-                //show table
-                $('#gameTable').removeClass('hidden');
-
-                // init the url copier
-                new Clipboard('#copyGameUrl');
-
-                // hide the game modal
-                $('#modalGameTable').modal('hide');
-            }
-
-            fatesheet.leaveGameTable = function() {
-                fatesheet.config.gameTable.canvas.destroy();
-
-                fatesheet.config.gameTable.webrtc.stopLocalVideo();
-                fatesheet.config.gameTable.webrtc.leaveRoom();
-                fatesheet.config.gameTable.webrtc.disconnect();
-
-                fatesheet.config.gameTable.webrtc = null;
-                
-                // remove all the video elements
-                $('video').remove();
-
-                //show table
-                $('#gameTable').addClass('hidden');
-            }
-
-            function getTableUrl() {
-                var url = location.protocol + '//' + location.host + location.pathname + '#gametable&name=' + fatesheet.getTableName();
-                return url;
             }
 
             fatesheet.init = function () {
@@ -1103,9 +903,6 @@
                 domEvents();
                 configAWS();
                 authenticate();
-
-                // init game table
-                configGameTable();
 
                 //if a specific url was issued then navigate there.
                 navigateToUrl();
