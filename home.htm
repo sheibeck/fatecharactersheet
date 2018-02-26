@@ -515,13 +515,17 @@
                     switch (myfolder) {
                         case 'sheets':
                             fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
-                            break;                        
+                            break;
                     }
                 }
 
-                if (lochash) {
+                else {
                     switch (lochash) {
-                        case 'sheetlist':
+                        case 'characterlist':
+                            fatesheet.listCharacters();
+                            break;
+
+                        default:                        
                             fatesheet.listSheets();
                             break;
                     }
@@ -780,7 +784,7 @@
                 });
 
                 window.onpopstate = function (e) {
-                    //getKeyFromHashTag();
+                    navigateToUrl();
                 }
             }
 
@@ -844,10 +848,7 @@
                 });
                 fatesheet.config.fbUserId = response.authResponse.userID;
                 $('.requires-auth').removeClass('hidden');
-                $('.requires-noauth').addClass('hidden');
-
-                // list objects
-                fatesheet.listCharacters();
+                $('.requires-noauth').addClass('hidden');              
             }
 
             fatesheet.logout = function () {
@@ -865,10 +866,10 @@
 
             function navigateToUrl() {
                 //if we specified a hashtag then navigate to it
-                //getKeyFromHashTag();
+                getKeyFromHashTag();
             }
 
-            function setupForDevelopment() {
+            fatesheet.setupForDevelopment = function () {
                 fatesheet.config.isDevelop = true;
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
@@ -878,11 +879,25 @@
                 $('body').prepend('<h1>DEVELOPMENT</h1>');
             }
 
-            fatesheet.init = function () {
-                if (window.location.href.indexOf('localhost') !== -1) {
-                    setupForDevelopment();
-                }
+            fatesheet.init = function () {               
+                // initialize the application
+                domEvents();
+                configAWS();
+                authenticate();
 
+                //if a specific url was issued then navigate there.
+                navigateToUrl();
+            }
+
+        })(window.fatesheet = window.fatesheet || {}, jQuery);
+
+        $(function () {
+
+            if (window.location.href.indexOf('localhost') !== -1) {
+                fatesheet.setupForDevelopment();
+                fatesheet.init();
+            }
+            else {
                 //auth facebook
                 $.ajaxSetup({ cache: true });
                 $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
@@ -897,21 +912,10 @@
                     });
 
                     FB.AppEvents.logPageView();
+
+                    fatesheet.init();
                 });
-
-                // initialize the application
-                domEvents();
-                configAWS();
-                authenticate();
-
-                //if a specific url was issued then navigate there.
-                navigateToUrl();
             }
-
-        })(window.fatesheet = window.fatesheet || {}, jQuery);
-
-        $(function () {
-            fatesheet.init();
         });
     </script>
 </body>
