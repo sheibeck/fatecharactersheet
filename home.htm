@@ -74,11 +74,19 @@
         }
 
         .current-roll {
-            background-color: yellow;;
+            background-color: #ffc107;
         }
 
         #gameTable #canvas {
             min-height: 768px;
+        }
+        
+        .modal-header {
+            background-color: darkgrey;
+        }
+        .modal-title {
+            text-transform:uppercase;
+            color: white;
         }
 
         /* game room */
@@ -149,7 +157,7 @@
                     <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'><span class="dice">+</span> Roll Dice</a>
                 </li>
                 <li class="nav-item">
-                    <a id="play-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalGameTable'><span class="dice">A</span> Play Fate</a>
+                    <a id="play-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalGameTable'><span class="dice">A</span> Play Fate<sup style='color:orange'>beta</sup></a>
                 </li>
                 <li class="nav-item">
                     <a id='list-sheets' class="nav-link" href="#"><span class="dice">C</span>Character Sheets</a>
@@ -690,13 +698,12 @@
                     var data = $('form').serializeJSON();
                     var dataObj = JSON.parse(data);
 
-                    //set characterid
-                    if (isNew) {
-                        fatesheet.config.characterId = null;
+                    //creat a new characterId if we don't have one
+                    if (!fatesheet.config.characterId) {
+                        fatesheet.config.characterId = generateUUID();
                         FB.AppEvents.logEvent('createdACharacter' + dataObj.sheetname);
                     }
-                    fatesheet.config.characterId = fatesheet.config.characterId == null ? generateUUID() : fatesheet.config.characterId;
-
+                   
                     var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
                     var metadata = {
                         name: dataObj.name,
