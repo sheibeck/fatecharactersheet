@@ -505,6 +505,7 @@
                 location.hash = aKey[0] + '&name=' + aKey[1];
             }
 
+            // if we have a very specific character sheet listed then show it
             function getKeyFromHashTag() {
                 var lochash = location.hash.substr(1);
                 var myfolder = lochash.split('&')[0];
@@ -515,14 +516,6 @@
                     switch (myfolder) {
                         case 'sheets':
                             fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
-                            break;                        
-                    }
-                }
-
-                if (lochash) {
-                    switch (lochash) {
-                        case 'sheetlist':
-                            fatesheet.listSheets();
                             break;
                     }
                 }
@@ -780,7 +773,7 @@
                 });
 
                 window.onpopstate = function (e) {
-                    //getKeyFromHashTag();
+                    navigateToUrl();
                 }
             }
 
@@ -824,9 +817,7 @@
                     if (err) console.log("Error getting credentials");
                     else {
                         fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
-                        if (!location.hash) {
-                            fatesheet.listSheets();
-                        }
+                        fatesheet.listSheets();
                     }
                 });
 
@@ -846,7 +837,6 @@
                 $('.requires-auth').removeClass('hidden');
                 $('.requires-noauth').addClass('hidden');
 
-                // list objects
                 fatesheet.listCharacters();
             }
 
@@ -868,7 +858,7 @@
                 //getKeyFromHashTag();
             }
 
-            function setupForDevelopment() {
+            fatesheet.setupForDevelopment = function () {
                 fatesheet.config.isDevelop = true;
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
@@ -878,11 +868,25 @@
                 $('body').prepend('<h1>DEVELOPMENT</h1>');
             }
 
-            fatesheet.init = function () {
-                if (window.location.href.indexOf('localhost') !== -1) {
-                    setupForDevelopment();
-                }
+            fatesheet.init = function () {               
+                // initialize the application
+                domEvents();
+                configAWS();
+                authenticate();
 
+                //if a specific url was issued then navigate there.
+                navigateToUrl();
+            }
+
+        })(window.fatesheet = window.fatesheet || {}, jQuery);
+
+        $(function () {
+
+            if (window.location.href.indexOf('localhost') !== -1) {
+                fatesheet.setupForDevelopment();
+                fatesheet.init();
+            }
+            else {
                 //auth facebook
                 $.ajaxSetup({ cache: true });
                 $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
@@ -897,21 +901,10 @@
                     });
 
                     FB.AppEvents.logPageView();
+
+                    fatesheet.init();
                 });
-
-                // initialize the application
-                domEvents();
-                configAWS();
-                authenticate();
-
-                //if a specific url was issued then navigate there.
-                navigateToUrl();
             }
-
-        })(window.fatesheet = window.fatesheet || {}, jQuery);
-
-        $(function () {
-            fatesheet.init();
         });
     </script>
 </body>
