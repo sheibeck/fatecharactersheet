@@ -69,10 +69,27 @@
             font-family: 'fate_core_glyphsregular';
         }
 
-        .current-roll {
-            background-color: yellow;;
+        .hidden {
+            display: none !important; /* override flex stuff */
         }
 
+        .current-roll {
+            background-color: #ffc107;
+        }
+        
+        .modal-header {
+            background-color: darkgrey;
+        }
+        .modal-title {
+            text-transform:uppercase;
+            color: white;
+        }
+
+        .roll-20 {
+            height: 20px;
+        }
+
+            /* print styles */
         @media print {
           button {
             display: none;
@@ -129,20 +146,29 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" target="_blank" href="https://fate-srd.com/">Fate SRD</a>
+                    <a id='list-sheets' class="nav-link" href="#"><span class="dice">C</span>Character Sheets</a>
+                </li>
+                <li class="hidden nav-item requires-auth">
+                    <a id='my-characters' class="nav-link" href="#"><span class="dice">D</span>My Characters</a>
                 </li>
                 <li class="nav-item">
-                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'>Roll <span class="dice">+-0+</span></a>
+                    <a class="nav-link" target="_blank" href="https://fate-srd.com/"><span class="dice">O</span> Fate SRD</a>
                 </li>
                 <li class="nav-item">
-                    <a id='list-sheets' class="nav-link" href="#">Character Sheets</a>
+                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'><span class="dice">+</span> Roll Dice</a>
                 </li>
-                <li class="invisible nav-item">
-                    <a id='my-characters' class="nav-link" href="#">My Characters</a>
-                </li>
+                <li class="nav-item">
+                    <a id="play-fate" class="nav-link" target="_blank" href="https://app.roll20.net/lfg/search/?playingstructured=fate"><img src="roll20logo.png" alt="Roll20 logo" class="roll-20"> Play Fate</a>
+                </li>                
             </ul>
-            <div class="form-inline my-2 my-lg-0 login-button">
-                <button type="button" class="btn btn-primary" onclick="fatesheet.authenticateFacebook()">Login with Facebook</button>
+
+            <div class="form-inline login-button requires-noauth hidden">
+                <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.authenticateFacebook()">
+                    Login with <i class="fab fa-facebook"></i>
+                </button>
+            </div>
+            <div class="form-inline logout-button mx-1 mb-sm-1 requires-auth hidden">
+                <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.logout()">Logout</button>
             </div>
             <div class="form-inline my-2 my-lg-0">
                 <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
@@ -151,10 +177,10 @@
         </div>
     </nav>
 
-    <div class="container-fluid mt-2">    
+    <div class="container-fluid mt-2">
         <div id="results">
         </div>
-
+      
         <!-- delete confirmation modal-->
         <div class="modal fade" id="modalDeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -169,7 +195,7 @@
                         <p>Are you sure you want to delete this character?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger js-delete">Delete</button>
+                        <button type="button" class="btn btn-danger js-delete">Delete <i class='fa fa-trash'></i></button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -198,7 +224,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>    
     </div>
 
     <!-- 3rd party stuff -->
@@ -219,10 +245,14 @@
             integrity="sha256-tSRROoGfGWTveRpDHFiWVz+UXt+xKNe90wwGn25lpw8="
             crossorigin="anonymous"></script>
 
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
-	
-	<script src="https://cdn.rawgit.com/GreenImp/rpg-dice-roller/aba8ad5f/dice-roller.js"></script>
+    <script src="https://cdn.rawgit.com/GreenImp/rpg-dice-roller/aba8ad5f/dice-roller.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
+    <!-- shared canvas -->
+    <script src="https://simplewebrtc.com/latest-v2.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/Canvas-Designer/canvas-designer-widget.js"></script>
 
     <script type="text/javascript">
         $.expr[":"].contains = $.expr.createPseudo(function (arg) {
@@ -240,19 +270,20 @@
         };
 
         (function (fatesheet, $, undefined) {
-        
+
             fatesheet.config = {
+                isDevelop: false,
                 isAuthenticated: false,
                 appId: '189783225112476',
                 roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
                 awsBucket: new AWS.S3({
                     params: {
-                        Bucket: 'fatecharactersheet'
+                        Bucket: 'fatecharactersheet.com'
                     }
                 }),
                 fbUserId: null,
                 characterId: null,
-                diceRoller: new DiceRoller()
+                diceRoller: new DiceRoller()              
             }
 
             fatesheet.templates = {
@@ -266,25 +297,41 @@
                                     "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteConfirm'>Delete</a>" +
                                     "	  </div>" +
                                     "     <div class='card-footer text-muted'>" +
-                                    "           {{sheetname}}" +
+                                    "           <span class='badge badge-pill badge-secondary'>{{sheetname}}</span>" +
                                     "     </div>" +
-                                   "</div>",                                 
+                                   "</div>",
                 sheetList: "<div class='card'>" +
 								   "	<div class='card-body'>" +
                                    "		<h5 class='card-title'>{{sheetname}}</h5>" +
-                                   //"		<p class='card-text'>{{system}}</p>" +
-								   "		<a href='#' class='btn btn-primary js-sheet-preview' data-id='{{id}}'>Create Character</a>" +
+								   "		<a href='#' class='btn btn-primary js-sheet-preview' data-id='{{id}}'>Create Character <i class='fa fa-user'></i></a>" +
                                    "	</div>" +
+                                   "     <div class='card-footer text-muted'>" +
+                                    "           <span class='badge badge-pill badge-secondary'>{{system}}</span>" +
+                                    "     </div>" +
                                    "</div>",
             }
 
             fatesheet.navigation = {
-                character: "<hr/><div class='row'><div class='col'>" +
-                            "    <button type='button' class='btn btn-success js-save-character d-print-none'>Save Character</button>" +
+                character: {
+                    auth: "<hr/><div class='row'><div class='col'>" +
+                                "   <button type='button' class='btn btn-success js-save-character d-print-none'>Save Character <i class='fa fa-save'></i></button>" +
+                                "   <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
+                                "</div></div>",
+                    noauth: "<hr/><div class='row'><div class='col'>" +
+                                "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
+                                "</div></div>",
+
+                },
+                sheet: {
+                    auth: "<hr/><div class='row'><div class='col'>" +
+                           "    <button type='button' class='btn btn-success js-create-character d-print-none'>Save Character <i class='fa fa-user'></i></button>" +
+                           "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
+                           "</div></div>",
+                    noauth: "<hr/><div class='row'><div class='col'>" +
+                            "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
                             "</div></div>",
-                sheet: "<hr/><div class='row'><div class='col'>" +
-                        "    <button type='button' class='btn btn-success js-create-character d-print-none'>Save Character</button>" +
-                        "</div></div>",
+                }
+
             }
 
 
@@ -297,6 +344,7 @@
                 }, function (err, data) {
                     if (err) {
                         console.log(err, err.stack); // an error occurred
+                        $.notify(err.message || err, 'error');
                     } else {
                         console.log(data);           // successful response
                         var elem = fatesheet.templates.sheetList
@@ -304,12 +352,15 @@
                                         .replaceAll('{{system}}', data.Metadata.system)
                                         .replaceAll('{{id}}', key);
 
-                        $('.card-deck', results).append(elem);
+                        $('.card-columns', results).append(elem);
                     }
                 });
-            }			
-			
+            }
+
             fatesheet.listSheets = function () {
+
+                location.hash = 'sheetlist';
+
                 /// show a list of available character sheets
                 results.empty();
 
@@ -322,9 +373,9 @@
                         //document.location.href = 'error.htm';
                     } else {
                         var objKeys = "";
-						
-						var rowContainer = results.append("<div class='card-deck'></div>");
-						
+
+                        var rowContainer = results.append("<div class='card-columns'></div>");
+
                         data.Contents.forEach(function (obj) {
                             //look for top level child folders under sheets/
                             var isSheetFolder = (obj.Key.toString().substring(0, obj.Key.lastIndexOf("/"))).split('/').length == 2
@@ -350,18 +401,18 @@
                 }, function (err, data) {
                     if (err) {
                         console.log(err, err.stack); // an error occurred
+                        $.notify(err.message || err, 'error');
                     } else {
                         console.log(data);           // successful response
 
                         var character = JSON.parse(data.Body.toString());
 
                         $('form').populate(character);
-						
-						//check if there is an autocalc function and runit
-						if(typeof autocalc !== "undefined")
-						{
-							autocalc();
-						}
+
+                        //check if there is an autocalc function and runit
+                        if (typeof autocalc !== "undefined") {
+                            autocalc();
+                        }
                     }
                 });
 
@@ -374,6 +425,7 @@
                 }, function (err, data) {
                     if (err) {
                         console.log(err, err.stack); // an error occurred
+                        $.notify(err.message || err, 'error');
                     } else {
                         console.log(data);           // successful response
 
@@ -392,6 +444,8 @@
             }
 
             fatesheet.listCharacters = function () {
+                location.hash = 'characterlist';
+
                 /// show a list of the users characters
                 results.empty();
 
@@ -402,42 +456,116 @@
                     if (err) {
                         results.innerHTML = 'ERROR: ' + err;
                     } else {
-						if (data.Contents.length === 0)
-						{
-							fatesheet.listSheets();
-						}
-						else {
-							var objKeys = "";
+                        if (data.Contents.length === 0 && !location.hash) {
+                            fatesheet.listSheets();
+                        }
+                        else {
+                            var objKeys = "";
 
-							var rowContainer = results.append("<div class='card-columns'></div>");
-							data.Contents.forEach(function (obj) {
-								fatesheet.getCharacterListInfo(obj.Key);
-							});
-						};
+                            var rowContainer = results.append("<div class='card-columns'></div>");
+                            data.Contents.forEach(function (obj) {
+                                fatesheet.getCharacterListInfo(obj.Key);
+                            });
+                        };
                     }
                 });
             }
-		
-			function generateUUID () { // Public Domain/MIT
-				var d = new Date().getTime();
-				if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
-					d += performance.now(); //use high-precision timer if available
-				}
-				return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-					var r = (d + Math.random() * 16) % 16 | 0;
-					d = Math.floor(d / 16);
-					return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-				});
-			}
+
+            function generateUUID() { // Public Domain/MIT
+                var d = new Date().getTime();
+                if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+                    d += performance.now(); //use high-precision timer if available
+                }
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = (d + Math.random() * 16) % 16 | 0;
+                    d = Math.floor(d / 16);
+                    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+            }
+
+            function generateShortUID() {
+                // I generate the UID from two parts here
+                // to ensure the random number provide enough bits.
+                var firstPart = (Math.random() * 46656) | 0;
+                var secondPart = (Math.random() * 46656) | 0;
+                firstPart = ("000" + firstPart.toString(36)).slice(-3);
+                secondPart = ("000" + secondPart.toString(36)).slice(-3);
+                return firstPart + secondPart;
+            }
 
             function addNav(navBar) {
                 /// add nav bars to a character sheet so we know what actions are available
-                $('.sheet', results).append(navBar);
+                $('.sheet', results).append(fatesheet.config.isAuthenticated ? navBar.auth : navBar.noauth);
                 $('.sheet', results).wrap('<form></form>')
             }
 
+            function formatKeyAsHash(key) {
+                var aKey = key.replace(/\/$/, "").split('/');
+                //return the last item in the key as the hashtag
+                location.hash = aKey[0] + '&name=' + aKey[1];
+            }
+
+            function getKeyFromHashTag() {
+                var lochash = location.hash.substr(1);
+                var myfolder = lochash.split('&')[0];
+                var mylocation = lochash.substr(lochash.indexOf('name='))
+                                  .split('&')[0]
+                                  .split('=')[1];
+                if (mylocation) {
+                    switch (myfolder) {
+                        case 'sheets':
+                            fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
+                            break;                        
+                    }
+                }
+
+                if (lochash) {
+                    switch (lochash) {
+                        case 'sheetlist':
+                            fatesheet.listSheets();
+                            break;
+                    }
+                }
+            }
+     
+            // Create cookie
+            fatesheet.createCookie = function (name, value, days) {
+                var expires;
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                }
+                else {
+                    expires = "";
+                }
+                document.cookie = name + "=" + value + expires + "; path=/";
+            }
+
+            // Read cookie
+            fatesheet.readCookie = function (name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') {
+                        c = c.substring(1, c.length);
+                    }
+                    if (c.indexOf(nameEQ) === 0) {
+                        return c.substring(nameEQ.length, c.length);
+                    }
+                }
+                return null;
+            }
+
             fatesheet.showSheet = function (key, character) {
-                /// show a character sheet
+                if (character) {
+                    location.hash = 'character';
+                }
+                else {
+                    formatKeyAsHash(key);
+                }
+
                 /// if character is null then we will show a blank sheet
                 /// if character is not null then we will load a character into the sheet
                 results.empty();
@@ -462,16 +590,16 @@
             fatesheet.loadCharacter = function (key) {
                 /// load a character and then show the sheet by the id stored in the character
                 fatesheet.config.awsBucket.getObject({ Key: key }, function (err, data) {
-					
+
                     if (!err) {
                         var character = JSON.parse(data.Body.toString());
-						var sheet = 'sheets/' + character.sheetname + '/';
+                        var sheet = 'sheets/' + character.sheetname + '/';
                         fatesheet.showSheet(sheet, key);
-						
-						var params = {};
-						params[FB.AppEvents.ParameterNames.CONTENT_TYPE] = 'Character'; //sheetname
-						params[FB.AppEvents.ParameterNames.CONTENT_ID] = key // character key
-						FB.AppEvents.logEvent(
+
+                        var params = {};
+                        params[FB.AppEvents.ParameterNames.CONTENT_TYPE] = 'Character'; //sheetname
+                        params[FB.AppEvents.ParameterNames.CONTENT_ID] = key // character key
+                        FB.AppEvents.logEvent(
 						  FB.AppEvents.EventNames.VIEWED_CONTENT,
 						  null,  // numeric value for this event - in this case, none
 						  params
@@ -487,18 +615,17 @@
                     var data = $('form').serializeJSON();
                     var dataObj = JSON.parse(data);
 
-                    //set characterid
-                    if (isNew) {
-                        fatesheet.config.characterId = null;
+                    //creat a new characterId if we don't have one
+                    if (!fatesheet.config.characterId) {
+                        fatesheet.config.characterId = generateUUID();
                         FB.AppEvents.logEvent('createdACharacter' + dataObj.sheetname);
                     }
-                    fatesheet.config.characterId = fatesheet.config.characterId == null ? generateUUID() : fatesheet.config.characterId;
-
+                   
                     var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
                     var metadata = {
                         name: dataObj.name,
                         highconcept: dataObj.aspect.highconcept || 'Uknown',
-                        description: dataObj.description || '',
+                        description: (dataObj.description || '').replace(/[\n\r]/g, ' '),
                         sheetname: dataObj.sheetname,
                         system: dataObj.system
                     }
@@ -510,16 +637,15 @@
                     }, function (err, data) {
                         if (!err) {
                             console.log('character saved.');
-
                             $.notify('Character Saved.', 'success');
                         }
                         else {
                             console.log(err);
+                            $.notify(err.message || err, 'error');
                         }
                     });
                 }
-                else
-                {
+                else {
                     window.print();
                 }
             }
@@ -548,7 +674,7 @@
                 // affixe a + on front of the modifier if it's missing
                 modifier = (modifier !== '' && modifier.indexOf('-') === -1) ? "+" + modifier : modifier;
 
-                fatesheet.config.diceRoller.roll('4dF.2'+modifier);
+                fatesheet.config.diceRoller.roll('4dF.2' + modifier);
 
                 // get the latest dice rolls from the log
                 var latestRoll = fatesheet.config.diceRoller.getLog().shift();
@@ -568,7 +694,7 @@
                     }
                 });
 
-                var rollElem = "<p class='dice-roll current-roll'>" + displayDice + (modifier !== '' ? ' (' + modifier + ')' : '') + " = " + latestRoll.getTotal()  + "</p>";
+                var rollElem = "<p class='dice-roll current-roll'>" + displayDice + (modifier !== '' ? ' (' + modifier + ')' : '') + " = " + latestRoll.getTotal() + "</p>";
                 $diceTray.prepend(rollElem);
             }
 
@@ -583,17 +709,23 @@
             }
 
             function domEvents() {
-                $(document).on('click', '.js-delete', function () {
+                $(document).on('click', '.js-delete', function (e) {
+                    e.preventDefault();
+
                     var key = $(this).data('id');
                     fatesheet.deleteCharacter(key);
                 });
 
-                $(document).on('click', '.js-play', function () {
+                $(document).on('click', '.js-play', function (e) {
+                    e.preventDefault();
+
                     var key = $(this).data('id');
                     fatesheet.loadCharacter(key);
                 });
 
-                $(document).on('click', '.js-sheet-preview', function () {
+                $(document).on('click', '.js-sheet-preview', function (e) {
+                    e.preventDefault();
+
                     var key = $(this).data('id');
                     fatesheet.showSheet(key);
                 });
@@ -608,13 +740,15 @@
                     fatesheet.listCharacters();
                 });
 
-                $(document).on('click', '.js-create-character', function () {
+                $(document).on('click', '.js-create-character', function (e) {
+                    e.preventDefault();
                     fatesheet.saveCharacter(true);
                 });
 
-                $(document).on('click', '.js-save-character', function () {
+                $(document).on('click', '.js-save-character', function (e) {
+                    e.preventDefault();
                     fatesheet.saveCharacter(false);
-                });
+                });           
 
                 $("#search-text").keyup(function (event) {
                     if (event.keyCode === 13) {
@@ -638,12 +772,16 @@
                     // filter by character name and description
                     $(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')")
                         .parent().parent().show();
-						
+
 
                     // filter by footer content
                     $(".card-footer:contains('" + filter + "')")
                         .parent().show();
                 });
+
+                window.onpopstate = function (e) {
+                    //getKeyFromHashTag();
+                }
             }
 
             /*!
@@ -652,21 +790,31 @@
                 * https://developers.facebook.com/docs/javascript/quickstart/
                 */
             function authenticate() {
-
                 //see if we're already logged into facebook
-                FB.getLoginStatus(function (response) {
-                    console.log(response);
-                    if (response.status === 'connected') {
-                        fatesheet.config.isAuthenticated = true;
-                        fatesheet.setupAuthorizedUser(response);
-                    } else {
-                        fatesheet.config.isAuthenticated = false;
+                try {
+                    FB.getLoginStatus(function (response) {
+                        console.log(response);
+                        if (response.status === 'connected') {
+                            fatesheet.setupAuthorizedUser(response);
+                        } else {
+                            fatesheet.setupUnAuthorizedUser();
+                        }
+                    }, true);
+                }
+                catch (ex) {
+                    if (ex.message === 'FB is not defined') {
                         fatesheet.setupUnAuthorizedUser();
                     }
-                }, true);              
+                    else {
+                        console.log(ex.message, ex);
+                        $.notify(ex.message, 'error');
+                    }
+                }
             }
 
-            fatesheet.setupUnAuthorizedUser = function() {
+            fatesheet.setupUnAuthorizedUser = function () {
+                fatesheet.config.isAuthenticated = false;
+
                 // supply anonymous access credentials
                 fatesheet.config.awsBucket.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
 
@@ -676,58 +824,98 @@
                     if (err) console.log("Error getting credentials");
                     else {
                         fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
-                        fatesheet.listSheets();
+                        if (!location.hash) {
+                            fatesheet.listSheets();
+                        }
                     }
                 });
+
+                $('.requires-auth').addClass('hidden');
+                $('.requires-noauth').removeClass('hidden');
             }
 
-            fatesheet.setupAuthorizedUser = function(response) {
+            fatesheet.setupAuthorizedUser = function (response) {
+                fatesheet.config.isAuthenticated = true;
+
                 fatesheet.config.awsBucket.config.credentials = new AWS.WebIdentityCredentials({
                     ProviderId: 'graph.facebook.com',
                     RoleArn: fatesheet.config.roleArn,
                     WebIdentityToken: response.authResponse.accessToken
                 });
-                fatesheet.config.fbUserId = response.authResponse.userID;                
-                $('.invisible').removeClass('invisible');
-                $('.login-button').remove();
+                fatesheet.config.fbUserId = response.authResponse.userID;
+                $('.requires-auth').removeClass('hidden');
+                $('.requires-noauth').addClass('hidden');
 
                 // list objects
                 fatesheet.listCharacters();
             }
 
-            fatesheet.authenticateFacebook = function() {
-                
+            fatesheet.logout = function () {
+                FB.logout(function (response) {
+                    fatesheet.setupUnAuthorizedUser();
+                    fatesheet.listSheets();
+                });
+            };
+
+            fatesheet.authenticateFacebook = function () {
                 FB.login(function (response) {
-                    if (response.authResponse) {
-                        fatesheet.setupAuthorizedUser(response);
-                    }					    
+                    fatesheet.setupAuthorizedUser(response);
                 })
             }
-			
+
+            function navigateToUrl() {
+                //if we specified a hashtag then navigate to it
+                //getKeyFromHashTag();
+            }
+
+            function setupForDevelopment() {
+                fatesheet.config.isDevelop = true;
+                fatesheet.config.awsBucket = new AWS.S3({
+                    params: {
+                        Bucket: 'fatecharactersheet'
+                    }
+                });
+                $('body').prepend('<h1>DEVELOPMENT</h1>');
+            }
+
             fatesheet.init = function () {
+                if (window.location.href.indexOf('localhost') !== -1) {
+                    setupForDevelopment();
+                }
+
+                //auth facebook
+                $.ajaxSetup({ cache: true });
+                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                    FB.init({
+                        appId: fatesheet.config.appId,
+                        autoLogAppEvents: true,
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        oauth: true,
+                        version: 'v2.12'
+                    });
+
+                    FB.AppEvents.logPageView();
+                });
+
+                // initialize the application
                 domEvents();
                 configAWS();
                 authenticate();
+
+                //if a specific url was issued then navigate there.
+                navigateToUrl();
             }
 
         })(window.fatesheet = window.fatesheet || {}, jQuery);
 
         $(function () {
-            $.ajaxSetup({ cache: true });
-            $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                FB.init({
-                    appId: fatesheet.config.appId,
-                    autoLogAppEvents: true,
-                    status: true,
-                    cookie: true,
-                    xfbml: true,
-                    oauth: true,
-                    version: 'v2.12'
-                });
-                FB.AppEvents.logPageView();
-                fatesheet.init();
-            });
+            fatesheet.init();
         });
     </script>
 </body>
+
+
+
 </html>
