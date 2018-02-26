@@ -505,6 +505,7 @@
                 location.hash = aKey[0] + '&name=' + aKey[1];
             }
 
+            // if we have a very specific character sheet listed then show it
             function getKeyFromHashTag() {
                 var lochash = location.hash.substr(1);
                 var myfolder = lochash.split('&')[0];
@@ -515,18 +516,6 @@
                     switch (myfolder) {
                         case 'sheets':
                             fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
-                            break;
-                    }
-                }
-
-                else {
-                    switch (lochash) {
-                        case 'characterlist':
-                            fatesheet.listCharacters();
-                            break;
-
-                        default:                        
-                            fatesheet.listSheets();
                             break;
                     }
                 }
@@ -828,9 +817,7 @@
                     if (err) console.log("Error getting credentials");
                     else {
                         fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
-                        if (!location.hash) {
-                            fatesheet.listSheets();
-                        }
+                        fatesheet.listSheets();
                     }
                 });
 
@@ -848,7 +835,9 @@
                 });
                 fatesheet.config.fbUserId = response.authResponse.userID;
                 $('.requires-auth').removeClass('hidden');
-                $('.requires-noauth').addClass('hidden');              
+                $('.requires-noauth').addClass('hidden');
+
+                fatesheet.listCharacters();
             }
 
             fatesheet.logout = function () {
@@ -866,7 +855,7 @@
 
             function navigateToUrl() {
                 //if we specified a hashtag then navigate to it
-                getKeyFromHashTag();
+                //getKeyFromHashTag();
             }
 
             fatesheet.setupForDevelopment = function () {
