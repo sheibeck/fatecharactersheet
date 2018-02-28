@@ -231,6 +231,16 @@
     <div id="fb-root"></div>
 
     <!-- js libraries -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/js-signals/1.0.0/js-signals.min.js"
+            integrity="sha256-0dCtv3yeJAF9JFjWFykgsLSIf57eXOivm6g0IXU7G7U="
+            crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/crossroads/0.12.2/crossroads.min.js"
+            integrity="sha256-XCCM82PbbcarXv6mA8f/h3hpRTqkRHtp8NsARui+F80="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hasher/1.2.0/hasher.min.js" 
+            integrity="sha256-WCd2CSrQrQ8oL0A3k1Umk+rEBBKywafaWMcb6sIHK5U=" 
+            crossorigin="anonymous"></script>
+
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.190.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -272,7 +282,8 @@
         (function (fatesheet, $, undefined) {
 
             fatesheet.config = {
-                isDevelop: false,
+                content: $('#results'),
+                environment: '',
                 isAuthenticated: false,
                 appId: '189783225112476',
                 roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
@@ -333,10 +344,7 @@
                 }
 
             }
-
-
-            var results = $('#results');
-
+            
             function getSheetListInfo(key) {
                 /// get character sheet meta data information
                 fatesheet.config.awsBucket.headObject({
@@ -352,29 +360,26 @@
                                         .replaceAll('{{system}}', data.Metadata.system)
                                         .replaceAll('{{id}}', key);
 
-                        $('.card-columns', results).append(elem);
+                        $('.card-columns', fatesheet.config.content).append(elem);
                     }
                 });
             }
 
             fatesheet.listSheets = function () {
-
-                location.hash = 'sheetlist';
-
                 /// show a list of available character sheets
-                results.empty();
+                fatesheet.config.content.empty();
 
                 var prefix = 'sheets';
                 fatesheet.config.awsBucket.listObjects({
                     Prefix: prefix
                 }, function (err, data) {
                     if (err) {
-                        results.innerHTML = 'ERROR: ' + err.message;
+                        fatesheet.config.content.innerHTML = 'ERROR: ' + err.message;
                         //document.location.href = 'error.htm';
                     } else {
                         var objKeys = "";
 
-                        var rowContainer = results.append("<div class='card-columns'></div>");
+                        var rowContainer = fatesheet.config.content.append("<div class='card-columns'></div>");
 
                         data.Contents.forEach(function (obj) {
                             //look for top level child folders under sheets/
@@ -393,11 +398,10 @@
             }
 
             fatesheet.getCharacterInfo = function (key) {
-                /// Load character info into a sheet
-                fatesheet.config.characterId = fatesheet.getCharacterIdFromKey(key);
+                fatesheet.config.characterId = key;
 
                 fatesheet.config.awsBucket.getObject({
-                    Key: key
+                    Key: 'facebook-' + fatesheet.config.fbUserId + '/' + key + '.character'
                 }, function (err, data) {
                     if (err) {
                         console.log(err, err.stack); // an error occurred
@@ -435,34 +439,33 @@
 											.replaceAll('{{description}}', (data.Metadata.description || ''))
                                             .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
                                             .replaceAll('{{system}}', (data.Metadata.system || ''))
-                                            .replaceAll('{{id}}', key)
+                                            .replaceAll('{{id}}', fatesheet.getCharacterIdFromKey(key));
 
-                        $('.card-columns', results).append(elem);
+                        $('.card-columns', fatesheet.config.content).append(elem);
                     }
                 });
 
             }
 
             fatesheet.listCharacters = function () {
-                location.hash = 'characterlist';
 
                 /// show a list of the users characters
-                results.empty();
+                fatesheet.config.content.empty();
 
                 var prefix = 'facebook-' + fatesheet.config.fbUserId;
                 fatesheet.config.awsBucket.listObjects({
                     Prefix: prefix
                 }, function (err, data) {
                     if (err) {
-                        results.innerHTML = 'ERROR: ' + err;
+                        fatesheet.config.content.innerHTML = 'ERROR: ' + err;
                     } else {
-                        if (data.Contents.length === 0 && !location.hash) {
-                            fatesheet.listSheets();
+                        if (data.Contents.length === 0) {
+                            fatesheet.config.content.html('No characters found.');
                         }
                         else {
                             var objKeys = "";
 
-                            var rowContainer = results.append("<div class='card-columns'></div>");
+                            var rowContainer = fatesheet.config.content.append("<div class='card-columns'></div>");
                             data.Contents.forEach(function (obj) {
                                 fatesheet.getCharacterListInfo(obj.Key);
                             });
@@ -495,30 +498,8 @@
 
             function addNav(navBar) {
                 /// add nav bars to a character sheet so we know what actions are available
-                $('.sheet', results).append(fatesheet.config.isAuthenticated ? navBar.auth : navBar.noauth);
-                $('.sheet', results).wrap('<form></form>')
-            }
-
-            function formatKeyAsHash(key) {
-                var aKey = key.replace(/\/$/, "").split('/');
-                //return the last item in the key as the hashtag
-                location.hash = aKey[0] + '&name=' + aKey[1];
-            }
-
-            // if we have a very specific character sheet listed then show it
-            function getKeyFromHashTag() {
-                var lochash = location.hash.substr(1);
-                var myfolder = lochash.split('&')[0];
-                var mylocation = lochash.substr(lochash.indexOf('name='))
-                                  .split('&')[0]
-                                  .split('=')[1];
-                if (mylocation) {
-                    switch (myfolder) {
-                        case 'sheets':
-                            fatesheet.showSheet(myfolder + '/' + mylocation + '/', null);
-                            break;
-                    }
-                }
+                $('.sheet', fatesheet.config.content).append(fatesheet.config.isAuthenticated ? navBar.auth : navBar.noauth);
+                $('.sheet', fatesheet.config.content).wrap('<form></form>')
             }
      
             // Create cookie
@@ -552,26 +533,27 @@
             }
 
             fatesheet.showSheet = function (key, character) {
-                if (character) {
-                    location.hash = 'character';
-                }
-                else {
-                    formatKeyAsHash(key);
+                // if we are showing a blank sheet then null out the character
+                // so we properly create a new one if needed
+                if (!character)
+                {
+                    fatesheet.config.characterId = null;
                 }
 
+                key = 'sheets/' + key;
                 /// if character is null then we will show a blank sheet
                 /// if character is not null then we will load a character into the sheet
-                results.empty();
+                fatesheet.config.content.empty();
 
-                fatesheet.config.awsBucket.getObject({ Key: key + 'sheet.html' }, function (err, data) {
+                fatesheet.config.awsBucket.getObject({ Key: key + '/sheet.html' }, function (err, data) {
                     if (!err) {
                         var sheetHtml = data.Body.toString();
-                        results.html(sheetHtml);
+                        fatesheet.config.content.html(sheetHtml);
 
                         // add navigation
-                        if (character != null) {
-                            addNav(fatesheet.navigation.character);
+                        if (character != null) {                            
                             fatesheet.getCharacterInfo(character);
+                            addNav(fatesheet.navigation.character);
                         }
                         else {
                             addNav(fatesheet.navigation.sheet);
@@ -580,14 +562,17 @@
                 });
             }
 
-            fatesheet.loadCharacter = function (key) {
+            fatesheet.loadCharacter = function (characterId) {
+                var key = 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character';
+
                 /// load a character and then show the sheet by the id stored in the character
                 fatesheet.config.awsBucket.getObject({ Key: key }, function (err, data) {
 
                     if (!err) {
                         var character = JSON.parse(data.Body.toString());
-                        var sheet = 'sheets/' + character.sheetname + '/';
-                        fatesheet.showSheet(sheet, key);
+                        var sheet = 'characters/' + character.sheetname + '/';
+                        
+                        hasher.setHash(sheet + characterId);
 
                         var params = {};
                         params[FB.AppEvents.ParameterNames.CONTENT_TYPE] = 'Character'; //sheetname
@@ -601,7 +586,7 @@
                 });
             }
 
-            fatesheet.saveCharacter = function (isNew) {
+            fatesheet.saveCharacter = function () {
                 if (fatesheet.config.isAuthenticated) {
 
                     /// save a character
@@ -643,16 +628,18 @@
                 }
             }
 
-            fatesheet.deleteCharacter = function (key) {
+            fatesheet.deleteCharacter = function (characterId) {
                 /// delete a character
                 fatesheet.config.awsBucket.deleteObject({
-                    Key: key
+                    Key: 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character'
                 }, function (err, data) {
                     $('#modalDeleteConfirm').modal('hide');
 
                     if (err) console.log(err, err.stack); // an error occurred
                     else {
                         console.log(data);           // successful response
+                        
+                        //refresh the list of characters
                         fatesheet.listCharacters();
                     }
                 });
@@ -718,29 +705,29 @@
 
                 $(document).on('click', '.js-sheet-preview', function (e) {
                     e.preventDefault();
-
                     var key = $(this).data('id');
-                    fatesheet.showSheet(key);
+                    
+                    hasher.setHash(key);
                 });
 
                 $('#list-sheets').on('click', function (e) {
                     e.preventDefault();
-                    fatesheet.listSheets();
+                    hasher.setHash('sheets');
                 });
 
                 $('#my-characters').on('click', function (e) {
                     e.preventDefault();
-                    fatesheet.listCharacters();
+                    hasher.setHash('characters');
                 });
 
                 $(document).on('click', '.js-create-character', function (e) {
                     e.preventDefault();
-                    fatesheet.saveCharacter(true);
+                    fatesheet.saveCharacter();
                 });
 
                 $(document).on('click', '.js-save-character', function (e) {
                     e.preventDefault();
-                    fatesheet.saveCharacter(false);
+                    fatesheet.saveCharacter();
                 });           
 
                 $("#search-text").keyup(function (event) {
@@ -771,10 +758,7 @@
                     $(".card-footer:contains('" + filter + "')")
                         .parent().show();
                 });
-
-                window.onpopstate = function (e) {
-                    navigateToUrl();
-                }
+                
             }
 
             /*!
@@ -817,12 +801,14 @@
                     if (err) console.log("Error getting credentials");
                     else {
                         fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
-                        fatesheet.listSheets();
                     }
                 });
 
                 $('.requires-auth').addClass('hidden');
                 $('.requires-noauth').removeClass('hidden');
+
+                // setup hashes and routes here so we have credentials set
+                configureRoutes();
             }
 
             fatesheet.setupAuthorizedUser = function (response) {
@@ -837,13 +823,13 @@
                 $('.requires-auth').removeClass('hidden');
                 $('.requires-noauth').addClass('hidden');
 
-                fatesheet.listCharacters();
+                // setup hashes and routes here so we have credentials set
+                configureRoutes();
             }
 
             fatesheet.logout = function () {
                 FB.logout(function (response) {
                     fatesheet.setupUnAuthorizedUser();
-                    fatesheet.listSheets();
                 });
             };
 
@@ -853,58 +839,126 @@
                 })
             }
 
-            function navigateToUrl() {
-                //if we specified a hashtag then navigate to it
-                //getKeyFromHashTag();
+            fatesheet.setupForEnvironment = function (env) {
+                fatesheet.config.environment = env;
+
+                switch (env) {
+                    case 'develop':                        
+                        fatesheet.config.fbUserId = 'facebook-1764171710312177';
+                        fatesheet.config.awsBucket = new AWS.S3({
+                            params: {
+                                Bucket: 'fatecharactersheet'
+                            }
+                        });
+                        $('body').prepend('<h1>DEVELOPMENT</h1>');
+                        break;
+
+                    case 'beta':
+                        fatesheet.config.awsBucket = new AWS.S3({
+                            params: {
+                                Bucket: 'fatecharactersheet'
+                            }
+                        });
+                        $('body').prepend('<h1>BETA</h1>');
+
+                        //auth facebook
+                        $.ajaxSetup({ cache: true });
+                        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                            FB.init({
+                                appId: fatesheet.config.appId,
+                                status: true,
+                                cookie: true,
+                                xfbml: true,
+                                oauth: true,
+                                version: 'v2.12'
+                            });
+                            fatesheet.init();
+                        });
+                        break;
+
+                    default:
+                        //auth facebook
+                        $.ajaxSetup({ cache: true });
+                        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                            FB.init({
+                                appId: fatesheet.config.appId,
+                                autoLogAppEvents: true,
+                                status: true,
+                                cookie: true,
+                                xfbml: true,
+                                oauth: true,
+                                version: 'v2.12'
+                            });
+
+                            FB.AppEvents.logPageView();
+
+                            fatesheet.init();
+                        });
+                        break;
+                }
+               
             }
 
-            fatesheet.setupForDevelopment = function () {
-                fatesheet.config.isDevelop = true;
-                fatesheet.config.awsBucket = new AWS.S3({
-                    params: {
-                        Bucket: 'fatecharactersheet'
-                    }
+            function configureRoutes() {               
+                //String rule with param:
+                //match '/news/123' passing "123" as param to handler
+                var route1 = crossroads.addRoute('/characters/{sheetid}/{id}', function (sheetid, id) {
+                    fatesheet.showSheet(sheetid, id)
                 });
-                $('body').prepend('<h1>DEVELOPMENT</h1>');
+
+                var route2 = crossroads.addRoute('/characters', function () {
+                    fatesheet.listCharacters();
+                });
+
+                var route3 = crossroads.addRoute('/sheets/{id}', function (id) {
+                    fatesheet.showSheet(id, null);
+                });
+
+                var route4 = crossroads.addRoute('/sheets', function () {
+                    fatesheet.listSheets();
+                });
+
+                hasher.initialized.add(parseHash); //parse initial hash
+                hasher.changed.add(parseHash); //parse hash changes
+                hasher.init(); //start listening for history change
+
+
+                // default to the character sheet list if we don't have a hash to go to
+                if (!hasher.getHash()) {
+                    hasher.setHash('sheets');
+                }
+
             }
 
-            fatesheet.init = function () {               
+            //setup hasher
+            function parseHash(newHash, oldHash) {
+                crossroads.parse(newHash);
+            }
+           
+            fatesheet.init = function () {
                 // initialize the application
                 domEvents();
                 configAWS();
-                authenticate();
-
-                //if a specific url was issued then navigate there.
-                navigateToUrl();
+                authenticate();              
             }
 
         })(window.fatesheet = window.fatesheet || {}, jQuery);
 
         $(function () {
 
-            if (window.location.href.indexOf('localhost') !== -1) {
-                fatesheet.setupForDevelopment();
-                fatesheet.init();
-            }
-            else {
-                //auth facebook
-                $.ajaxSetup({ cache: true });
-                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                    FB.init({
-                        appId: fatesheet.config.appId,
-                        autoLogAppEvents: true,
-                        status: true,
-                        cookie: true,
-                        xfbml: true,
-                        oauth: true,
-                        version: 'v2.12'
-                    });
+            switch(window.location.host) {
+                case 'localhost':
+                    fatesheet.setupForEnvironment('develop');
+                    break;
+            
+                case 'fatecharactersheet.s3-website-us-east-1.amazonaws.com':
+                    fatesheet.setupForEnvironment('beta');
+                    break;
 
-                    FB.AppEvents.logPageView();
-
-                    fatesheet.init();
-                });
-            }
+                default:
+                    fatesheet.setupForEnvironment('production');
+                    break;
+            }            
         });
     </script>
 </body>
