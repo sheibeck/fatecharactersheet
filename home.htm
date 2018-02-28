@@ -283,7 +283,7 @@
 
             fatesheet.config = {
                 content: $('#results'),
-                isDevelop: false,
+                environment: '',
                 isAuthenticated: false,
                 appId: '189783225112476',
                 roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
@@ -398,13 +398,10 @@
             }
 
             fatesheet.getCharacterInfo = function (key) {
-                /// Load character info into a sheet
-                //fatesheet.config.characterId = fatesheet.getCharacterIdFromKey(key);
-
                 fatesheet.config.characterId = key;
 
                 fatesheet.config.awsBucket.getObject({
-                    Key: fatesheet.config.fbUserId + '/' + key + '.character'
+                    Key: 'facebook-' + fatesheet.config.fbUserId + '/' + key + '.character'
                 }, function (err, data) {
                     if (err) {
                         console.log(err, err.stack); // an error occurred
@@ -442,7 +439,7 @@
 											.replaceAll('{{description}}', (data.Metadata.description || ''))
                                             .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
                                             .replaceAll('{{system}}', (data.Metadata.system || ''))
-                                            .replaceAll('{{id}}', getCharacterIdFromKey(key));
+                                            .replaceAll('{{id}}', fatesheet.getCharacterIdFromKey(key));
 
                         $('.card-columns', fatesheet.config.content).append(elem);
                     }
@@ -536,6 +533,13 @@
             }
 
             fatesheet.showSheet = function (key, character) {
+                // if we are showing a blank sheet then null out the character
+                // so we properly create a new one if needed
+                if (!character)
+                {
+                    fatesheet.config.characterId = null;
+                }
+
                 key = 'sheets/' + key;
                 /// if character is null then we will show a blank sheet
                 /// if character is not null then we will load a character into the sheet
@@ -558,16 +562,17 @@
                 });
             }
 
-            fatesheet.loadCharacter = function (key) {
+            fatesheet.loadCharacter = function (characterId) {
+                var key = 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character';
+
                 /// load a character and then show the sheet by the id stored in the character
                 fatesheet.config.awsBucket.getObject({ Key: key }, function (err, data) {
 
                     if (!err) {
                         var character = JSON.parse(data.Body.toString());
-                        var sheet = 'sheets/' + character.sheetname + '/';
-
-                        //fatesheet.showSheet(sheet, key);
-                        hasher.setHash(sheet + '/' + key);
+                        var sheet = 'characters/' + character.sheetname + '/';
+                        
+                        hasher.setHash(sheet + characterId);
 
                         var params = {};
                         params[FB.AppEvents.ParameterNames.CONTENT_TYPE] = 'Character'; //sheetname
@@ -581,7 +586,7 @@
                 });
             }
 
-            fatesheet.saveCharacter = function (isNew) {
+            fatesheet.saveCharacter = function () {
                 if (fatesheet.config.isAuthenticated) {
 
                     /// save a character
@@ -623,16 +628,18 @@
                 }
             }
 
-            fatesheet.deleteCharacter = function (key) {
+            fatesheet.deleteCharacter = function (characterId) {
                 /// delete a character
                 fatesheet.config.awsBucket.deleteObject({
-                    Key: key
+                    Key: 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character'
                 }, function (err, data) {
                     $('#modalDeleteConfirm').modal('hide');
 
                     if (err) console.log(err, err.stack); // an error occurred
                     else {
                         console.log(data);           // successful response
+                        
+                        //refresh the list of characters
                         fatesheet.listCharacters();
                     }
                 });
@@ -699,8 +706,7 @@
                 $(document).on('click', '.js-sheet-preview', function (e) {
                     e.preventDefault();
                     var key = $(this).data('id');
-
-                    //fatesheet.showSheet(key);
+                    
                     hasher.setHash(key);
                 });
 
@@ -711,17 +717,17 @@
 
                 $('#my-characters').on('click', function (e) {
                     e.preventDefault();
-                    fatesheet.listCharacters();
+                    hasher.setHash('characters');
                 });
 
                 $(document).on('click', '.js-create-character', function (e) {
                     e.preventDefault();
-                    fatesheet.saveCharacter(true);
+                    fatesheet.saveCharacter();
                 });
 
                 $(document).on('click', '.js-save-character', function (e) {
                     e.preventDefault();
-                    fatesheet.saveCharacter(false);
+                    fatesheet.saveCharacter();
                 });           
 
                 $("#search-text").keyup(function (event) {
@@ -800,6 +806,9 @@
 
                 $('.requires-auth').addClass('hidden');
                 $('.requires-noauth').removeClass('hidden');
+
+                // setup hashes and routes here so we have credentials set
+                configureRoutes();
             }
 
             fatesheet.setupAuthorizedUser = function (response) {
@@ -814,7 +823,8 @@
                 $('.requires-auth').removeClass('hidden');
                 $('.requires-noauth').addClass('hidden');
 
-                fatesheet.listCharacters();
+                // setup hashes and routes here so we have credentials set
+                configureRoutes();
             }
 
             fatesheet.logout = function () {
@@ -829,17 +839,64 @@
                 })
             }
 
-            fatesheet.setupForDevelopment = function () {
-                fatesheet.config.isDevelop = true;
+            fatesheet.setupForEnvironment = function (env) {
+                fatesheet.config.environment = env;
 
-                fatesheet.config.fbUserId = 'facebook-1764171710312177';
+                switch (env) {
+                    case 'develop':                        
+                        fatesheet.config.fbUserId = 'facebook-1764171710312177';
+                        fatesheet.config.awsBucket = new AWS.S3({
+                            params: {
+                                Bucket: 'fatecharactersheet'
+                            }
+                        });
+                        $('body').prepend('<h1>DEVELOPMENT</h1>');
+                        break;
 
-                fatesheet.config.awsBucket = new AWS.S3({
-                    params: {
-                        Bucket: 'fatecharactersheet'
-                    }
-                });
-                $('body').prepend('<h1>DEVELOPMENT</h1>');
+                    case 'beta':
+                        fatesheet.config.awsBucket = new AWS.S3({
+                            params: {
+                                Bucket: 'fatecharactersheet'
+                            }
+                        });
+                        $('body').prepend('<h1>BETA</h1>');
+
+                        //auth facebook
+                        $.ajaxSetup({ cache: true });
+                        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                            FB.init({
+                                appId: fatesheet.config.appId,
+                                status: true,
+                                cookie: true,
+                                xfbml: true,
+                                oauth: true,
+                                version: 'v2.12'
+                            });
+                            fatesheet.init();
+                        });
+                        break;
+
+                    default:
+                        //auth facebook
+                        $.ajaxSetup({ cache: true });
+                        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+                            FB.init({
+                                appId: fatesheet.config.appId,
+                                autoLogAppEvents: true,
+                                status: true,
+                                cookie: true,
+                                xfbml: true,
+                                oauth: true,
+                                version: 'v2.12'
+                            });
+
+                            FB.AppEvents.logPageView();
+
+                            fatesheet.init();
+                        });
+                        break;
+                }
+               
             }
 
             function configureRoutes() {               
@@ -849,11 +906,15 @@
                     fatesheet.showSheet(sheetid, id)
                 });
 
-                var route2 = crossroads.addRoute('/sheets/{id}', function (id) {
+                var route2 = crossroads.addRoute('/characters', function () {
+                    fatesheet.listCharacters();
+                });
+
+                var route3 = crossroads.addRoute('/sheets/{id}', function (id) {
                     fatesheet.showSheet(id, null);
                 });
 
-                var route3 = crossroads.addRoute('/sheets', function () {
+                var route4 = crossroads.addRoute('/sheets', function () {
                     fatesheet.listSheets();
                 });
 
@@ -871,38 +932,26 @@
                 // initialize the application
                 domEvents();
                 configAWS();
-                authenticate();
-
-                configureRoutes();
+                authenticate();              
             }
 
         })(window.fatesheet = window.fatesheet || {}, jQuery);
 
         $(function () {
 
-            if (window.location.href.indexOf('localhost') !== -1) {
-                fatesheet.setupForDevelopment();
-                fatesheet.init();
-            }
-            else {
-                //auth facebook
-                $.ajaxSetup({ cache: true });
-                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                    FB.init({
-                        appId: fatesheet.config.appId,
-                        autoLogAppEvents: true,
-                        status: true,
-                        cookie: true,
-                        xfbml: true,
-                        oauth: true,
-                        version: 'v2.12'
-                    });
+            switch(window.location.host) {
+                case 'localhost':
+                    fatesheet.setupForEnvironment('develop');
+                    break;
+            
+                case 'fatecharactersheet.s3-website-us-east-1.amazonaws.com':
+                    fatesheet.setupForEnvironment('beta');
+                    break;
 
-                    FB.AppEvents.logPageView();
-
-                    fatesheet.init();
-                });
-            }
+                default:
+                    fatesheet.setupForEnvironment('production');
+                    break;
+            }            
         });
     </script>
 </body>
