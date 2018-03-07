@@ -1,0 +1,45 @@
+<h1 class="brand-name d-print-none my-0 py-1 px-1">Fate Character Sheet</h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#!charactersheets">
+        <img src='powered-by-fate.png' />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/charactersheets.htm"><span class="dice">C</span>Character Sheets</a>
+            </li>
+            <li class="hidden nav-item requires-auth">
+                <a class="nav-link" href="/characters.htm"><span class="dice">D</span>My Characters</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/adversary.htm"><span class="dice">A</span>Adversaries</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="https://fate-srd.com/"><span class="dice">O</span> Fate SRD</a>
+            </li>
+            <li class="nav-item">
+                <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'><span class="dice">+</span> Roll Dice</a>
+            </li>
+            <li class="nav-item">
+                <a id="play-fate" class="nav-link" target="_blank" href="https://app.roll20.net/lfg/search/?playingstructured=fate"><img src="roll20logo.png" alt="Roll20 logo" class="roll-20"> Play Fate</a>
+            </li>
+        </ul>
+
+        <div class="form-inline login-button requires-noauth hidden">
+            <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.authenticateFacebook()">
+                Login with <i class="fab fa-facebook"></i>
+            </button>
+        </div>
+        <div class="form-inline logout-button mx-1 mb-sm-1 requires-auth hidden">
+            <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.logout()">Logout</button>
+        </div>
+        <div class="form-inline my-2 my-lg-0">
+            <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+        </div>
+    </div>
+</nav>
