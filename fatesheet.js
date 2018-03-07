@@ -14,6 +14,10 @@ String.prototype.replaceAll = function (search, replacement) {
 
 (function (fatesheet, $, undefined) {
 
+
+  /***********************************
+          CONFIG
+  ***********************************/
     fatesheet.config = {
         content: $('#results'),
         environment: '',
@@ -37,7 +41,7 @@ String.prototype.replaceAll = function (search, replacement) {
                             "		<h5 class='card-title'>{{name}}</h5>" +
                             "		<p class='card-text'>{{highconcept}}</p>" +
                             "		<p class='card-note font-italic small'>({{description}})</p>" +
-                            "		<a href='#!characters/{{sheetname}}/{{id}}' class='btn btn-primary' data-id='{{id}}'>Play</a>" +
+                            "		<a href='#!{{sheetname}}/{{id}}' class='btn btn-primary' data-id='{{id}}'>Play</a>" +
                             "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteConfirm'>Delete</a>" +
                             "	  </div>" +
                             "     <div class='card-footer text-muted'>" +
@@ -78,6 +82,15 @@ String.prototype.replaceAll = function (search, replacement) {
 
     }
 
+
+    function configAWS() {
+        AWS.config.region = 'us-east-1';
+    }
+
+
+    /***********************************
+            CHARACTERS & SHEETS
+    ***********************************/
     function getSheetListInfo(key) {
         /// get character sheet meta data information
         fatesheet.config.awsBucket.headObject({
@@ -126,11 +139,11 @@ String.prototype.replaceAll = function (search, replacement) {
         });
     }
 
-    fatesheet.getCharacterIdFromKey = function (key) {
+    function getCharacterIdFromKey(key) {
         return key.replace(/^.*[\\\/]/, '').replace('.character', '');
     }
 
-    fatesheet.getCharacterInfo = function (key) {
+    function getCharacterInfo(key) {
         fatesheet.config.characterId = key;
 
         fatesheet.config.awsBucket.getObject({
@@ -172,7 +185,7 @@ String.prototype.replaceAll = function (search, replacement) {
                                     .replaceAll('{{description}}', (data.Metadata.description || ''))
                                     .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
                                     .replaceAll('{{system}}', (data.Metadata.system || ''))
-                                    .replaceAll('{{id}}', fatesheet.getCharacterIdFromKey(key));
+                                    .replaceAll('{{id}}', getCharacterIdFromKey(key));
 
                 $('.card-columns', fatesheet.config.content).append(elem);
             }
@@ -207,64 +220,6 @@ String.prototype.replaceAll = function (search, replacement) {
         });
     }
 
-    function generateUUID() { // Public Domain/MIT
-        var d = new Date().getTime();
-        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-            d += performance.now(); //use high-precision timer if available
-        }
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
-
-    function generateShortUID() {
-        // I generate the UID from two parts here
-        // to ensure the random number provide enough bits.
-        var firstPart = (Math.random() * 46656) | 0;
-        var secondPart = (Math.random() * 46656) | 0;
-        firstPart = ("000" + firstPart.toString(36)).slice(-3);
-        secondPart = ("000" + secondPart.toString(36)).slice(-3);
-        return firstPart + secondPart;
-    }
-
-    function addNav(navBar) {
-        /// add nav bars to a character sheet so we know what actions are available
-        $('.sheet', fatesheet.config.content).append(fatesheet.config.isAuthenticated ? navBar.auth : navBar.noauth);
-        $('.sheet', fatesheet.config.content).wrap('<form></form>')
-    }
-
-    // Create cookie
-    fatesheet.createCookie = function (name, value, days) {
-        var expires;
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toGMTString();
-        }
-        else {
-            expires = "";
-        }
-        document.cookie = name + "=" + value + expires + "; path=/";
-    }
-
-    // Read cookie
-    fatesheet.readCookie = function (name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1, c.length);
-            }
-            if (c.indexOf(nameEQ) === 0) {
-                return c.substring(nameEQ.length, c.length);
-            }
-        }
-        return null;
-    }
-
     fatesheet.showSheet = function (key, character) {
         // if we are showing a blank sheet then null out the character
         // so we properly create a new one if needed
@@ -284,7 +239,7 @@ String.prototype.replaceAll = function (search, replacement) {
 
                 // add navigation
                 if (character != null) {
-                    fatesheet.getCharacterInfo(character);
+                    getCharacterInfo(character);
                     addNav(fatesheet.navigation.character);
                 }
                 else {
@@ -392,11 +347,10 @@ String.prototype.replaceAll = function (search, replacement) {
         $diceTray.empty();
     }
 
-    function configAWS() {
-        AWS.config.region = 'us-east-1';
-    }
-
-
+    /***********************************
+            HELPERS METHODS
+    ***********************************/
+    // clean out empty objects - used for cleaning adversary  objects
     //https://stackoverflow.com/questions/286141/remove-blank-attributes-from-an-object-in-javascript/24190282
     function removeEmpty(obj) {
       Object.keys(obj).forEach(function(key) {
@@ -404,6 +358,39 @@ String.prototype.replaceAll = function (search, replacement) {
         else if (obj[key] == null || obj[key] == undefined || obj[key] == "" || key == "") delete obj[key]
       });
     };
+
+    function addNav(navBar) {
+        /// add nav bars to a character sheet so we know what actions are available
+        $('.sheet', fatesheet.config.content).append(fatesheet.config.isAuthenticated ? navBar.auth : navBar.noauth);
+        $('.sheet', fatesheet.config.content).wrap('<form></form>')
+    }
+
+
+    function generateUUID() { // Public Domain/MIT
+        var d = new Date().getTime();
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+            d += performance.now(); //use high-precision timer if available
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    function generateShortUID() {
+        // I generate the UID from two parts here
+        // to ensure the random number provide enough bits.
+        var firstPart = (Math.random() * 46656) | 0;
+        var secondPart = (Math.random() * 46656) | 0;
+        firstPart = ("000" + firstPart.toString(36)).slice(-3);
+        secondPart = ("000" + secondPart.toString(36)).slice(-3);
+        return firstPart + secondPart;
+    }
+
+/***********************************
+        ADVERSARY
+***********************************/
 
     function upsertAdversary() {
         var data = $('#adversaryForm').serializeArray();
@@ -446,10 +433,9 @@ String.prototype.replaceAll = function (search, replacement) {
         {
           // add a uniqueid
           result['adversary_id'] = generateUUID();
+          result['adversary_owner_id'] = fatesheet.config.fbUserId;
           isNew = true;
         }
-
-        result['adversary_owner_id'] = fatesheet.config.fbUserId;
 
         // clear empty values
         removeEmpty(result);
@@ -489,10 +475,11 @@ String.prototype.replaceAll = function (search, replacement) {
     function updateAdversary(data) {
         var docClient = getDBClient();
 
-        // remove attributes we can't update
+        // remove attributes we can't/shouldn't update
         var AttributeUpdates = Object.assign({}, data);
         delete AttributeUpdates.adversary_owner_id;
         delete AttributeUpdates.adversary_name;
+        delete AttributeUpdates.adversary_id;
 
         var params = {
             TableName: "fate_adversary",
@@ -529,14 +516,117 @@ String.prototype.replaceAll = function (search, replacement) {
       $('.adversary-item-copy', '#adversaryForm').remove();
     }
 
-    function replaceUndefinedOrNull(key, value) {
-        if (value === null || value === undefined) {
-            return undefined;
+
+    fatesheet.listAdversaries = function () {
+          var fate_adversary_helpers = {
+              stress: function (stressValue) {
+                  var stressboxes = '';
+                  $.each(stressValue, function (i, val) {
+                      stressboxes += "<input type='checkbox' value='" + val + "'>" + val + "&nbsp;";
+                  });
+                  return stressboxes;
+              },
+              fixLabel: function (val) {
+                  return val.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });;
+              },
+              showOwnerControls: function(ownerid, name) {
+                // if this is the owner then let them edit it
+                if (fatesheet.config.fbUserId == ownerid) {
+                  return "<small><a href='#' class='js-edit-adversary d-print-none' data-owner-id='" + ownerid + "' data-adversary-name='" + name + "'>[edit]</a></small>";
+                }
+              }
+          };
+
+          $.views.helpers(fate_adversary_helpers);
+
+          // Create DynamoDB document client
+          var docClient = getDBClient();
+
+          var params = {
+              TableName: "fate_adversary",
+              Select: 'ALL_ATTRIBUTES'
+          }
+
+          docClient.scan(params, function (err, data) {
+              if (err) {
+                  console.log("Error", err);
+              } else {
+                  console.log("Success", data.Items);
+
+                  //https://www.jsviews.com/
+                  var template = $.templates("#tmpladversaryDetail");
+                  var htmlOutput = template.render(data.Items);
+                  $("#adversaryDetail").html(htmlOutput);
+              }
+          });
         }
 
-        return value;
-    }
+        fatesheet.editAdversary = function(ownerid, name) {
+          $('.js-adversary-list').addClass('hidden');
+          $('#adversaryForm').removeClass('hidden');
 
+          // Create DynamoDB document client
+          var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
+          docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
+
+          var params = {
+              TableName: "fate_adversary",
+              Key: {
+               'adversary_owner_id': ownerid.toString(),
+               'adversary_name': name
+              },
+          }
+
+          docClient.get(params, function(err, data) {
+              if (err) {
+                console.log("Error", err);
+              } else {
+                console.log("Success", data.Item);
+
+                clearAdversaryForm();
+                populateAdversaryForm(data.Item);
+              }
+          });
+        }
+
+        function populateAdversaryForm(data) {
+          $.each(data, function(name, val){
+              if (typeof val === 'object')
+              {
+                switch(name) {
+                  case 'adversary_aspects':
+                    $.each(val, function(n, t) {
+                      $('input[name="adversary_aspects[name]"][data-name=' + n + ']').next().val(t);
+                    });
+                    break;
+                  default:
+                    var objName = name.replace('_', '-');
+                    for(var i=0;i<Object.keys(val).length-1;i++) {
+                      $(".js-" + objName + ":first").clone().addClass('adversary-item-copy').insertAfter(".js-" + objName +":last");
+                    }
+                    $(".js-"+objName).each(function(i) {
+                      $(this).find('input[name="'+ name +'[name]"]').val(Object.keys(val)[i]);
+                      $(this).find('input[name="'+ name +'[value]"]').val(Object.values(val)[i]);
+                      $(this).find('textarea[name="'+ name +'[value]"]').val(Object.values(val)[i]);
+                    });
+                    break;
+                }
+              }
+              else {
+                var $el = $('[name="'+name+'"]', '#adversaryForm');
+                var type = $el.attr('type');
+
+                switch(type){
+                    default:
+                        $el.val(val);
+                }
+              }
+          });
+        }
+
+/***********************************
+        CORE
+***********************************/
     function domEvents() {
         $(document).on('click', '.js-delete', function (e) {
             e.preventDefault();
@@ -566,6 +656,10 @@ String.prototype.replaceAll = function (search, replacement) {
             fatesheet.editAdversary($(this).data('owner-id'), $(this).data('adversary-name'));
         });
 
+        $(document).on('click', '.js-clear-search', function (e) {
+            $("#search-text").val('');
+            $("#search-button").click();
+        });
 
         $(document).on('click', '.js-add-skill', function (e) {
             $(".js-adversary-skills:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-skills:last");
@@ -582,6 +676,22 @@ String.prototype.replaceAll = function (search, replacement) {
         $(document).on('click', '.js-add-consequence', function (e) {
             $(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last");
         });
+
+        $(document).on('click', '.js-close-adversary-edit', function (e) {
+          $('.js-adversary-list').removeClass('hidden');
+          $('#adversaryForm').addClass('hidden');
+        });
+
+        $(document).on('click', '.js-create-adversary', function (e) {
+          $('.js-adversary-list').addClass('hidden');
+          $('#adversaryForm').removeClass('hidden');
+        });
+
+        $(document).on('click', '.js-adversary-tag', function (e) {
+          $('#search-text').val($(this).data('search-text'));
+          $("#search-button").click();
+        });
+
 
         $(document).on('submit', '#adversaryForm', function (e) {
             e.preventDefault();
@@ -756,109 +866,6 @@ String.prototype.replaceAll = function (search, replacement) {
 
     }
 
-    fatesheet.listAdversaries = function () {
-        var fate_adversary_helpers = {
-            stress: function (stressValue) {
-                var stressboxes = '';
-                $.each(stressValue, function (i, val) {
-                    stressboxes += "<input type='checkbox' value='" + val + "'>" + val + "&nbsp;";
-                });
-                return stressboxes;
-            },
-            fixLabel: function (val) {
-                return val.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });;
-            },
-            showOwnerControls: function(ownerid, name) {
-              // if this is the owner then let them edit it
-              if (fatesheet.config.fbUserId == ownerid) {
-                return "<small><a href='#' class='js-edit-adversary' data-owner-id='" + ownerid + "' data-adversary-name='" + name + "'>[edit]</a></small>";
-              }
-            }
-        };
-
-        $.views.helpers(fate_adversary_helpers);
-
-        // Create DynamoDB document client
-        var docClient = getDBClient();
-
-        var params = {
-            TableName: "fate_adversary",
-            Select: 'ALL_ATTRIBUTES'
-        }
-
-        docClient.scan(params, function (err, data) {
-            if (err) {
-                console.log("Error", err);
-            } else {
-                console.log("Success", data.Items);
-
-                //https://www.jsviews.com/
-                var template = $.templates("#tmpladversaryDetail");
-                var htmlOutput = template.render(data.Items);
-                $("#adversaryDetail").html(htmlOutput);
-            }
-        });
-    }
-
-    fatesheet.editAdversary = function(ownerid, name) {
-      // Create DynamoDB document client
-      var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-      docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
-
-      var params = {
-          TableName: "fate_adversary",
-          Key: {
-           'adversary_owner_id': ownerid.toString(),
-           'adversary_name': name
-          },
-      }
-
-      docClient.get(params, function(err, data) {
-          if (err) {
-            console.log("Error", err);
-          } else {
-            console.log("Success", data.Item);
-
-            clearAdversaryForm();
-            populateAdversaryForm(data.Item);
-          }
-      });
-    }
-
-    function populateAdversaryForm(data) {
-      $.each(data, function(name, val){
-          if (typeof val === 'object')
-          {
-            switch(name) {
-              case 'adversary_aspects':
-                $.each(val, function(n, t) {
-                  $('input[name="adversary_aspects[name]"][data-name=' + n + ']').next().val(t);
-                });
-                break;
-              default:
-                var objName = name.replace('_', '-');
-                for(var i=0;i<Object.keys(val).length-1;i++) {
-                  $(".js-" + objName + ":first").clone().addClass('adversary-item-copy').insertAfter(".js-" + objName +":last");
-                }
-                $(".js-"+objName).each(function(i) {
-                  $(this).find('input[name="'+ name +'[name]"]').val(Object.keys(val)[i]);
-                  $(this).find('input[name="'+ name +'[value]"]').val(Object.values(val)[i]);
-                  $(this).find('textarea[name="'+ name +'[value]"]').val(Object.values(val)[i]);
-                });
-                break;
-            }
-          }
-          else {
-            var $el = $('[name="'+name+'"]', '#adversaryForm');
-            var type = $el.attr('type');
-
-            switch(type){
-                default:
-                    $el.val(val);
-            }
-          }
-      });
-    }
 
     function configureRoutes() {
         //String rule with param:

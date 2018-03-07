@@ -8,44 +8,50 @@
     <nav></nav>
 
     <div class="container-fluid mt-2">
-        <div class='card-columns' id="adversaryDetail">
+        <!-- list of adversaries -->
+        <div class='js-adversary-list'>
+          <button type="button" class="btn btn-secondary js-create-adversary mb-2 d-print-none requires-auth hidden">Create Adversary <i class='fa fa-plus'></i></button>
+
+          <div class='card-columns' id="adversaryDetail">
+          </div>
         </div>
 
-        <form id="adversaryForm">
+        <!-- adversary edit form -->
+        <form id="adversaryForm" class='hidden'>
             <div class="row">
                 <input type="hidden" name="adversary_id" id="adversary_id" />
-                <input type="hidden" hame="adversary_owner_id" id="adversary_owner_id" />
-                <div class="col-8">
+                <input type="hidden" name="adversary_owner_id" id="adversary_owner_id" />
+                <div class="col-sm-12 col-md-8">
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Name</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Name</label>
+                        <div class="col-sm-12 col-md-10">
                             <input class="form-control" type="text" value="" id="adversary_name" name="adversary_name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">High Concept</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">High Concept</label>
+                        <div class="col-sm-12 col-md-10">
                             <input class="form-control" type="hidden" name="adversary_aspects[name]" id="adversary_aspects[name]" data-name="high_concept" value="high_concept" >
                             <input class="form-control" type="text" value="" name="adversary_aspects[value]" id="adversary_aspects[value]">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Trouble</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Trouble</label>
+                        <div class="col-sm-12 col-md-10">
                             <input class="form-control" type="hidden" name="adversary_aspects[name]" id="adversary_aspects[name]" data-name="trouble" value="trouble" >
                             <input class="form-control" type="text" value="" name="adversary_aspects[value]" id="adversary_aspects[value]">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Other Aspects</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Other Aspects</label>
+                        <div class="col-sm-12 col-md-10">
                             <input class="form-control" type="hidden" name="adversary_aspects[name]" id="adversary_aspects[name]" data-name="other_aspects" value="other_aspects" >
                             <input class="form-control" type="text" value="" name="adversary_aspects[value]" id="adversary_aspects[value]" placeholder="Aspect1; Aspect2; Aspect3">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Skills</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Skills</label>
+                        <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-skills">
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" value="" name="adversary_skills[name]" id="adversary_skills[name]" placeholder="Skill Name (Average, Good OR Sneaky, Quickly)">
@@ -62,8 +68,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Stunts</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stunts</label>
+                        <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-stunts">
                                 <div class="col-12">
                                     <input class="form-control" type="text" value="" name="adversary_stunts[name]" id="adversary_stunts[name]" placeholder="Stunt Name">
@@ -80,8 +86,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Stress</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stress</label>
+                        <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-stress">
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" value="" name="adversary_stress[name]" id="adversary_stress[name]" placeholder="Stress Name (Physical, Mental, etc)">
@@ -98,8 +104,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-2 col-form-label">Consequences</label>
-                        <div class="col-10">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Consequences</label>
+                        <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-consequence">
                                 <div class="col-12">
                                     <input class="form-control" type="text" value="" name="adversary_consequence[name]" id="adversary_consequence[name]" placeholder="Consequence Name (Mild, Serious, Exhausted)">
@@ -116,8 +122,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adversary_type" class="col-2 col-form-label">Type</label>
-                        <div class="col-10">
+                        <label for="adversary_type" class="col-sm-12 col-md-2 col-form-label">Type</label>
+                        <div class="col-sm-12 col-md-10">
                             <select class="form-control" name="adversary_system" id="adversary_system">
                                 <option>Fate Core</option>
                                 <option>Fate Accelerated</option>
@@ -126,8 +132,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adversary_genre" class="col-2 col-form-label">Genre</label>
-                        <div class="col-10">
+                        <label for="adversary_genre" class="col-sm-12 col-md-2 col-form-label">Genre</label>
+                        <div class="col-sm-12 col-md-10">
                             <select class="form-control" name="adversary_genre" id="adversary_genre">
                                 <option>Fantasy</option>
                                 <option>Modern</option>
@@ -138,8 +144,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adversary_type" class="col-2 col-form-label">Type</label>
-                        <div class="col-10">
+                        <label for="adversary_type" class="col-sm-12 col-md-2 col-form-label">Type</label>
+                        <div class="col-sm-12 col-md-10">
                             <select class="form-control" name="adversary_type" id="adversary_type">
                                 <option>Boss</option>
                                 <option>Filler</option>
@@ -151,7 +157,8 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary js-create-adversary">Create Adversary <i class='fa fa-plus'></i></button>
+            <button class="btn btn-primary">Save Adversary <i class='fa fa-plus'></i></button>
+            <button type="button" class="btn btn-secondary js-close-adversary-edit">Close <i class='fa fa-times-circle'></i></button>
         </form>
         <!-- 3rd party stuff -->
         <div id="fb-root"></div>
@@ -199,7 +206,9 @@
                 {{/if}}
 
                 <div class='card-footer'>
-                    <small class="text-muted" style='text-transform:capitalize;'>{{:adversary_system}} &mdash; {{:adversary_genre}} &mdash; {{:adversary_type}}</small>
+                    <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_system}}'>{{:adversary_system}}</span>
+                    <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_genre}}'>{{:adversary_genre}}</span>
+                    <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_type}}'>{{:adversary_type}}</span>
                 </div>
             </div>
 
