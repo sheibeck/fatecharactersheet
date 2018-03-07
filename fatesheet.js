@@ -723,6 +723,8 @@ String.prototype.replaceAll = function (search, replacement) {
         });
 
         $(document).on('change', '#my_adversaries', function (e) {
+          //this resets the whole results so clear the search text if it's not empty
+          $('#search-text').val('');
           //refresh the adversary list
           fatesheet.listAdversaries();
         });
