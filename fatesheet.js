@@ -359,10 +359,25 @@ String.prototype.replaceAll = function (search, replacement) {
     // clean out empty objects - used for cleaning adversary  objects
     //https://stackoverflow.com/questions/286141/remove-blank-attributes-from-an-object-in-javascript/24190282
     function removeEmpty(obj) {
-      Object.keys(obj).forEach(function(key) {
-        if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key])
-        else if (obj[key] == null || obj[key] == undefined || obj[key] == "" || key == "") delete obj[key]
-      });
+      $.each(obj, function(key, value){
+         if (key === "")
+         {
+            delete obj[""];
+         }
+         else {
+           if (value === "" || value === null){
+               delete obj[key];
+           } else if (Object.prototype.toString.call(value) === '[object Object]') {
+               removeEmpty(value);
+           } else if ($.isArray(value)) {
+               $.each(value, function (k,v) {
+                 if (v === "") {
+                   value.splice(k);
+                 }
+               });
+           }
+         }
+       });
     };
 
     function addNav(navBar) {
@@ -455,6 +470,8 @@ String.prototype.replaceAll = function (search, replacement) {
           updateAdversary(result);
         }
 
+        //refresh the list of adversaries
+        fatesheet.listAdversaries();
     }
 
     function insertAdversary(data) {
@@ -481,19 +498,24 @@ String.prototype.replaceAll = function (search, replacement) {
     function updateAdversary(data) {
         var docClient = getDBClient();
 
-        // remove attributes we can't/shouldn't update
-        var AttributeUpdates = Object.assign({}, data);
-        delete AttributeUpdates.adversary_owner_id;
-        delete AttributeUpdates.adversary_name;
-        delete AttributeUpdates.adversary_id;
-
         var params = {
             TableName: "fate_adversary",
             Key: {
              'adversary_owner_id': data.adversary_owner_id,
-             'adversary_name': data.adversary_name
+             'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
             },
-            AttributeUpdates
+            UpdateExpression: "set adversary_aspects = :a, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
+            ExpressionAttributeValues:{
+                ":a":data.adversary_aspects,
+                ":c":data.adversary_consequences,
+                ":g":data.adversary_genre,
+                ":sk": data.adversary_skills,
+                ":str": data.adversary_stress,
+                ":stn": data.adversary_stunts,
+                ":sys": data.adversary_system,
+                ":t": data.adversary_type
+            },
+            ReturnValues:"UPDATED_NEW"
         };
 
         console.log("Adding a new item...");
@@ -508,33 +530,32 @@ String.prototype.replaceAll = function (search, replacement) {
         });
     }
 
-    function clearAdversaryForm() {
+    fatesheet.clearAdversaryForm = function() {
       //clear the form
       $('#adversaryForm').trigger("reset");
       $('.adversary-item-copy', '#adversaryForm').remove();
     }
 
+    var fate_adversary_helpers = {
+        stress: function (stressValue) {
+            var stressboxes = '';
+            $.each(stressValue, function (i, val) {
+                stressboxes += "<input type='checkbox' value='" + val + "'>" + val + "&nbsp;";
+            });
+            return stressboxes;
+        },
+        fixLabel: function (val) {
+            return val.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });;
+        },
+        showOwnerControls: function(ownerid, name) {
+          // if this is the owner then let them edit it
+          if (fatesheet.config.fbUserId == ownerid) {
+            return "<small><a href='#' class='js-edit-adversary d-print-none' data-owner-id='" + ownerid + "' data-adversary-name='" + name + "'><i class='fa fa-edit'></i></a></small>";
+          }
+        }
+    };
 
     fatesheet.listAdversaries = function () {
-          var fate_adversary_helpers = {
-              stress: function (stressValue) {
-                  var stressboxes = '';
-                  $.each(stressValue, function (i, val) {
-                      stressboxes += "<input type='checkbox' value='" + val + "'>" + val + "&nbsp;";
-                  });
-                  return stressboxes;
-              },
-              fixLabel: function (val) {
-                  return val.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });;
-              },
-              showOwnerControls: function(ownerid, name) {
-                // if this is the owner then let them edit it
-                if (fatesheet.config.fbUserId == ownerid) {
-                  return "<small><a href='#' class='js-edit-adversary d-print-none' data-owner-id='" + ownerid + "' data-adversary-name='" + name + "'>[edit]</a></small>";
-                }
-              }
-          };
-
           $.views.helpers(fate_adversary_helpers);
 
           // Create DynamoDB document client
@@ -543,6 +564,13 @@ String.prototype.replaceAll = function (search, replacement) {
           var params = {
               TableName: "fate_adversary",
               Select: 'ALL_ATTRIBUTES'
+          }
+
+          //show only the current users adversaries if the box is checked
+          if ($('#my_adversaries').is(':checked'))
+          {
+            params.FilterExpression = 'adversary_owner_id = :owner_id',
+            params.ExpressionAttributeValues = {':owner_id' : fatesheet.config.fbUserId }
           }
 
           docClient.scan(params, function (err, data) {
@@ -560,6 +588,8 @@ String.prototype.replaceAll = function (search, replacement) {
         }
 
         fatesheet.editAdversary = function(ownerid, name) {
+          $('#adversary_name').attr('disabled', true);
+
           $('.js-adversary-list').addClass('hidden');
           $('#adversaryForm').removeClass('hidden');
 
@@ -581,7 +611,7 @@ String.prototype.replaceAll = function (search, replacement) {
               } else {
                 console.log("Success", data.Item);
 
-                clearAdversaryForm();
+                fatesheet.clearAdversaryForm();
                 populateAdversaryForm(data.Item);
               }
           });
@@ -681,8 +711,10 @@ String.prototype.replaceAll = function (search, replacement) {
         });
 
         $(document).on('click', '.js-create-adversary', function (e) {
+          fatesheet.clearAdversaryForm();
           $('.js-adversary-list').addClass('hidden');
           $('#adversaryForm').removeClass('hidden');
+          $('#adversary_name').attr('disabled', false);
         });
 
         $(document).on('click', '.js-adversary-tag', function (e) {
@@ -690,6 +722,10 @@ String.prototype.replaceAll = function (search, replacement) {
           $("#search-button").click();
         });
 
+        $(document).on('change', '#my_adversaries', function (e) {
+          //refresh the adversary list
+          fatesheet.listAdversaries();
+        });
 
         $(document).on('submit', '#adversaryForm', function (e) {
             e.preventDefault();

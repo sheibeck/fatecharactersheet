@@ -10,7 +10,14 @@
     <div class="container-fluid mt-2">
         <!-- list of adversaries -->
         <div class='js-adversary-list'>
-          <button type="button" class="btn btn-secondary js-create-adversary mb-2 d-print-none requires-auth hidden">Create Adversary <i class='fa fa-plus'></i></button>
+          <div class="row d-print-none requires-auth hidden">
+            <div class="col-sm-12 col-md-2">
+              <button type="button" class="btn btn-secondary js-create-adversary mb-2">Create Adversary <i class='fa fa-plus'></i></button>
+            </div>
+            <div class="col-sm-12 col-md-3">
+              <input type="checkbox" id="my_adversaries" /> Show only my adversaries?
+            </div>
+          </div>
 
           <div class='card-columns' id="adversaryDetail">
           </div>
@@ -108,10 +115,10 @@
                         <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-consequence">
                                 <div class="col-12">
-                                    <input class="form-control" type="text" value="" name="adversary_consequence[name]" id="adversary_consequence[name]" placeholder="Consequence Name (Mild, Serious, Exhausted)">
+                                    <input class="form-control" type="text" value="" name="adversary_consequences[name]" id="adversary_consequences[name]" placeholder="Consequence Name (Mild, Serious, Exhausted)">
                                 </div>
                                 <div class="col-12">
-                                    <textarea class="form-control" type="text" value="" name="adversary_consequence[value]" id="adversary_consequence[value]" placeholder="Consequence Values (Recover, Condition, etc)"></textarea>
+                                    <textarea class="form-control" type="text" value="" name="adversary_consequences[value]" id="adversary_consequences[value]" placeholder="Consequence Values (Recover, Condition, etc)"></textarea>
                                 </div>
                             </div>
                         </div>
