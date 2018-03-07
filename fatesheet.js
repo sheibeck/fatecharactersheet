@@ -82,11 +82,17 @@ String.prototype.replaceAll = function (search, replacement) {
 
     }
 
-
     function configAWS() {
         AWS.config.region = 'us-east-1';
     }
 
+    function getDBClient() {
+      // Create DynamoDB document client
+      var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
+      docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
+
+      return docClient;
+    }
 
     /***********************************
             CHARACTERS & SHEETS
@@ -500,14 +506,6 @@ String.prototype.replaceAll = function (search, replacement) {
                 console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             }
         });
-    }
-
-    function getDBClient() {
-      // Create DynamoDB document client
-      var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-      docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
-
-      return docClient;
     }
 
     function clearAdversaryForm() {
