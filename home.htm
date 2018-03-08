@@ -31,65 +31,44 @@
         </div>
 
         <div class="row">
-        <div class="col-sm-6">
-          <div class="card m-2">
-            <div class="card-body">
-              <h5 class="card-title">Create a Character</h5>
-              <p class="card-text">Create and view your fate characters.</p>
-              <a href="characters.htm" class="btn btn-primary requires-auth hidden">Create <span class='dice'>C</span></a>
-              <button type="button" class="btn btn-primary requires-noauth" onclick="fatesheet.authenticateFacebook()">
-                  Login with <i class="fab fa-facebook"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card card m-2">
-            <div class="card-body">
-              <h5 class="card-title">Explore Character Sheets</h5>
-              <p class="card-text">Find and print a character sheet.</p>
-              <a href="charactersheets.htm" class="btn btn-primary">Find <span class='dice'>D</span></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card card m-2">
-            <div class="card-body">
-              <h5 class="card-title">View Adversaries</h5>
-              <p class="card-text">View a codex of adversaries or create your own.</p>
-              <a href="adversary.htm" class="btn btn-primary">Fight <span class='dice'>A</span></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card card m-2">
-            <div class="card-body">
-              <h5 class="card-title">Roll Some Dice</h5>
-              <p class="card-text">Roll fate dice and see if you succeed!</p>
-              <a href="#" data-toggle='modal' data-target='#modalDiceRoller' class="btn btn-primary">Roll <span class='dice'>+</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- delete confirmation modal-->
-      <div class="modal fade" id="modalDeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="deleteLabel">Confirm Character Delete</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <p>Are you sure you want to delete this character?</p>
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-danger js-delete">Delete <i class='fa fa-trash'></i></button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
+          <div class="col-sm-6">
+            <div class="card m-2">
+              <div class="card-body">
+                <h5 class="card-title">Create a Character</h5>
+                <p class="card-text">Create and view your fate characters.</p>
+                <a href="characters.htm" class="btn btn-primary requires-auth hidden">Create <span class='dice'>C</span></a>
+                <button type="button" class="btn btn-primary requires-noauth" onclick="fatesheet.authenticateFacebook()">
+                    Login with <i class="fab fa-facebook"></i>
+                </button>
               </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card card m-2">
+              <div class="card-body">
+                <h5 class="card-title">Explore Character Sheets</h5>
+                <p class="card-text">Find and print a character sheet.</p>
+                <a href="charactersheets.htm" class="btn btn-primary">Find <span class='dice'>D</span></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card card m-2">
+              <div class="card-body">
+                <h5 class="card-title">View Adversaries</h5>
+                <p class="card-text">View a codex of adversaries or create your own.</p>
+                <a href="adversary.htm" class="btn btn-primary">Fight <span class='dice'>A</span></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card card m-2">
+              <div class="card-body">
+                <h5 class="card-title">Roll Some Dice</h5>
+                <p class="card-text">Roll fate dice and see if you succeed!</p>
+                <a href="#" data-toggle='modal' data-target='#modalDiceRoller' class="btn btn-primary">Roll <span class='dice'>+</span></a>
+              </div>
+            </div>
           </div>
       </div>
   </div>

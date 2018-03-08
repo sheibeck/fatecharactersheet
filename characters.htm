@@ -15,7 +15,7 @@
           crossorigin="anonymous">
 
     <link rel="stylesheet" href="site.css">
-    
+
     <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <link rel="import" href="head.htm">
  	<title>Characters - Fate Character Sheet</title>
@@ -28,7 +28,7 @@
         </div>
 
         <!-- delete confirmation modal-->
-        <div class="modal fade" id="modalDeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDeleteCharacterConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -41,31 +41,7 @@
                         <p>Are you sure you want to delete this character?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger js-delete">Delete <i class='fa fa-trash'></i></button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- dice tray -->
-        <div class="modal fade" id="modalDiceRoller" tabindex="-1" role="dialog" aria-labelledby="diceRollerLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="diceRollerLabel"> <span class="dice">+</span> Fate Dice Roller <span class="dice">-</span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="row px-0 mx-0 pt-1 pb-1 roll-modifier">
-                        <label class="col-4 h5 pt-2">Roll Modifier</label> <input class="form-control col-2 text-center" type="number" id="rollModifier">
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="fatesheet.diceRoller()">Roll</button>
-                        <button type="button" class="btn btn-warning" onclick="fatesheet.clearDiceTray()">Clear</button>
+                        <button type="button" class="btn btn-danger js-delete-character">Delete</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>

@@ -42,7 +42,7 @@ String.prototype.replaceAll = function (search, replacement) {
                             "		<p class='card-text'>{{highconcept}}</p>" +
                             "		<p class='card-note font-italic small'>({{description}})</p>" +
                             "		<a href='#!{{sheetname}}/{{id}}' class='btn btn-primary' data-id='{{id}}'>Play</a>" +
-                            "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteConfirm'>Delete</a>" +
+                            "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>" +
                             "	  </div>" +
                             "     <div class='card-footer text-muted'>" +
                             "           <span class='badge badge-pill badge-secondary'>{{sheetname}}</span>" +
@@ -302,7 +302,7 @@ String.prototype.replaceAll = function (search, replacement) {
         fatesheet.config.awsBucket.deleteObject({
             Key: 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character'
         }, function (err, data) {
-            $('#modalDeleteConfirm').modal('hide');
+            $('#modalDeleteCharacterConfirm').modal('hide');
 
             if (err) console.log(err, err.stack); // an error occurred
             else {
@@ -497,9 +497,37 @@ String.prototype.replaceAll = function (search, replacement) {
                 $.notify(err.code, 'error');
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
+                $.notify('Adversary added.', 'success');
                 console.log("Added item:", JSON.stringify(data, null, 2));
+                fatesheet.clearAdversaryForm();
+            }
+        });
+    }
 
-                clearAdversaryForm();
+    fatesheet.deleteAdversary = function(key) {
+        var docClient = getDBClient();
+
+        var params = {
+            TableName: "fate_adversary",
+            Key: key
+        };
+
+        console.log("Adding a new item...");
+        docClient.delete(params, function (err, data) {
+            if (err) {
+                $.notify(err.code, 'error');
+                console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+            } else {
+                $('#modalDeleteAdversaryConfirm').modal('hide');
+                $.notify('Adversary deleted.', 'success');
+                fatesheet.listAdversaries();
+
+                fatesheet.clearAdversaryForm();
+
+                $('.js-adversary-list').removeClass('hidden');
+                $('#adversaryForm').addClass('hidden');
+
+                console.log("Added item:", JSON.stringify(data, null, 2));
             }
         });
     }
@@ -543,6 +571,9 @@ String.prototype.replaceAll = function (search, replacement) {
       //clear the form
       $('#adversaryForm').trigger("reset");
       $('.adversary-item-copy', '#adversaryForm').remove();
+
+      $('#adversary_id').val('');
+      $('#adversary_owner_id').val('');
     }
 
     var fate_adversary_helpers = {
@@ -672,11 +703,21 @@ String.prototype.replaceAll = function (search, replacement) {
         CORE
 ***********************************/
     function domEvents() {
-        $(document).on('click', '.js-delete', function (e) {
+        $(document).on('click', '.js-delete-character', function (e) {
             e.preventDefault();
 
             var key = $(this).data('id');
             fatesheet.deleteCharacter(key);
+        });
+
+        $(document).on('click', '.js-delete-adversary', function (e) {
+            e.preventDefault();
+
+            var key = {
+             'adversary_owner_id': fatesheet.config.fbUserId,
+             'adversary_name': $('#adversary_name').val()
+            }
+            fatesheet.deleteAdversary(key);
         });
 
         $(document).on('click', '.js-create-character', function (e) {
@@ -750,13 +791,17 @@ String.prototype.replaceAll = function (search, replacement) {
             upsertAdversary();
         });
 
-        $(document).on('show.bs.modal', '#modalDeleteConfirm', function (event) {
+        $(document).on('show.bs.modal', '#modalDeleteCharacterConfirm', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var characterId = button.data('id') // Extract info from data-* attributes
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
-            $(modal.find('.js-delete')).data('id', characterId);
+            $(modal.find('.js-delete-character')).data('id', characterId);
+        })
+
+        $(document).on('show.bs.modal', '#modalDeleteAdversaryConfirm', function (event) {
+            var modal = $(this);
         })
 
         $(document).on('click', '#search-button', function () {
