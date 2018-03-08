@@ -1,6 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Character sheets for Fate Roleplaying Game">
+    <meta name="keywords" content="Roleplaying,Fate Core,Fate Accelerated,Character Sheet">
+    <meta name="author" content="Sterling Heibeck">
+    <meta name="fragment" content="!">
+
+    <!-- css libraries -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" href="site.css">
+
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <link rel="import" href="head.htm">
     <title>Adversary - Fate Character Sheet</title>
 </head>
@@ -10,12 +26,12 @@
     <div class="container-fluid mt-2">
         <!-- list of adversaries -->
         <div class='js-adversary-list'>
-          <div class="row d-print-none requires-auth hidden">
-            <div class="col-sm-12 col-md-2">
-              <button type="button" class="btn btn-secondary js-create-adversary mb-2">Create Adversary <i class='fa fa-plus'></i></button>
+          <div class="row d-print-none requires-auth hidden mb-2">
+            <div class="col-sm-12 col-md-3">
+              <button type="button" class="btn btn-secondary js-create-adversary">Create Adversary <i class='fa fa-plus'></i></button>
             </div>
             <div class="col-sm-12 col-md-3">
-              <input type="checkbox" id="my_adversaries" /> Show only my adversaries?
+              <input type="checkbox" class="form-check-input" id="my_adversaries" /> <label class="form-check-label" for="my_adversaries">Show only my adversaries?</label>
             </div>
           </div>
 
@@ -75,7 +91,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stunts</label>
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stunts <i class='fa fa-question-circle' title="Use for: Stunt, Trigger, Countdown, Outcome, Lock, Key, Choice, Repurcussion"></i></label>
                         <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-stunts">
                                 <div class="col-12">
@@ -129,7 +145,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adversary_type" class="col-sm-12 col-md-2 col-form-label">Type</label>
+                        <label for="adversary_system" class="col-sm-12 col-md-2 col-form-label">Type</label>
                         <div class="col-sm-12 col-md-10">
                             <select class="form-control" name="adversary_system" id="adversary_system">
                                 <option>Fate Core</option>
@@ -154,10 +170,9 @@
                         <label for="adversary_type" class="col-sm-12 col-md-2 col-form-label">Type</label>
                         <div class="col-sm-12 col-md-10">
                             <select class="form-control" name="adversary_type" id="adversary_type">
-                                <option>Boss</option>
-                                <option>Filler</option>
-                                <option>Hitter</option>
-                                <option>Threat</option>
+                                <option>Enemy</option>
+                                <option>Obstacle</option>
+                                <option>Contraint</option>
                                 <option>Other</option>
                             </select>
                         </div>
@@ -184,16 +199,16 @@
                 {{:~showOwnerControls(adversary_owner_id, adversary_name)}}
                 </h4>
 
-                {{if adversary_aspects}}
+                {{if ~isEmpty(adversary_aspects) !== true}}
                 <h5 class='card-header mt-2 py-0'>Aspects</h5>
                 {{props adversary_aspects}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>
                 {{/props}}
                 {{/if}}
 
-                {{if adversary_skills}}
+                {{if ~isEmpty(adversary_skills) !== true}}
                 <h5 class='card-header mt-2 py-0'>Skills</h5>
-                {{props  adversary_skills}}
+                {{props adversary_skills}}
                 <p class='card-text px-4 my-0'>
                     <strong>{{:~fixLabel(key)}}:</strong> {{:prop}}
                 </p>
@@ -201,11 +216,11 @@
                 {{/if}}
 
                 <h5 class='card-header mt-2 py-0'>Stress</h5>
-                {{props  adversary_stress}}
+                {{props adversary_stress}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:~stress(prop)}}</p>
                 {{/props }}
 
-                {{if adversary_stunts}}
+                {{if ~isEmpty(adversary_stunts) !== true}}
                 <h5 class='card-header mt-2 py-0'>Stunts</h5>
                 {{props adversary_stunts}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>

@@ -1,159 +1,34 @@
-﻿<head>
+<!doctype html>
+<html lang="en">
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">      
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Character sheets for Fate Roleplaying Game">
     <meta name="keywords" content="Roleplaying,Fate Core,Fate Accelerated,Character Sheet">
     <meta name="author" content="Sterling Heibeck">
-    	
-	<link rel="shortcut icon" type="image/png" href="favicon.png"/>
-	
-	<!-- css libraries -->
-	<link rel="stylesheet" 
-		    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
-			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
-            crossorigin="anonymous">
-		  
-	<style>
-        @import url('https://fonts.googleapis.com/css?family=Bowlby+One+SC');
-        .brand-name {
-            font-size: 1.5em;
-            background-color: black;
-            color: white;
-            font-family: 'Bowlby One SC', cursive;         
-        }
-        
-        @media only screen and (max-width: 640px) {
-            .brand-name {
-                font-size: 1.00em;
-            }
-        }
 
-        @font-face {
-            font-family: 'fate_core_glyphsregular';
-            src: url('fate_core_font-webfont.woff2') format('woff2'),
-                 url('fate_core_font-webfont.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+    <!-- css libraries -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 
-        }
-		.navbar-brand img {
-			max-height: 40px;
-		}
-		
-		input::-webkit-input-placeholder {
-			color: #C0C0C0 !important;
-		}
-		input::-moz-placeholder {
-			color: #C0C0C0 !important;
-		}
-		input:-moz-placeholder { /* Older versions of Firefox */
-			color: #C0C0C0 !important;
-		}
-		input:-ms-input-placeholder {
-			color: #C0C0C0 !important;
-		}
-		
-		textarea::-webkit-input-placeholder {
-			color: #C0C0C0 !important;
-		}
-		textarea::-moz-placeholder {
-			color: #C0C0C0 !important;
-		}
-		textarea:-moz-placeholder { /* Older versions of Firefox */
-			color: #C0C0C0 !important;
-		}
-		textarea:-ms-input-placeholder {
-			color: #C0C0C0 !important;
-		}
+    <link rel="stylesheet" href="site.css">
 
-        .roll-modifier {
-            background-color:lightgray;
-        }
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+    <link rel="import" href="head.htm">
 
-        .dice {
-            font-family: 'fate_core_glyphsregular';
-        }
-
-        .hidden {
-            display: none !important; /* override flex stuff */
-        }
-
-        .current-roll {
-            background-color: #ffc107;
-        }
-        
-        .modal-header {
-            background-color: darkgrey;
-        }
-        .modal-title {
-            text-transform:uppercase;
-            color: white;
-        }
-
-        .roll-20 {
-            height: 20px;
-        }
-    
-        .error {
-            text-align:center;
-            font-size: 35px;
-            margin-top: 100px;
-        }
-	</style>
-
-	<title>Fate Character Sheet</title>	
+  	<title>Not Found - Fate Character Sheet</title>
 </head>
 
 <body>
-    <h1 class="brand-name d-print-none my-0 py-1 px-1">Fate Character Sheet</h1>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#!charactersheets">
-            <img src='powered-by-fate.png' />            
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/#!charactersheets"><span class="dice">C</span>Character Sheets</a>
-                </li>
-                <li class="hidden nav-item requires-auth">
-                    <a class="nav-link" href="/#!characters"><span class="dice">D</span>My Characters</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" target="_blank" href="https://fate-srd.com/"><span class="dice">O</span> Fate SRD</a>
-                </li>
-                <li class="nav-item">
-                    <a id="roll-fate" class="nav-link" target="#" href="#" data-toggle='modal' data-target='#modalDiceRoller'><span class="dice">+</span> Roll Dice</a>
-                </li>
-                <li class="nav-item">
-                    <a id="play-fate" class="nav-link" target="_blank" href="https://app.roll20.net/lfg/search/?playingstructured=fate"><img src="roll20logo.png" alt="Roll20 logo" class="roll-20"> Play Fate</a>
-                </li>
-            </ul>
-
-            <div class="form-inline login-button requires-noauth hidden">
-                <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.authenticateFacebook()">
-                    Login with <i class="fab fa-facebook"></i>
-                </button>
-            </div>
-            <div class="form-inline logout-button mx-1 mb-sm-1 requires-auth hidden">
-                <button type="button" class="btn btn-primary mr-sm-1 mb-sm-1 mb-md-0" onclick="fatesheet.logout()">Logout</button>
-            </div>
-            <div class="form-inline my-2 my-lg-0">
-                <input id="search-text" class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid mt-2">
-        <div class="error">
-            <div class="dice">----</div>
-            <h2>Page not found. Would you like to <a href="/">create an advantage?</a></h2>
-        </div>
-    </div>
+  <nav></nav>
+  <div class="container-fluid mt-2">
+      <div class="error">
+          <div class="dice">----</div>
+          <h2>Page not found. Would you like to <a href="/">create an advantage?</a></h2>
+      </div>
+  </div>
 </body>
 </html>

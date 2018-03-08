@@ -356,6 +356,14 @@ String.prototype.replaceAll = function (search, replacement) {
     /***********************************
             HELPERS METHODS
     ***********************************/
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
     // clean out empty objects - used for cleaning adversary  objects
     //https://stackoverflow.com/questions/286141/remove-blank-attributes-from-an-object-in-javascript/24190282
     function removeEmpty(obj) {
@@ -365,7 +373,7 @@ String.prototype.replaceAll = function (search, replacement) {
             delete obj[""];
          }
          else {
-           if (value === "" || value === null){
+           if (value === "" || value === null || value === undefined || value === {}){
                delete obj[key];
            } else if (Object.prototype.toString.call(value) === '[object Object]') {
                removeEmpty(value);
@@ -475,6 +483,7 @@ String.prototype.replaceAll = function (search, replacement) {
     }
 
     function insertAdversary(data) {
+
         var docClient = getDBClient();
 
         var params = {
@@ -552,6 +561,13 @@ String.prototype.replaceAll = function (search, replacement) {
           if (fatesheet.config.fbUserId == ownerid) {
             return "<small><a href='#' class='js-edit-adversary d-print-none' data-owner-id='" + ownerid + "' data-adversary-name='" + name + "'><i class='fa fa-edit'></i></a></small>";
           }
+        },
+        isEmpty: function(obj) {
+          for(var key in obj) {
+              if(obj.hasOwnProperty(key))
+                  return false;
+          }
+          return true;
         }
     };
 
@@ -581,7 +597,7 @@ String.prototype.replaceAll = function (search, replacement) {
 
                   //https://www.jsviews.com/
                   var template = $.templates("#tmpladversaryDetail");
-                  var htmlOutput = template.render(data.Items);
+                  var htmlOutput = template.render(data.Items, fate_adversary_helpers);
                   $("#adversaryDetail").html(htmlOutput);
               }
           });
@@ -953,13 +969,13 @@ String.prototype.replaceAll = function (search, replacement) {
     }
 
     fatesheet.init = function () {
-        // load the navigation
-        $("nav").load("nav.htm", function() {
-			// initialize the application
-			domEvents();
-			configAWS();
-			authenticate();
-		});
+      // load the navigation
+      $("nav").load("nav.htm", function() {
+        // initialize the application
+        domEvents();
+        configAWS();
+        authenticate();
+  		});
     }
 
 })(window.fatesheet = window.fatesheet || {}, jQuery);
