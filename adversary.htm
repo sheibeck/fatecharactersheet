@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stunts <i class='fa fa-question-circle' title="Use for: Stunt, Trigger, Countdown, Outcome, Lock, Key, Choice, Repurcussion"></i></label>
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Stunts <i class='fa fa-question-circle'></i></label>
                         <div class="col-sm-12 col-md-10">
                             <div class="row js-adversary-stunts">
                                 <div class="col-12">
@@ -216,20 +216,20 @@
                 <img class="card-img-top img-fluid img-thumbnail" style="object-fit: cover; object-position:top; max-height: 180px;" src="{{:adversary_image}}" alt="{{:adversary_name}} Image">
                 {{/if}}
 
-                <h4 class='card-title'>
+                <h4 class='card-header adversary-name bg-light'>
                 {{:adversary_name}}
                 {{:~showOwnerControls(adversary_owner_id, adversary_name)}}
                 </h4>
 
                 {{if ~isEmpty(adversary_aspects) !== true}}
-                <h5 class='card-header mt-2 py-0'>Aspects</h5>
+                <h5 class='card-header py-0'>Aspects</h5>
                 {{props adversary_aspects}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>
                 {{/props}}
                 {{/if}}
 
                 {{if ~isEmpty(adversary_skills) !== true}}
-                <h5 class='card-header mt-2 py-0'>Skills</h5>
+                <h5 class='card-header py-0'>Skills</h5>
                 {{props adversary_skills}}
                 <p class='card-text px-4 my-0'>
                     <strong>{{:~fixLabel(key)}}:</strong> {{:prop}}
@@ -238,14 +238,14 @@
                 {{/if}}
 
                 {{if ~isEmpty(adversary_stress) !== true}}
-                <h5 class='card-header mt-2 py-0'>Stress</h5>
+                <h5 class='card-header py-0'>Stress</h5>
                 {{/if}}
                 {{props adversary_stress}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:~stress(prop)}}</p>
                 {{/props }}
 
                 {{if ~isEmpty(adversary_stunts) !== true}}
-                <h5 class='card-header mt-2 py-0'>Stunts</h5>
+                <h5 class='card-header py-0'>Stunts</h5>
                 {{props adversary_stunts}}
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>
                 {{/props}}
@@ -254,7 +254,7 @@
                 <div class='card-footer'>
                     <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_system}}'>{{:adversary_system}}</span>
                     <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_genre}}'>{{:adversary_genre}}</span>
-                    <span class='badge badge-dark js-adversary-tag' data-search-text='{{:adversary_type}}'>{{:adversary_type}}</span>
+                    <span class='badge badge-{{if adversary_type == 'Enemy'}}danger{{else adversary_type == 'Obstacle'}}warning{{else adversary_type == 'Constraint'}}info{{else}}dark{{/if}} js-adversary-tag' data-search-text='{{:adversary_type}}'>{{:adversary_type}}</span>
                 </div>
             </div>
 

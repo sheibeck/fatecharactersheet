@@ -38,23 +38,23 @@ String.prototype.replaceAll = function (search, replacement) {
 
         characterList: "<div class='card'>" +
                             "	  <div class='card-body'>" +
-                            "		<h5 class='card-title'>{{name}}</h5>" +
+                            "		<h5 class='card-title character-name'>{{name}}</h5>" +
                             "		<p class='card-text'>{{highconcept}}</p>" +
                             "		<p class='card-note font-italic small'>({{description}})</p>" +
                             "		<a href='#!{{sheetname}}/{{id}}' class='btn btn-primary' data-id='{{id}}'>Play</a>" +
                             "		<a href='#' class='btn btn-danger' data-id='{{id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>" +
                             "	  </div>" +
                             "     <div class='card-footer text-muted'>" +
-                            "           <span class='badge badge-pill badge-secondary'>{{sheetname}}</span>" +
+                            "           <span class='badge badge-secondary'>{{sheetname}}</span>" +
                             "     </div>" +
                            "</div>",
         sheetList: "<div class='card'>" +
                            "	<div class='card-body'>" +
-                           "		<h5 class='card-title'>{{sheetname}}</h5>" +
+                           "		<h5 class='card-title charactersheet-name'>{{sheetname}}</h5>" +
                            "		<a href='#!{{id}}' class='btn btn-primary' data-id='{{id}}'>Create Character <i class='fa fa-user'></i></a>" +
                            "	</div>" +
                            "     <div class='card-footer text-muted'>" +
-                            "           <span class='badge badge-pill badge-secondary'>{{system}}</span>" +
+                            "           <span class='badge badge-secondary'>{{system}}</span>" +
                             "     </div>" +
                            "</div>",
     }

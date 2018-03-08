@@ -89,6 +89,16 @@ textarea:-ms-input-placeholder {
   cursor: pointer;
 }
 
+.adversary-name,
+.character-name,
+.charactersheet-name {
+  font-family: 'Bowlby One SC', cursive;
+}
+
+.js-adversary-list h5.card-header {
+  font-style: italic;
+}
+
 .error {
     text-align:center;
     font-size: 35px;
