@@ -31,7 +31,8 @@ String.prototype.replaceAll = function (search, replacement) {
         }),
         fbUserId: null,
         characterId: null,
-        diceRoller: new DiceRoller()
+        diceRoller: new DiceRoller(),
+        adversarytable: ''
     }
 
     fatesheet.templates = {
@@ -479,7 +480,7 @@ String.prototype.replaceAll = function (search, replacement) {
         }
 
         //refresh the list of adversaries
-        fatesheet.listAdversaries();
+        setTimeout(fatesheet.listAdversaries(), 1000);
     }
 
     function insertAdversary(data) {
@@ -487,7 +488,7 @@ String.prototype.replaceAll = function (search, replacement) {
         var docClient = getDBClient();
 
         var params = {
-            TableName: "fate_adversary",
+            TableName: fatesheet.config.adversarytable,
             Item: data
         };
 
@@ -508,7 +509,7 @@ String.prototype.replaceAll = function (search, replacement) {
         var docClient = getDBClient();
 
         var params = {
-            TableName: "fate_adversary",
+            TableName: fatesheet.config.adversarytable,
             Key: key
         };
 
@@ -520,8 +521,8 @@ String.prototype.replaceAll = function (search, replacement) {
             } else {
                 $('#modalDeleteAdversaryConfirm').modal('hide');
                 $.notify('Adversary deleted.', 'success');
-                fatesheet.listAdversaries();
 
+                setTimeout(fatesheet.listAdversaries(), 1000);
                 fatesheet.clearAdversaryForm();
 
                 $('.js-adversary-list').removeClass('hidden');
@@ -536,7 +537,7 @@ String.prototype.replaceAll = function (search, replacement) {
         var docClient = getDBClient();
 
         var params = {
-            TableName: "fate_adversary",
+            TableName: fatesheet.config.adversarytable,
             Key: {
              'adversary_owner_id': data.adversary_owner_id,
              'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
@@ -609,7 +610,7 @@ String.prototype.replaceAll = function (search, replacement) {
           var docClient = getDBClient();
 
           var params = {
-              TableName: "fate_adversary",
+              TableName: fatesheet.config.adversarytable,
               Select: 'ALL_ATTRIBUTES'
           }
 
@@ -645,7 +646,7 @@ String.prototype.replaceAll = function (search, replacement) {
           docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
 
           var params = {
-              TableName: "fate_adversary",
+              TableName: fatesheet.config.adversarytable,
               Key: {
                'adversary_owner_id': ownerid.toString(),
                'adversary_name': name
@@ -907,6 +908,7 @@ String.prototype.replaceAll = function (search, replacement) {
         switch (env) {
             case 'develop':
                 fatesheet.config.fbUserId = '1764171710312177';
+                fatesheet.config.adversarytable = 'fate_adversary_dev';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -918,6 +920,7 @@ String.prototype.replaceAll = function (search, replacement) {
                 break;
 
             case 'beta':
+                fatesheet.config.adversarytable = 'fate_adversary_dev';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -941,6 +944,8 @@ String.prototype.replaceAll = function (search, replacement) {
                 break;
 
             default:
+                fatesheet.config.adversarytable = 'fate_adversary';
+
                 //auth facebook
                 $.ajaxSetup({ cache: true });
                 $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
