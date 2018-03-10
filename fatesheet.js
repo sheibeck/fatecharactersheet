@@ -24,11 +24,7 @@ String.prototype.replaceAll = function (search, replacement) {
         isAuthenticated: false,
         appId: '189783225112476',
         roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
-        awsBucket: new AWS.S3({
-            params: {
-                Bucket: 'fatecharactersheet.com'
-            }
-        }),
+        awsBucket: null,
         fbUserId: null,
         characterId: null,
         diceRoller: new DiceRoller(),
@@ -210,7 +206,8 @@ String.prototype.replaceAll = function (search, replacement) {
             Prefix: prefix
         }, function (err, data) {
             if (err) {
-                fatesheet.config.content.innerHTML = 'ERROR: ' + err;
+                $.notify(err.message || err, 'error');
+                console.log(err, err.stack); // an error occurred
             } else {
                 if (data.Contents.length === 0) {
                     fatesheet.config.content.html('No characters found.');
@@ -945,6 +942,11 @@ String.prototype.replaceAll = function (search, replacement) {
 
             default:
                 fatesheet.config.adversarytable = 'fate_adversary';
+                fatesheet.config.awsBucket = new AWS.S3({
+                    params: {
+                        Bucket: 'fatecharactersheet.com'
+                    }
+                });
 
                 //auth facebook
                 $.ajaxSetup({ cache: true });
