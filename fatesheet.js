@@ -363,6 +363,9 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.search = function(searchText) {
+      // clear the hash so we don't show a false id/name getCharacterInfo
+      hasher.setHash('');
+
       //character and sheet search
     	if (location.pathname.indexOf('adversary.htm') === -1)
     	{
@@ -639,10 +642,16 @@ String.prototype.toTitleCase = function () {
                   return false;
           }
           return true;
+        },
+        slug: function(obj) {
+          return obj.replaceAll(' ','~');
         }
     };
 
     fatesheet.listAdversaries = function (searchText) {
+          //make sure the search text is up to snuff
+          $('#search-text').val(searchText);
+
           $.views.helpers(fate_adversary_helpers);
 
           // Create DynamoDB document client
@@ -1019,7 +1028,7 @@ String.prototype.toTitleCase = function () {
         switch (env) {
             case 'develop':
                 fatesheet.config.fbUserId = '1764171710312177';
-                fatesheet.config.adversarytable = 'fate_adversary_dev';
+                fatesheet.config.adversarytable = 'fate_adversary';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -1110,8 +1119,12 @@ String.prototype.toTitleCase = function () {
         }
 
         if (location.pathname === '/adversary.htm') {
-            var route2 = crossroads.addRoute('/', function () {
+            var route1 = crossroads.addRoute('/', function () {
                 fatesheet.listAdversaries();
+            });
+
+            var route2 = crossroads.addRoute('/{name}', function (name) {
+                fatesheet.listAdversaries(name.replaceAll('~',' '));
             });
         }
 
