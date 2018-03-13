@@ -367,26 +367,27 @@ String.prototype.toTitleCase = function () {
       hasher.setHash('');
 
       //character and sheet search
-    	if (location.pathname.indexOf('adversary.htm') === -1)
+    	if (location.pathname.indexOf('charactersheets.htm') > -1 || location.pathname.indexOf('characters.htm') > -1)
     	{
     		$('.card').hide();
 
     		// filter by character name and description
-    		$(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')", ".card")
+    		$(".card-title:contains('" + searchText + "'), .card-note:contains('" + searchText + "'), .card-text:contains('" + searchText + "')", ".card")
     			.parent().show();
 
     		//account for body text in a card
-    		$(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')", ".card-body")
+    		$(".card-title:contains('" + searchText + "'), .card-note:contains('" + searchText + "'), .card-text:contains('" + searchText + "')", ".card-body")
     			.parent().parent().show();
 
     		// filter by footer content
-    		$(".card-footer:contains('" + filter + "')")
+    		$(".card-footer:contains('" + searchText + "')")
     			.parent().show();
     	}
-    	else
+    	else if (location.pathname.indexOf('adversary.htm') > -1)
     	{
         fatesheet.listAdversaries(searchText); //adversary search
     	}
+
     }
 
     /***********************************
@@ -458,6 +459,16 @@ String.prototype.toTitleCase = function () {
             result[key] = obj[key];
             return result;
         }, {});
+    }
+
+    function slugify(text)
+    {
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
     }
 
 /***********************************
@@ -584,9 +595,10 @@ String.prototype.toTitleCase = function () {
              'adversary_owner_id': data.adversary_owner_id,
              'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
             },
-            UpdateExpression: "set adversary_aspects = :a, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
+            UpdateExpression: "set adversary_aspects = :a, adversary_slug =:slg, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
             ExpressionAttributeValues:{
                 ":a":data.adversary_aspects,
+                ":slg": data.adversary_slug,
                 ":c":data.adversary_consequences,
                 ":g":data.adversary_genre,
                 ":sk": data.adversary_skills,
@@ -642,9 +654,6 @@ String.prototype.toTitleCase = function () {
                   return false;
           }
           return true;
-        },
-        slug: function(obj) {
-          return obj.replaceAll(' ','~');
         }
     };
 
@@ -704,7 +713,9 @@ String.prototype.toTitleCase = function () {
             params.FilterExpression += ' OR contains (adversary_genre, :an)';
             params.FilterExpression += ' OR contains (adversary_genre, :anl)';
             params.FilterExpression += ' OR contains (adversary_genre, :anu)';
-            params.FilterExpression += ' OR contains (adversary_genre, :ant) )';
+            params.FilterExpression += ' OR contains (adversary_genre, :ant)';
+
+            params.FilterExpression += ' OR adversary_slug = :anl )';
           }
 
           //show only the current users adversaries if the box is checked
@@ -828,6 +839,9 @@ String.prototype.toTitleCase = function () {
                 }
               }
           });
+
+          var slug = slugify(data.adversary_name);
+          $('#adversary_slug').val(slug);
         }
 
 /***********************************
@@ -915,6 +929,11 @@ String.prototype.toTitleCase = function () {
           $('#search-text').val('');
           //refresh the adversary list
           fatesheet.listAdversaries($('#search-text').val());
+        });
+
+        $(document).on('change', '#adversary_name', function (e) {
+          var slug = slugify($(this).val());
+          $('#adversary_slug').val(slug);
         });
 
         $(document).on('submit', '#adversaryForm', function (e) {
@@ -1123,8 +1142,8 @@ String.prototype.toTitleCase = function () {
                 fatesheet.listAdversaries();
             });
 
-            var route2 = crossroads.addRoute('/{name}', function (name) {
-                fatesheet.listAdversaries(name.replaceAll('~',' '));
+            var route2 = crossroads.addRoute('/{slug}', function (slug) {
+                fatesheet.listAdversaries(slug);
             });
         }
 
