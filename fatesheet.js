@@ -57,6 +57,7 @@ String.prototype.toTitleCase = function () {
                             "     </div>" +
                            "</div>",
         sheetList: "<div class='card'>" +
+                           "  <img class='card-img-top img-thumbnail img-fluid' src='sheets/{{id}}/logo.png' alt='Character Sheet Logo'>" +
                            "	<div class='card-body'>" +
                            "		<h5 class='card-title charactersheet-name'>{{sheetname}}</h5>" +
                            "		<a href='#!{{id}}' class='btn btn-primary' data-id='{{id}}'>Create Character <i class='fa fa-user'></i></a>" +
