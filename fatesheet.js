@@ -12,6 +12,17 @@ String.prototype.replaceAll = function (search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+String.prototype.toCamelCase = function() {
+    return this.replace(/^([A-Z])|\s(\w)/g, function(match, p1, p2, offset) {
+        if (p2) return p2.toUpperCase();
+        return p1.toLowerCase();
+    });
+};
+
+String.prototype.toTitleCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
 (function (fatesheet, $, undefined) {
 
 
@@ -46,6 +57,7 @@ String.prototype.replaceAll = function (search, replacement) {
                             "     </div>" +
                            "</div>",
         sheetList: "<div class='card'>" +
+                           "  <img class='card-img-top img-thumbnail img-fluid' src='sheets/{{id}}/logo.png' alt='Character Sheet Logo'>" +
                            "	<div class='card-body'>" +
                            "		<h5 class='card-title charactersheet-name'>{{sheetname}}</h5>" +
                            "		<a href='#!{{id}}' class='btn btn-primary' data-id='{{id}}'>Create Character <i class='fa fa-user'></i></a>" +
@@ -351,6 +363,34 @@ String.prototype.replaceAll = function (search, replacement) {
         $diceTray.empty();
     }
 
+    fatesheet.search = function(searchText) {
+      // clear the hash so we don't show a false id/name getCharacterInfo
+      hasher.setHash('');
+
+      //character and sheet search
+    	if (location.pathname.indexOf('charactersheets.htm') > -1 || location.pathname.indexOf('characters.htm') > -1)
+    	{
+    		$('.card').hide();
+
+    		// filter by character name and description
+    		$(".card-title:contains('" + searchText + "'), .card-note:contains('" + searchText + "'), .card-text:contains('" + searchText + "')", ".card")
+    			.parent().show();
+
+    		//account for body text in a card
+    		$(".card-title:contains('" + searchText + "'), .card-note:contains('" + searchText + "'), .card-text:contains('" + searchText + "')", ".card-body")
+    			.parent().parent().show();
+
+    		// filter by footer content
+    		$(".card-footer:contains('" + searchText + "')")
+    			.parent().show();
+    	}
+    	else if (location.pathname.indexOf('adversary.htm') > -1)
+    	{
+        fatesheet.listAdversaries(searchText); //adversary search
+    	}
+
+    }
+
     /***********************************
             HELPERS METHODS
     ***********************************/
@@ -415,6 +455,23 @@ String.prototype.replaceAll = function (search, replacement) {
         return firstPart + secondPart;
     }
 
+    function sortObject(obj) {
+        return Object.keys(obj).sort().reduce(function (result, key) {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
+
+    function slugify(text)
+    {
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    }
+
 /***********************************
         ADVERSARY
 ***********************************/
@@ -477,7 +534,7 @@ String.prototype.replaceAll = function (search, replacement) {
         }
 
         //refresh the list of adversaries
-        setTimeout(fatesheet.listAdversaries(), 1000);
+        setTimeout(fatesheet.listAdversaries($('#search-text').val()), 1000);
     }
 
     function insertAdversary(data) {
@@ -519,7 +576,7 @@ String.prototype.replaceAll = function (search, replacement) {
                 $('#modalDeleteAdversaryConfirm').modal('hide');
                 $.notify('Adversary deleted.', 'success');
 
-                setTimeout(fatesheet.listAdversaries(), 1000);
+                setTimeout(fatesheet.listAdversaries($('#search-text').val()), 1000);
                 fatesheet.clearAdversaryForm();
 
                 $('.js-adversary-list').removeClass('hidden');
@@ -539,9 +596,10 @@ String.prototype.replaceAll = function (search, replacement) {
              'adversary_owner_id': data.adversary_owner_id,
              'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
             },
-            UpdateExpression: "set adversary_aspects = :a, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
+            UpdateExpression: "set adversary_aspects = :a, adversary_slug =:slg, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
             ExpressionAttributeValues:{
                 ":a":data.adversary_aspects,
+                ":slg": data.adversary_slug,
                 ":c":data.adversary_consequences,
                 ":g":data.adversary_genre,
                 ":sk": data.adversary_skills,
@@ -600,7 +658,10 @@ String.prototype.replaceAll = function (search, replacement) {
         }
     };
 
-    fatesheet.listAdversaries = function () {
+    fatesheet.listAdversaries = function (searchText) {
+          //make sure the search text is up to snuff
+          $('#search-text').val(searchText);
+
           $.views.helpers(fate_adversary_helpers);
 
           // Create DynamoDB document client
@@ -611,11 +672,66 @@ String.prototype.replaceAll = function (search, replacement) {
               Select: 'ALL_ATTRIBUTES'
           }
 
+          //search
+          if (searchText && searchText.length > 0) {
+            params.ExpressionAttributeValues= {
+              ':an': searchText,
+              ':anl': searchText.toLowerCase(),
+              ':anu': searchText.toUpperCase(),
+              ':ant': searchText.toTitleCase(),
+            };
+
+            params.FilterExpression = '( contains (adversary_name, :an)';
+            params.FilterExpression += ' OR contains (adversary_name, :anl)';
+            params.FilterExpression += ' OR contains (adversary_name, :anu)';
+            params.FilterExpression += ' OR contains (adversary_name, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_aspects.high_concept, :an)';
+            params.FilterExpression += ' OR contains (adversary_aspects.high_concept, :anl)';
+            params.FilterExpression += ' OR contains (adversary_aspects.high_concept, :anu)';
+            params.FilterExpression += ' OR contains (adversary_aspects.high_concept, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_aspects.trouble, :an)';
+            params.FilterExpression += ' OR contains (adversary_aspects.trouble, :anl)';
+            params.FilterExpression += ' OR contains (adversary_aspects.trouble, :anu)';
+            params.FilterExpression += ' OR contains (adversary_aspects.trouble, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_aspects.other_aspects, :an)';
+            params.FilterExpression += ' OR contains (adversary_aspects.other_aspects, :anl)';
+            params.FilterExpression += ' OR contains (adversary_aspects.other_aspects, :anu)';
+            params.FilterExpression += ' OR contains (adversary_aspects.other_aspects, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_system, :an)';
+            params.FilterExpression += ' OR contains (adversary_system, :anl)';
+            params.FilterExpression += ' OR contains (adversary_system, :anu)';
+            params.FilterExpression += ' OR contains (adversary_system, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_type, :an)';
+            params.FilterExpression += ' OR contains (adversary_type, :anl)';
+            params.FilterExpression += ' OR contains (adversary_type, :anu)';
+            params.FilterExpression += ' OR contains (adversary_type, :ant)';
+
+            params.FilterExpression += ' OR contains (adversary_genre, :an)';
+            params.FilterExpression += ' OR contains (adversary_genre, :anl)';
+            params.FilterExpression += ' OR contains (adversary_genre, :anu)';
+            params.FilterExpression += ' OR contains (adversary_genre, :ant)';
+
+            params.FilterExpression += ' OR adversary_slug = :anl )';
+          }
+
           //show only the current users adversaries if the box is checked
           if ($('#my_adversaries').is(':checked'))
           {
-            params.FilterExpression = 'adversary_owner_id = :owner_id',
-            params.ExpressionAttributeValues = {':owner_id' : fatesheet.config.fbUserId }
+            if (!params.FilterExpression)
+            {
+              params.ExpressionAttributeValues = {':owner_id' : fatesheet.config.fbUserId };
+              params.FilterExpression = 'adversary_owner_id = :owner_id';
+            }
+            else {
+              params.ExpressionAttributeValues[':owner_id'] = fatesheet.config.fbUserId;
+              params.FilterExpression += ' AND (adversary_owner_id = :owner_id)';
+            }
+
           }
 
           docClient.scan(params, function (err, data) {
@@ -626,6 +742,35 @@ String.prototype.replaceAll = function (search, replacement) {
 
                   //https://www.jsviews.com/
                   var template = $.templates("#tmpladversaryDetail");
+
+                  //dynamodb doesn't order items, it's a NODB. WE'll manually tweak a few
+                  // things to try and make them consistent
+                  $.each(data.Items, function(i, v) {
+                    if (v.adversary_aspects)
+                    {
+                      const orderedAspects = {};
+                      if (v.adversary_aspects["high_concept"])
+                        orderedAspects["high_concept"] = v.adversary_aspects["high_concept"];
+                      if (v.adversary_aspects["trouble"])
+                        orderedAspects["trouble"] = v.adversary_aspects["trouble"];
+                      if (v.adversary_aspects["other_aspects"])
+                        orderedAspects["other_aspects"] = v.adversary_aspects["other_aspects"];
+
+                      v.adversary_aspects = orderedAspects;
+                    }
+
+                    const orderedSkills = {};
+                    Object.keys(v.adversary_skills).sort().forEach(function(key) {
+                      orderedSkills[key] = v.adversary_skills[key];
+                    });
+                    v.adversary_skills = orderedSkills;
+
+                    const orderedConsequences = {};
+                    Object.keys(v.adversary_consequences).sort().forEach(function(key) {
+                      orderedConsequences[key] = v.adversary_consequences[key];
+                    });
+                    v.adversary_consequences = orderedConsequences;
+                  });
                   var htmlOutput = template.render(data.Items, fate_adversary_helpers);
                   $("#adversaryDetail").html(htmlOutput);
               }
@@ -695,6 +840,9 @@ String.prototype.replaceAll = function (search, replacement) {
                 }
               }
           });
+
+          var slug = slugify(data.adversary_name);
+          $('#adversary_slug').val(slug);
         }
 
 /***********************************
@@ -781,7 +929,12 @@ String.prototype.replaceAll = function (search, replacement) {
           //this resets the whole results so clear the search text if it's not empty
           $('#search-text').val('');
           //refresh the adversary list
-          fatesheet.listAdversaries();
+          fatesheet.listAdversaries($('#search-text').val());
+        });
+
+        $(document).on('change', '#adversary_name', function (e) {
+          var slug = slugify($(this).val());
+          $('#adversary_slug').val(slug);
         });
 
         $(document).on('submit', '#adversaryForm', function (e) {
@@ -796,27 +949,17 @@ String.prototype.replaceAll = function (search, replacement) {
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
             $(modal.find('.js-delete-character')).data('id', characterId);
-        })
+          })
 
-        $(document).on('show.bs.modal', '#modalDeleteAdversaryConfirm', function (event) {
-            var modal = $(this);
-        })
+          $(document).on('show.bs.modal', '#modalDeleteAdversaryConfirm', function (event) {
+              var modal = $(this);
+          })
 
-        $(document).on('click', '#search-button', function () {
-            $('.card').hide();
-            var filter = $('#search-text').val(); // get the value of the input, which we filter on
+          $(document).on('click', '#search-button', function () {
 
-            // filter by character name and description
-            $(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')", ".card")
-                .parent().show();
+  			  var searchText = $('#search-text').val(); // get the value of the input, which we filter on
 
-            //account for body text in a card
-            $(".card-title:contains('" + filter + "'), .card-note:contains('" + filter + "'), .card-text:contains('" + filter + "')", ".card-body")
-                .parent().parent().show();
-
-            // filter by footer content
-            $(".card-footer:contains('" + filter + "')")
-                .parent().show();
+    			fatesheet.search(searchText);
         });
 
     }
@@ -905,7 +1048,7 @@ String.prototype.replaceAll = function (search, replacement) {
         switch (env) {
             case 'develop':
                 fatesheet.config.fbUserId = '1764171710312177';
-                fatesheet.config.adversarytable = 'fate_adversary_dev';
+                fatesheet.config.adversarytable = 'fate_adversary';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -996,8 +1139,12 @@ String.prototype.replaceAll = function (search, replacement) {
         }
 
         if (location.pathname === '/adversary.htm') {
-            var route2 = crossroads.addRoute('/', function () {
+            var route1 = crossroads.addRoute('/', function () {
                 fatesheet.listAdversaries();
+            });
+
+            var route2 = crossroads.addRoute('/{slug}', function (slug) {
+                fatesheet.listAdversaries(slug);
             });
         }
 

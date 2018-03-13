@@ -52,6 +52,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="name" class="col-sm-12 col-md-2 col-form-label">Slug</label>
+                        <div class="col-sm-12 col-md-10">
+                            <input class="form-control" type="text" value="" id="adversary_slug" name="adversary_slug" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="name" class="col-sm-12 col-md-2 col-form-label">High Concept</label>
                         <div class="col-sm-12 col-md-10">
                             <input class="form-control" type="hidden" name="adversary_aspects[name]" id="adversary_aspects[name]" data-name="high_concept" value="high_concept" >
@@ -217,7 +223,7 @@
                 {{/if}}
 
                 <h4 class='card-header adversary-name bg-light'>
-                {{:adversary_name}}
+                <a href="#!{{:adversary_slug}}" style="text-decoration:none;">{{:adversary_name}}</a>
                 {{:~showOwnerControls(adversary_owner_id, adversary_name)}}
                 </h4>
 
