@@ -135,8 +135,8 @@ String.prototype.toTitleCase = function () {
             Prefix: prefix
         }, function (err, data) {
             if (err) {
-                fatesheet.config.content.innerHTML = 'ERROR: ' + err.message;
-                //document.location.href = 'error.htm';
+              console.log(err, err.stack); // an error occurred
+              $.notify(err.message || err, 'error');
             } else {
                 var objKeys = "";
 
