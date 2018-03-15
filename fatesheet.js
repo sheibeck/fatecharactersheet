@@ -522,7 +522,10 @@ String.prototype.toTitleCase = function () {
         }
 
         //adversary_name is a key field, we're going to force this to title case
-        result.adversary_name = result.adversary_name.toTitleCase();
+        if(result.adversary_name)
+        {
+          result.adversary_name.toTitleCase();
+        }
 
         // clear empty values
         removeEmpty(result);
@@ -621,7 +624,7 @@ String.prototype.toTitleCase = function () {
             TableName: fatesheet.config.adversarytable,
             Key: {
              'adversary_owner_id': data.adversary_owner_id,
-             'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
+             'adversary_name': $('#adversary_name').val().toTitleCase() // it's disabled when we update so they don't try to change it.
             },
             UpdateExpression: "set adversary_aspects = :a, adversary_slug =:slg, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
             ExpressionAttributeValues:{
