@@ -135,8 +135,8 @@ String.prototype.toTitleCase = function () {
             Prefix: prefix
         }, function (err, data) {
             if (err) {
-                fatesheet.config.content.innerHTML = 'ERROR: ' + err.message;
-                //document.location.href = 'error.htm';
+              console.log(err, err.stack); // an error occurred
+              $.notify(err.message || err, 'error');
             } else {
                 var objKeys = "";
 
@@ -521,6 +521,12 @@ String.prototype.toTitleCase = function () {
           isNew = true;
         }
 
+        //adversary_name is a key field, we're going to force this to title case
+        if(result.adversary_name)
+        {
+          result.adversary_name.toTitleCase();
+        }
+
         // clear empty values
         removeEmpty(result);
 
@@ -537,26 +543,50 @@ String.prototype.toTitleCase = function () {
         setTimeout(fatesheet.listAdversaries($('#search-text').val()), 1000);
     }
 
-    function insertAdversary(data) {
+    function insertAdversary(adversaryData) {
 
         var docClient = getDBClient();
 
         var params = {
             TableName: fatesheet.config.adversarytable,
-            Item: data
-        };
+            Key: {
+             'adversary_owner_id': adversaryData.adversary_owner_id,
+             'adversary_name': adversaryData.adversary_name
+            },
+        }
 
-        console.log("Adding a new item...");
-        docClient.put(params, function (err, data) {
+        // if this adversary already exists then warn and don't overwrite
+        docClient.get(params, function(err, data) {
             if (err) {
-                $.notify(err.code, 'error');
-                console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+              console.log("Error", err);
             } else {
-                $.notify('Adversary added.', 'success');
-                console.log("Added item:", JSON.stringify(data, null, 2));
-                fatesheet.clearAdversaryForm();
+              if (data.Item)
+              {
+                $.notify('You already have an adversary with this name.', 'danger');
+              }
+              else {
+                  // create a new creature
+                  var params = {
+                      TableName: fatesheet.config.adversarytable,
+                      Item: adversaryData
+                  };
+
+                  console.log("Adding a new item...");
+                  docClient.put(params, function (err, data) {
+                      if (err) {
+                          $.notify(err.code, 'error');
+                          console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+                      } else {
+                          $.notify('Adversary added.', 'success');
+                          console.log("Added item:", JSON.stringify(data, null, 2));
+                          fatesheet.clearAdversaryForm();
+                      }
+                  });
+              }
             }
         });
+
+
     }
 
     fatesheet.deleteAdversary = function(key) {
@@ -594,7 +624,7 @@ String.prototype.toTitleCase = function () {
             TableName: fatesheet.config.adversarytable,
             Key: {
              'adversary_owner_id': data.adversary_owner_id,
-             'adversary_name': $('#adversary_name').val() // it's disabled when we update so they don't try to change it.
+             'adversary_name': $('#adversary_name').val().toTitleCase() // it's disabled when we update so they don't try to change it.
             },
             UpdateExpression: "set adversary_aspects = :a, adversary_slug =:slg, adversary_consequences=:c, adversary_genre=:g, adversary_skills=:sk, adversary_stress=:str, adversary_stunts=:stn, adversary_system=:sys, adversary_type=:t",
             ExpressionAttributeValues:{
@@ -820,7 +850,7 @@ String.prototype.toTitleCase = function () {
                   default:
                     var objName = name.replace('_', '-');
                     for(var i=0;i<Object.keys(val).length-1;i++) {
-                      $(".js-" + objName + ":first").clone().addClass('adversary-item-copy').insertAfter(".js-" + objName +":last");
+                      fatesheet.addDeleteRow($(".js-" + objName + ":first").clone().addClass('adversary-item-copy').insertAfter(".js-" + objName +":last"));
                     }
                     $(".js-"+objName).each(function(i) {
                       $(this).find('input[name="'+ name +'[name]"]').val(Object.keys(val)[i]);
@@ -843,6 +873,53 @@ String.prototype.toTitleCase = function () {
 
           var slug = slugify(data.adversary_name);
           $('#adversary_slug').val(slug);
+        }
+
+
+        fatesheet.addDeleteRow = function($elem) {
+          $('div:first', $elem).addClass('input-group-prepend')
+            .append('<div class="input-group-text btn btn-danger js-delete-adversary-item"><i class="fa fa-trash"><i></div>');
+        }
+
+        fatesheet.adversaryAddSkills = function(aSkills) {
+          $('.js-adversary-skills.adversary-item-copy', '#adversaryForm').remove();
+          $('.js-adversary-skills input', '#adversaryForm').val('');
+
+          for( var i = 0; i < aSkills.length-1; i++) {
+            fatesheet.addDeleteRow($(".js-adversary-skills:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-skills:last"));
+          };
+          $.each($('.js-adversary-skills'), function(i, val) {
+            $(this).find('input[name="adversary_skills[name]"]').val(aSkills[i]);
+            $(this).find('input[name="adversary_skills[value]"]').val('');
+          })
+        }
+
+
+        fatesheet.adversaryAddStress = function(aStress) {
+          $('.js-adversary-stress.adversary-item-copy', '#adversaryForm').remove();
+          $('.js-adversary-stress input', '#adversaryForm').val('');
+
+          for( var i = 0; i < aStress.length-1; i++) {
+            fatesheet.addDeleteRow($(".js-adversary-stress:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-stress:last"));
+          };
+          $.each($('.js-adversary-stress'), function(i, val) {
+            $(this).find('input[name="adversary_stress[name]"]').val(aStress[i][0]);
+            $(this).find('input[name="adversary_stress[value]"]').val(aStress[i][1]);
+          })
+        }
+
+        fatesheet.adversaryAddConsequences = function(aConsequences) {
+          $('.js-adversary-consequence.adversary-item-copy', '#adversaryForm').remove();
+          $('.js-adversary-consequences input', '#adversaryForm').val('');
+          $('.js-adversary-consequences textarea', '#adversaryForm').val('');
+
+          for( var i = 0; i < aConsequences.length-1; i++) {
+            fatesheet.addDeleteRow($(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last"));
+          };
+          $.each($('.js-adversary-consequence'), function(i, val) {
+            $(this).find('input[name="adversary_consequences[name]"]').val(aConsequences[i][0]);
+            $(this).find('textarea[name="adversary_consequences[value]"]').val(aConsequences[i][1]);
+          })
         }
 
 /***********************************
@@ -893,19 +970,50 @@ String.prototype.toTitleCase = function () {
         });
 
         $(document).on('click', '.js-add-skill', function (e) {
-            $(".js-adversary-skills:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-skills:last");
+            fatesheet.addDeleteRow($(".js-adversary-skills:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-skills:last"));
+        });
+
+        $(document).on('click', '.js-add-skill-fae', function (e) {
+            var aSkills = ['Careful','Clever','Flashy','Forceful','Quick','Sneaky'];
+            fatesheet.adversaryAddSkills(aSkills);
+        });
+
+        $(document).on('click', '.js-add-skill-core', function (e) {
+            var aSkills = ['(+1) Average','(+2) Fair','(+3) Good','(+4) Great','(+5) Superb', '(+6) Fantastic'];
+            fatesheet.adversaryAddSkills(aSkills);
         });
 
         $(document).on('click', '.js-add-stunt', function (e) {
-            $(".js-adversary-stunts:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-stunts:last");
+            fatesheet.addDeleteRow($(".js-adversary-stunts:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-stunts:last"));
         });
 
         $(document).on('click', '.js-add-stress', function (e) {
-            $(".js-adversary-stress:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-stress:last");
+            fatesheet.addDeleteRow($(".js-adversary-stress:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-stress:last"));
+        });
+
+        $(document).on('click', '.js-add-stress-core', function (e) {
+          var aStress = [["Physical","1,2,3"],["Mental","1,2,3"]]
+          fatesheet.adversaryAddStress(aStress);
+        });
+
+        $(document).on('click', '.js-add-stress-fae', function (e) {
+          var aStress = [["Stress","1,2,3"]]
+          fatesheet.adversaryAddStress(aStress);
         });
 
         $(document).on('click', '.js-add-consequence', function (e) {
-            $(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last");
+           var $item = $(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last")
+              $('div:first', $item).addClass('input-group-prepend')
+                .append('<div class="input-group-text btn btn-danger js-delete-adversary-item">X</div>');
+        });
+
+        $(document).on('click', '.js-add-consequence-default', function (e) {
+            var aConsequences = [["Mild","-2"],["Moderate","-4"],["Severe","-2"]]
+            fatesheet.adversaryAddConsequences(aConsequences);
+        });
+
+        $(document).on('click', '.js-delete-adversary-item', function (e) {
+            $(this).parent().parent().remove();
         });
 
         $(document).on('click', '.js-close-adversary-edit', function (e) {
