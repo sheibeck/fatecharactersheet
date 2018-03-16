@@ -39,7 +39,9 @@ String.prototype.toTitleCase = function () {
         fbUserId: null,
         characterId: null,
         diceRoller: new DiceRoller(),
-        adversarytable: ''
+        adversarytable: '',
+        charactersheettable: '',
+        charactertable: '',
     }
 
     fatesheet.templates = {
@@ -55,17 +57,7 @@ String.prototype.toTitleCase = function () {
                             "     <div class='card-footer text-muted'>" +
                             "           <span class='badge badge-secondary'>{{sheetname}}</span>" +
                             "     </div>" +
-                           "</div>",
-        sheetList: "<div class='card'>" +
-                           "  <img class='card-img-top img-thumbnail img-fluid' src='sheets/{{id}}/logo.png' alt='Character Sheet Logo'>" +
-                           "	<div class='card-body'>" +
-                           "		<h5 class='card-title charactersheet-name'>{{sheetname}}</h5>" +
-                           "		<a href='#!{{id}}' class='btn btn-primary' data-id='{{id}}'>Create Character <i class='fa fa-user'></i></a>" +
-                           "	</div>" +
-                           "     <div class='card-footer text-muted'>" +
-                            "           <span class='badge badge-secondary'>{{system}}</span>" +
-                            "     </div>" +
-                           "</div>",
+                           "</div>"
     }
 
     fatesheet.navigation = {
@@ -106,49 +98,32 @@ String.prototype.toTitleCase = function () {
     /***********************************
             CHARACTERS & SHEETS
     ***********************************/
-    function getSheetListInfo(key) {
-        /// get character sheet meta data information
-        fatesheet.config.awsBucket.headObject({
-            Key: key
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack); // an error occurred
-                $.notify(err.message || err, 'error');
-            } else {
-                console.log(data);           // successful response
-                var elem = fatesheet.templates.sheetList
-                                .replaceAll('{{sheetname}}', data.Metadata.sheetname)
-                                .replaceAll('{{system}}', data.Metadata.system)
-                                .replaceAll('{{id}}', key.replace('sheets/', '').replace('/',''));
-
-                $('.card-columns', fatesheet.config.content).append(elem);
-            }
-        });
-    }
-
     fatesheet.listSheets = function () {
         /// show a list of available character sheets
         fatesheet.config.content.empty();
 
-        var prefix = 'sheets';
-        fatesheet.config.awsBucket.listObjects({
-            Prefix: prefix
-        }, function (err, data) {
+        // Create DynamoDB document client
+        var docClient = getDBClient();
+
+        var params = {
+            TableName: fatesheet.config.charactersheettable,
+            Select: 'ALL_ATTRIBUTES'
+        }
+
+        docClient.scan(params, function (err, data) {
             if (err) {
-              console.log(err, err.stack); // an error occurred
-              $.notify(err.message || err, 'error');
+                console.log("Error", err);
             } else {
-                var objKeys = "";
+                console.log("Success", data.Items);
 
-                var rowContainer = fatesheet.config.content.append("<div class='card-columns'></div>");
+                //https://www.jsviews.com/
+                var template = $.templates("#tmplCharacterSheetList");
 
-                data.Contents.forEach(function (obj) {
-                    //look for top level child folders under sheets/
-                    var isSheetFolder = (obj.Key.toString().substring(0, obj.Key.lastIndexOf("/"))).split('/').length == 2
-                                            && obj.Key.lastIndexOf("/") + 1 == obj.Key.length
-                    if (isSheetFolder) {
-                        getSheetListInfo(obj.Key);
-                    }
+                //list the sheets
+                fatesheet.config.content.append("<div class='card-columns'></div>");
+                data.Items.forEach(function (obj) {
+                  var sheetHtml = template.render(obj, fate_adversary_helpers);
+                  $('.card-columns', fatesheet.config.content).append(sheetHtml);
                 });
             }
         });
@@ -236,22 +211,32 @@ String.prototype.toTitleCase = function () {
         });
     }
 
-    fatesheet.showSheet = function (key, character) {
+    fatesheet.showSheet = function (id, character) {
         // if we are showing a blank sheet then null out the character
         // so we properly create a new one if needed
         if (!character) {
             fatesheet.config.characterId = null;
         }
 
-        key = 'sheets/' + key;
-        /// if character is null then we will show a blank sheet
-        /// if character is not null then we will load a character into the sheet
+        /// show a list of available character sheets
         fatesheet.config.content.empty();
 
-        fatesheet.config.awsBucket.getObject({ Key: key + '/sheet.html' }, function (err, data) {
-            if (!err) {
-                var sheetHtml = data.Body.toString();
-                fatesheet.config.content.html(sheetHtml);
+        // Create DynamoDB document client
+        var docClient = getDBClient();
+
+        var params = {
+            TableName: fatesheet.config.charactersheettable,
+            Key: {
+             'charactersheetname': id
+            },
+        }
+
+        docClient.get(params, function (err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data.Item);
+                fatesheet.config.content.html(data.Item.charactersheetcontent);
 
                 // add navigation
                 if (character != null) {
@@ -1156,7 +1141,9 @@ String.prototype.toTitleCase = function () {
         switch (env) {
             case 'develop':
                 fatesheet.config.fbUserId = '1764171710312177';
-                fatesheet.config.adversarytable = 'fate_adversary';
+                fatesheet.config.adversarytable = 'fate_adversary_dev';
+                fatesheet.config.charactersheettable = 'fate_charactersheet_dev';
+                fatesheet.config.charactertable = 'fate_character_dev';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -1169,6 +1156,8 @@ String.prototype.toTitleCase = function () {
 
             case 'beta':
                 fatesheet.config.adversarytable = 'fate_adversary_dev';
+                fatesheet.config.charactersheettable = 'fate_charactersheet_dev';
+                fatesheet.config.charactertable = 'fate_character_dev';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet'
@@ -1193,6 +1182,8 @@ String.prototype.toTitleCase = function () {
 
             default:
                 fatesheet.config.adversarytable = 'fate_adversary';
+                fatesheet.config.charactersheettable = 'fate_charactersheet';
+                fatesheet.config.charactertable = 'fate_character';
                 fatesheet.config.awsBucket = new AWS.S3({
                     params: {
                         Bucket: 'fatecharactersheet.com'
