@@ -35,7 +35,6 @@ String.prototype.toTitleCase = function () {
         isAuthenticated: false,
         appId: '189783225112476',
         roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
-        awsBucket: null,
         fbUserId: null,
         characterId: null,
         diceRoller: new DiceRoller(),
@@ -90,7 +89,7 @@ String.prototype.toTitleCase = function () {
     function getDBClient() {
       // Create DynamoDB document client
       var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-      docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
+      docClient.service.config.credentials = fatesheet.config.credentials;
 
       return docClient;
     }
@@ -801,7 +800,7 @@ String.prototype.toTitleCase = function () {
 
           // Create DynamoDB document client
           var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-          docClient.service.config.credentials = fatesheet.config.awsBucket.config.credentials;
+          docClient.service.config.credentials = fatesheet.config.credentials;
 
           var params = {
               TableName: fatesheet.config.adversarytable,
@@ -1090,14 +1089,14 @@ String.prototype.toTitleCase = function () {
         fatesheet.config.isAuthenticated = false;
 
         // supply anonymous access credentials
-        fatesheet.config.awsBucket.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
+        fatesheet.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
 
         var sts = new AWS.STS();
         sts.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
         sts.getSessionToken(function (err, data) {
             if (err) console.log("Error getting credentials");
             else {
-                fatesheet.config.awsBucket.config.credentials = sts.credentialsFrom(data, fatesheet.config.awsBucket.config.credentials);
+                fatesheet.config.credentials = sts.credentialsFrom(data, fatesheet.config.credentials);
             }
         });
 
@@ -1111,7 +1110,7 @@ String.prototype.toTitleCase = function () {
     fatesheet.setupAuthorizedUser = function (response) {
         fatesheet.config.isAuthenticated = true;
 
-        fatesheet.config.awsBucket.config.credentials = new AWS.WebIdentityCredentials({
+        fatesheet.config.credentials = new AWS.WebIdentityCredentials({
             ProviderId: 'graph.facebook.com',
             RoleArn: fatesheet.config.roleArn,
             WebIdentityToken: response.authResponse.accessToken
@@ -1128,12 +1127,14 @@ String.prototype.toTitleCase = function () {
         FB.logout(function (response) {
             fatesheet.setupUnAuthorizedUser();
         });
+        document.location.href = 'home.htm';
     };
 
     fatesheet.authenticateFacebook = function () {
         FB.login(function (response) {
             fatesheet.setupAuthorizedUser(response);
-        })
+        });
+        document.location.href = 'home.htm';
     }
 
     fatesheet.setupForEnvironment = function (env) {
@@ -1145,11 +1146,6 @@ String.prototype.toTitleCase = function () {
                 fatesheet.config.adversarytable = 'fate_adversary_dev';
                 fatesheet.config.charactersheettable = 'fate_charactersheet_dev';
                 fatesheet.config.charactertable = 'fate_character_dev';
-                fatesheet.config.awsBucket = new AWS.S3({
-                    params: {
-                        Bucket: 'fatecharactersheet'
-                    }
-                });
                 $('body').prepend('<h1 class="d-print-none">DEVELOPMENT</h1>');
 
                 fatesheet.init();
@@ -1159,11 +1155,6 @@ String.prototype.toTitleCase = function () {
                 fatesheet.config.adversarytable = 'fate_adversary_dev';
                 fatesheet.config.charactersheettable = 'fate_charactersheet_dev';
                 fatesheet.config.charactertable = 'fate_character_dev';
-                fatesheet.config.awsBucket = new AWS.S3({
-                    params: {
-                        Bucket: 'fatecharactersheet'
-                    }
-                });
                 $('body').prepend('<h1 class="d-print-none">BETA</h1>');
 
                 //auth facebook
@@ -1185,11 +1176,6 @@ String.prototype.toTitleCase = function () {
                 fatesheet.config.adversarytable = 'fate_adversary';
                 fatesheet.config.charactersheettable = 'fate_charactersheet';
                 fatesheet.config.charactertable = 'fate_character';
-                fatesheet.config.awsBucket = new AWS.S3({
-                    params: {
-                        Bucket: 'fatecharactersheet.com'
-                    }
-                });
 
                 //auth facebook
                 $.ajaxSetup({ cache: true });
