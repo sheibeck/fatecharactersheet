@@ -27,6 +27,22 @@
         <div id="results">
         </div>
 
+        <!-- template -->
+       <script id="tmplCharacterList" type="text/x-jsrender">
+        <div class='card'>
+        	  <div class='card-body'>
+        		<h5 class='card-title character-name'>{{:name}}</h5>
+        		<p class='card-text'>{{:highconcept}}</p>
+        		<p class='card-note font-italic small'>({{:description}})</p>
+        		<a href='#!{{:sheetname}}/{{:character_id}}' class='btn btn-primary' data-id='{{:character_id}}'>Play</a>
+        		<a href='#' class='btn btn-danger' data-id='{{:character_id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>
+        	  </div>
+             <div class='card-footer text-muted'>
+                   <span class='badge badge-secondary'>{{:sheetname}}</span>
+             </div>
+       </div>
+       </script>
+       
         <!-- delete confirmation modal-->
         <div class="modal fade" id="modalDeleteCharacterConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

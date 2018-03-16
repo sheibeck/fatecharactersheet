@@ -122,8 +122,8 @@ String.prototype.toTitleCase = function () {
                 //list the sheets
                 fatesheet.config.content.append("<div class='card-columns'></div>");
                 data.Items.forEach(function (obj) {
-                  var sheetHtml = template.render(obj, fate_adversary_helpers);
-                  $('.card-columns', fatesheet.config.content).append(sheetHtml);
+                  var sheet = template.render(obj, fate_adversary_helpers);
+                  $('.card-columns', fatesheet.config.content).append(sheet);
                 });
             }
         });
@@ -133,54 +133,32 @@ String.prototype.toTitleCase = function () {
         return key.replace(/^.*[\\\/]/, '').replace('.character', '');
     }
 
-    function getCharacterInfo(key) {
-        fatesheet.config.characterId = key;
+    function getCharacterInfo(id) {
+      // Create DynamoDB document client
+      var docClient = getDBClient();
 
-        fatesheet.config.awsBucket.getObject({
-            Key: 'facebook-' + fatesheet.config.fbUserId + '/' + key + '.character'
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack); // an error occurred
-                $.notify(err.message || err, 'error');
-            } else {
-                console.log(data);           // successful response
+      var params = {
+          TableName: fatesheet.config.charactertable,
+          Key: {
+            'character_owner_id': fatesheet.config.fbUserId,
+            'character_id': id
+          },
+      }
 
-                var character = JSON.parse(data.Body.toString());
+      docClient.get(params, function (err, data) {
+          if (err) {
+              console.log("Error", err);
+          } else {
+              console.log("Success", data.Item);
 
-                $('form').populate(character);
+              $('form').populate(data.Item);
 
-                //check if there is an autocalc function and runit
-                if (typeof autocalc !== "undefined") {
-                    autocalc();
-                }
-            }
-        });
-
-    }
-
-    fatesheet.getCharacterListInfo = function (key) {
-        /// populate the character list screen
-        fatesheet.config.awsBucket.headObject({
-            Key: key
-        }, function (err, data) {
-            if (err) {
-                console.log(err, err.stack); // an error occurred
-                $.notify(err.message || err, 'error');
-            } else {
-                console.log(data);           // successful response
-
-                var elem = fatesheet.templates.characterList
-                                    .replaceAll('{{name}}', (data.Metadata.name || ''))
-                                    .replaceAll('{{highconcept}}', (data.Metadata.highconcept || ''))
-                                    .replaceAll('{{description}}', (data.Metadata.description || ''))
-                                    .replaceAll('{{sheetname}}', (data.Metadata.sheetname || ''))
-                                    .replaceAll('{{system}}', (data.Metadata.system || ''))
-                                    .replaceAll('{{id}}', getCharacterIdFromKey(key));
-
-                $('.card-columns', fatesheet.config.content).append(elem);
-            }
-        });
-
+              //check if there is an autocalc function and runit
+              if (typeof autocalc !== "undefined") {
+                  autocalc();
+              }
+          }
+      });
     }
 
     fatesheet.listCharacters = function () {
@@ -188,25 +166,31 @@ String.prototype.toTitleCase = function () {
         /// show a list of the users characters
         fatesheet.config.content.empty();
 
-        var prefix = 'facebook-' + fatesheet.config.fbUserId;
-        fatesheet.config.awsBucket.listObjects({
-            Prefix: prefix
-        }, function (err, data) {
-            if (err) {
-                $.notify(err.message || err, 'error');
-                console.log(err, err.stack); // an error occurred
-            } else {
-                if (data.Contents.length === 0) {
-                    fatesheet.config.content.html('No characters found.');
-                }
-                else {
-                    var objKeys = "";
+        // Create DynamoDB document client
+        var docClient = getDBClient();
 
-                    var rowContainer = fatesheet.config.content.append("<div class='card-columns'></div>");
-                    data.Contents.forEach(function (obj) {
-                        fatesheet.getCharacterListInfo(obj.Key);
-                    });
-                };
+        var params = {
+            TableName: fatesheet.config.charactertable,
+            Select: 'ALL_ATTRIBUTES',
+            ExpressionAttributeValues: {':owner_id' : fatesheet.config.fbUserId },
+            FilterExpression: 'character_owner_id = :owner_id'
+        }
+
+        docClient.scan(params, function (err, data) {
+            if (err) {
+                console.log("Error", err);
+            } else {
+                console.log("Success", data.Items);
+
+                //https://www.jsviews.com/
+                var template = $.templates("#tmplCharacterList");
+
+                //list the sheets
+                fatesheet.config.content.append("<div class='card-columns'></div>");
+                data.Items.forEach(function (obj) {
+                  var character = template.render(obj, fate_adversary_helpers);
+                  $('.card-columns', fatesheet.config.content).append(character);
+                });
             }
         });
     }
@@ -216,6 +200,9 @@ String.prototype.toTitleCase = function () {
         // so we properly create a new one if needed
         if (!character) {
             fatesheet.config.characterId = null;
+        }
+        else {
+          fatesheet.config.characterId = character;
         }
 
         /// show a list of available character sheets
@@ -252,38 +239,42 @@ String.prototype.toTitleCase = function () {
 
     fatesheet.saveCharacter = function () {
         if (fatesheet.config.isAuthenticated) {
-
             /// save a character
             var data = $('form').serializeJSON();
-            var dataObj = JSON.parse(data);
+            var characterData = JSON.parse(data);
 
-            //creat a new characterId if we don't have one
+            // make sure we have a proper user id key
+            characterData.character_owner_id = fatesheet.config.fbUserId;
+
+            //create a new characterId if we don't have one
+            var isNew = false;
             if (!fatesheet.config.characterId) {
+                isNew = true;
                 fatesheet.config.characterId = generateUUID();
-                FB.AppEvents.logEvent('createdACharacter' + dataObj.sheetname);
+                FB.AppEvents.logEvent('createdACharacter' + characterData.sheetname);
             }
+            characterData.character_id = fatesheet.config.characterId;
 
-            var key = 'facebook-' + fatesheet.config.fbUserId + '/' + fatesheet.config.characterId + '.character';
-            var metadata = {
-                name: dataObj.name,
-                highconcept: dataObj.aspect.highconcept || 'Uknown',
-                description: (dataObj.description || '').replace(/[\n\r]/g, ' '),
-                sheetname: dataObj.sheetname,
-                system: dataObj.system
-            }
+            //dynamodb won't let us have empty attributes
+            removeEmpty(characterData);
 
-            fatesheet.config.awsBucket.putObject({
-                Key: key,
-                Body: data,
-                Metadata: metadata,
-            }, function (err, data) {
-                if (!err) {
-                    console.log('character saved.');
-                    $.notify('Character Saved.', 'success');
-                }
-                else {
-                    console.log(err);
-                    $.notify(err.message || err, 'error');
+            var docClient = getDBClient();
+
+            // create/update a  character
+            // we always use the put operation because the data can change depending on your character sheet
+            var params = {
+                TableName: fatesheet.config.charactertable,
+                Item: characterData
+            };
+
+            docClient.put(params, function (err, data) {
+                if (err) {
+                    $.notify(err.code, 'error');
+                    console.error("Unable to save item. Error JSON:", JSON.stringify(err, null, 2));
+                } else {
+                    $.notify('Character saved.', 'success');
+                    console.log("Added item:", JSON.stringify(data, null, 2));
+
                 }
             });
         }
@@ -293,20 +284,30 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.deleteCharacter = function (characterId) {
-        /// delete a character
-        fatesheet.config.awsBucket.deleteObject({
-            Key: 'facebook-' + fatesheet.config.fbUserId + '/' + characterId + '.character'
-        }, function (err, data) {
-            $('#modalDeleteCharacterConfirm').modal('hide');
+      var docClient = getDBClient();
 
-            if (err) console.log(err, err.stack); // an error occurred
-            else {
-                console.log(data);           // successful response
+      var params = {
+          TableName: fatesheet.config.charactertable,
+          Key: {
+            'character_owner_id': fatesheet.config.fbUserId,
+            'character_id': characterId
+          }
+      };
 
-                //refresh the list of characters
-                fatesheet.listCharacters();
-            }
-        });
+      console.log("Deleting a character...");
+      docClient.delete(params, function (err, data) {
+          if (err) {
+              $.notify(err.code, 'error');
+              console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+          } else {
+              $('#modalDeleteCharacterConfirm').modal('hide');
+              $.notify('Character deleted.', 'success');
+              console.log("Added item:", JSON.stringify(data, null, 2));
+
+              //back to the character list screen
+              setTimeout(fatesheet.listCharacters(), 1000);
+          }
+      });
     }
 
     fatesheet.diceRoller = function () {
@@ -582,7 +583,7 @@ String.prototype.toTitleCase = function () {
             Key: key
         };
 
-        console.log("Adding a new item...");
+        console.log("Deleting an adversary...");
         docClient.delete(params, function (err, data) {
             if (err) {
                 $.notify(err.code, 'error');
