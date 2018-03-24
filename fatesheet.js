@@ -40,10 +40,9 @@ String.prototype.toTitleCase = function () {
         environment: '',
         isAuthenticated: false,
         appId: '189783225112476',
-        roleArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
+        authorizedUserArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
         userId: null,
-        diceRoller: new DiceRoller(),
-        adversarytable: '',
+        authProvider: '',
     }
 
     function configAWS() {
@@ -56,49 +55,6 @@ String.prototype.toTitleCase = function () {
       docClient.service.config.credentials = fatesheet.config.credentials;
 
       return docClient;
-    }
-
-    /***********************************
-            DICE TRAY
-    ***********************************/
-
-    fatesheet.diceRoller = function () {
-
-        $('.current-roll').removeClass('current-roll');
-
-        var $diceTray = $('.modal-body', '#modalDiceRoller');
-        var modifier = $('#rollModifier').val();
-        // affixe a + on front of the modifier if it's missing
-        modifier = (modifier !== '' && modifier.indexOf('-') === -1) ? "+" + modifier : modifier;
-
-        fatesheet.config.diceRoller.roll('4dF.2' + modifier);
-
-        // get the latest dice rolls from the log
-        var latestRoll = fatesheet.config.diceRoller.getLog().shift();
-        var displayDice = '';
-
-        $.each(latestRoll.rolls[0], function (key, value) {
-            switch (value) {
-                case -1:
-                    displayDice += '<span class="dice">-</span>';
-                    break;
-                case 1:
-                    displayDice += '<span class="dice">+</span>';
-                    break;
-                default:
-                    displayDice += '<span class="dice">0</span>';
-                    break;
-            }
-        });
-
-        var rollElem = "<p class='dice-roll current-roll'>" + displayDice + (modifier !== '' ? ' (' + modifier + ')' : '') + " = " + latestRoll.getTotal() + "</p>";
-        $diceTray.prepend(rollElem);
-    }
-
-    fatesheet.clearDiceTray = function () {
-        fatesheet.config.diceRoller.clearLog();
-        var $diceTray = $('.modal-body', '#modalDiceRoller');
-        $diceTray.empty();
     }
 
     /***********************************
@@ -182,25 +138,6 @@ String.prototype.toTitleCase = function () {
         .replace(/-+$/, '');            // Trim - from end of text
     }
 
-    function domEvents() {
-
-        $(document).on('keyup', '#search-text', function (event) {
-            if (event.keyCode === 13) {
-                $("#search-button").click();
-            }
-        });
-
-        $(document).on('click', '.js-clear-search', function (e) {
-            $("#search-text").val('');
-            $("#search-button").click();
-        });
-
-        $(document).on('click', '#search-button', function () {
-          var searchText = $('#search-text').val(); // get the value of the input, which we filter on
-          fatesheet.search(searchText);
-        });
-    }
-
     fatesheet.logAnalyticEvent = function(event) {
       if (FB)
       {
@@ -236,12 +173,19 @@ String.prototype.toTitleCase = function () {
 
     }
 
-    /*!
-        * Login to your application using Facebook.
-        * Uses the Facebook SDK for JavaScript available here:
-        * https://developers.facebook.com/docs/javascript/quickstart/
-        */
+
+  /***************
+    AUTHENTICATION
+  ****************/
     function authenticate() {
+        // determine if we already have cached authentication credentials
+        // from a ProviderId and login
+
+        /*!
+          * Login to your application using Facebook.
+          * Uses the Facebook SDK for JavaScript available here:
+          * https://developers.facebook.com/docs/javascript/quickstart/
+          */
         //see if we're already logged into facebook
         try {
             FB.getLoginStatus(function (response) {
@@ -268,10 +212,11 @@ String.prototype.toTitleCase = function () {
         fatesheet.config.isAuthenticated = false;
 
         // supply anonymous access credentials
+        // fatesheet anonymous user with readonly privleges
         fatesheet.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
 
         var sts = new AWS.STS();
-        sts.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
+        sts.config.credentials = fatesheet.config.credentials;
         sts.getSessionToken(function (err, data) {
             if (err) console.log("Error getting credentials");
             else {
@@ -291,7 +236,7 @@ String.prototype.toTitleCase = function () {
 
         fatesheet.config.credentials = new AWS.WebIdentityCredentials({
             ProviderId: 'graph.facebook.com',
-            RoleArn: fatesheet.config.roleArn,
+            RoleArn: fatesheet.config.authorizedUserArn,
             WebIdentityToken: response.authResponse.accessToken
         });
         fatesheet.config.userId = response.authResponse.userID;
@@ -316,62 +261,60 @@ String.prototype.toTitleCase = function () {
         document.location.href = 'home.htm';
     }
 
-    fatesheet.setupForEnvironment = function (env) {
-        fatesheet.config.environment = env;
-
-        switch (env) {
-            case 'develop':
-                fatesheet.config.userId = '1764171710312177';
-                fatesheet.config.adversarytable = 'fate_adversary_dev';
-                $('body').prepend('<h1 class="d-print-none">DEVELOPMENT</h1>');
-
-                fatesheet.init();
-                break;
-
-            case 'beta':
-                fatesheet.config.adversarytable = 'fate_adversary_dev';
-                $('body').prepend('<h1 class="d-print-none">BETA</h1>');
-
-                //auth facebook
-                $.ajaxSetup({ cache: true });
-                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                    FB.init({
-                        appId: fatesheet.config.appId,
-                        status: true,
-                        cookie: true,
-                        xfbml: true,
-                        oauth: true,
-                        version: 'v2.12'
-                    });
-                    fatesheet.init();
-                });
-                break;
-
-            default:
-                fatesheet.config.adversarytable = 'fate_adversary';
-
-                //auth facebook
-                $.ajaxSetup({ cache: true });
-                $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-                    FB.init({
-                        appId: fatesheet.config.appId,
-                        autoLogAppEvents: true,
-                        status: true,
-                        cookie: true,
-                        xfbml: true,
-                        oauth: true,
-                        version: 'v2.12'
-                    });
-
-                    FB.AppEvents.logPageView();
-
-                    fatesheet.init();
-                });
-                break;
-        }
-
+    // load up anything we need to support auth providers
+    function setupAuthProviders() {
+      //auth facebook
+      if (fatesheet.config.environment == 'develop')
+      {
+        fatesheet.config.userId = '1764171710312177'; // localhost auth on FB isn't supported so fake the userid
+        fatesheet.init();
+      }
+      else {
+        $.ajaxSetup({ cache: true });
+        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
+            FB.init({
+                appId: fatesheet.config.appId,
+                status: true,
+                cookie: true,
+                xfbml: true,
+                oauth: true,
+                version: 'v2.12'
+            });
+            fatesheet.init();
+        });
+      }
     }
 
+  /***************
+    ENVIRONMENT
+  ****************/
+    // help out with dev tasks by switching environments up based on the URL
+    fatesheet.setupForEnvironment = function (env) {
+
+      switch (env) {
+          case 'localhost:8080':
+              fatesheet.config.environment = 'develop';
+              $('body').prepend('<h1 class="d-print-none">'+ fatesheet.config.environment.toUpperCase() +'</h1>');
+              break;
+
+          case 'fatecharactersheet.s3-website-us-east-1.amazonaws.com':
+              fatesheet.config.environment = 'beta';
+              $('body').prepend('<h1 class="d-print-none">'+ fatesheet.config.environment.toUpperCase() +'</h1>');
+              break;
+
+          default:
+              fatesheet.config.environment = 'production';
+              break;
+      }
+
+      setupAuthProviders();
+    }
+
+/***************
+  ROUTING
+****************/
+    // setup the router we're using hasher and #!hashname to route to pages
+    // cause this is a single page app.
     function configureRoutes() {
         //String rule with param:
         //match '/news/123' passing "123" as param to handler
@@ -399,31 +342,40 @@ String.prototype.toTitleCase = function () {
         crossroads.parse(newHash);
     }
 
+  /***************
+    INITIALIZE
+  ****************/
+    function domEvents() {
+
+        $(document).on('keyup', '#search-text', function (event) {
+            if (event.keyCode === 13) {
+                $("#search-button").click();
+            }
+        });
+
+        $(document).on('click', '.js-clear-search', function (e) {
+            $("#search-text").val('');
+            $("#search-button").click();
+        });
+
+        $(document).on('click', '#search-button', function () {
+          var searchText = $('#search-text').val(); // get the value of the input, which we filter on
+          fatesheet.search(searchText);
+        });
+    }
+
     fatesheet.init = function () {
       // load the navigation
       $("nav").load("nav.htm", function() {
         // initialize the application
         domEvents();
         configAWS();
-        authenticate();
+        authenticate(); //if we have cached auth credentials then login automatically
   		});
     }
 
 })(window.fatesheet = window.fatesheet || {}, jQuery);
 
 $(function () {
-
-    switch (window.location.host) {
-        case 'localhost:8080':
-            fatesheet.setupForEnvironment('develop');
-            break;
-
-        case 'fatecharactersheet.s3-website-us-east-1.amazonaws.com':
-            fatesheet.setupForEnvironment('beta');
-            break;
-
-        default:
-            fatesheet.setupForEnvironment('production');
-            break;
-    }
+    fatesheet.setupForEnvironment(window.location.host);
 });
