@@ -12,9 +12,11 @@
         character: {
             auth: "<hr/><div class='row'><div class='col'>" +
                         "   <button type='button' class='btn btn-success js-save-character d-print-none'>Save Character <i class='fa fa-save'></i></button>" +
+                        "   <button type='button' class='btn btn-secondary' onclick='hasher.setHash(\"/\");'>Close <i class='fa fa-times-circle'></i></button>" +
                         "   <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
                         "</div></div>",
             noauth: "<hr/><div class='row'><div class='col'>" +
+            "   <button type='button' class='btn btn-secondary' onclick='hasher.setHash(\"/\");'>Close <i class='fa fa-times-circle'></i></button>" +
                         "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
                         "</div></div>",
 
@@ -22,9 +24,11 @@
         sheet: {
             auth: "<hr/><div class='row'><div class='col'>" +
                    "    <button type='button' class='btn btn-success js-create-character d-print-none'>Save Character <i class='fa fa-user'></i></button>" +
+                   "   <button type='button' class='btn btn-secondary' onclick='hasher.setHash(\"/\");'>Close <i class='fa fa-times-circle'></i></button>" +
                    "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
                    "</div></div>",
             noauth: "<hr/><div class='row'><div class='col'>" +
+            "   <button type='button' class='btn btn-secondary' onclick='hasher.setHash(\"/\");'>Close <i class='fa fa-times-circle'></i></button>" +
                     "    <button type='button' class='btn btn-default d-print-none' onclick='window.print();'>Print Character <i class='fa fa-print'></i></button>" +
                     "</div></div>",
         }
@@ -103,6 +107,8 @@
         /// show a list of the users characters
         $contentElem.empty();
 
+        $('.hide-on-detail').removeClass('hidden');
+
         // Create DynamoDB document client
         var docClient = getDBClient();
 
@@ -133,6 +139,9 @@
     }
 
     fs_char.showSheet = function (id, character, $contentElem) {
+
+        $('.hide-on-detail').addClass('hidden');
+
         // if we are showing a blank sheet then null out the character
         // so we properly create a new one if needed
         if (!character) {
@@ -193,7 +202,7 @@
             characterData.character_id = fs_char.config.characterId;
 
             //dynamodb won't let us have empty attributes
-            removeEmpty(characterData);
+            fatesheet.removeEmptyObjects(characterData);
 
             var docClient = getDBClient();
 
@@ -242,7 +251,7 @@
               console.log("Added item:", JSON.stringify(data, null, 2));
 
               //back to the character list screen
-              setTimeout(fs_char.listCharacters(), 1000);
+              setTimeout(fs_char.listCharacters(fatesheet.config.content), 1000);
           }
       });
     }

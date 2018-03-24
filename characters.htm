@@ -24,8 +24,14 @@
 <body>
     <nav></nav>
     <div class="container mt-2">
-        <div id="results">
+      <div class="row d-print-none requires-auth hidden mb-2 hide-on-detail">
+        <div class="col-sm-12 col-md-3">
+          <a href='/charactersheets.htm' class='btn btn-primary'>Create a Character <i class='fa fa-user'></i></a>
         </div>
+      </div>
+
+      <div id="results">
+      </div>
 
         <!-- template -->
        <script id="tmplCharacterList" type="text/x-jsrender">

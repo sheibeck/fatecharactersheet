@@ -70,7 +70,7 @@ String.prototype.toTitleCase = function () {
 
     // clean out empty objects - used for cleaning adversary  objects
     //https://stackoverflow.com/questions/286141/remove-blank-attributes-from-an-object-in-javascript/24190282
-    function removeEmpty(obj) {
+    fatesheet.removeEmptyObjects = function(obj) {
       $.each(obj, function(key, value){
          if (key === "")
          {
@@ -80,7 +80,7 @@ String.prototype.toTitleCase = function () {
            if (value === "" || value === null || value === undefined || value === {}){
                delete obj[key];
            } else if (Object.prototype.toString.call(value) === '[object Object]') {
-               removeEmpty(value);
+               fatesheet.removeEmptyObjects(value);
            } else if ($.isArray(value)) {
                $.each(value, function (k,v) {
                  if (v === "") {
@@ -128,8 +128,7 @@ String.prototype.toTitleCase = function () {
         }, {});
     }
 
-    function slugify(text)
-    {
+    fatesheet.slugify = function(text) {
       return text.toString().toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
         .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
@@ -139,9 +138,12 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.logAnalyticEvent = function(event) {
-      if (FB)
+      if (fatesheet.config.environment == 'production')
       {
-        FB.AppEvents.logEvent('createdACharacter' + characterData.sheetname);
+        if (FB)
+        {
+          FB.AppEvents.logEvent(event);
+        }
       }
     }
 

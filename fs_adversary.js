@@ -63,7 +63,7 @@
         }
 
         // clear empty values
-        removeEmpty(result);
+        fatesheet.removeEmptyObjects(result);
 
         if (isNew)
         {
@@ -406,7 +406,7 @@
           }
       });
 
-      var slug = slugify(data.adversary_name);
+      var slug = fatesheet.slugify(data.adversary_name);
       $('#adversary_slug').val(slug);
     }
 
@@ -547,7 +547,7 @@
       });
 
       $(document).on('change', '#adversary_name', function (e) {
-        var slug = slugify($(this).val());
+        var slug = fatesheet.slugify($(this).val());
         $('#adversary_slug').val(slug);
       });
 
