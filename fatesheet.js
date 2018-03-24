@@ -213,24 +213,18 @@ String.prototype.toTitleCase = function () {
     fatesheet.setupUnAuthorizedUser = function () {
         fatesheet.config.isAuthenticated = false;
 
-        // supply anonymous access credentials
-        // fatesheet anonymous user with readonly privleges
-        fatesheet.config.credentials = new AWS.Credentials('AKIAIHABKVJBZUFCVWLA', 'WA/7JhLy6SOS9G/XuG4DBu7zCvxRdLZhkY3ag2C5');
+        var url = window.location.protocol + '//' + window.location.host + '/config.json';
+        $.getJSON(url, function(data) {
 
-        var sts = new AWS.STS();
-        sts.config.credentials = fatesheet.config.credentials;
-        sts.getSessionToken(function (err, data) {
-            if (err) console.log("Error getting credentials");
-            else {
-                fatesheet.config.credentials = sts.credentialsFrom(data, fatesheet.config.credentials);
-            }
+            fatesheet.config.credentials = new AWS.Credentials(data.accessKeyId, data.secretAccessKey)
+
+            $('.requires-auth').addClass('hidden');
+            $('.requires-noauth').removeClass('hidden');
+
+            // setup hashes and routes here so we have credentials set
+            configureRoutes();
         });
 
-        $('.requires-auth').addClass('hidden');
-        $('.requires-noauth').removeClass('hidden');
-
-        // setup hashes and routes here so we have credentials set
-        configureRoutes();
     }
 
     fatesheet.setupAuthorizedUser = function (response) {
