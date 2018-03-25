@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Character sheets for Fate Roleplaying Game">
-    <meta name="keywords" content="Roleplaying,Fate Core,Fate Accelerated,Character Sheet">
+    <meta name="description" content="Create and manage all your characters for the Fate Roleplaying Game. We have character sheets for Fate Core, Fate Accelerated and additional custom character sheets for the Fate Roleplaying Game. You can roll Fate dice and create and find adversaries for your Fate Roleplaying game.">
+    <meta name="keywords" content="Roleplaying,Roleplaying Games,Fate Roleplaying Game,Fate Core,Fate Accelerated,Fate Character Sheet">
     <meta name="author" content="Sterling Heibeck">
 
     <!-- css libraries -->
@@ -21,6 +21,7 @@
 </head>
 
 <body>
+    <h1 class="brand-name d-print-none my-0 py-1 px-1">Fate Character Sheet</h1>
     <nav></nav>
     <div class="container mt-2">
 
@@ -34,11 +35,11 @@
           <div class="col-sm-6">
             <div class="card m-2">
               <div class="card-body">
-                <h5 class="card-title">View Your Characters</h5>
-                <p class="card-text">Manage and play your saved characters.</p>
-                <a href="characters.htm" class="btn btn-primary requires-auth hidden">Play <span class='dice'>C</span></a>
+                <h5 class="card-title">View Your Fate Characters</h5>
+                <p class="card-text">View your custom fate characters. You can have as many characters as you want using a variety of different Fate Character Sheets.</p>
+                <a href="characters.htm" class="btn btn-primary requires-auth hidden">Play a Fate Character <span class='dice'>C</span></a>
                 <button type="button" class="btn btn-primary requires-noauth" onclick="fatesheet.authenticateFacebook()">
-                    Login with <i class="fab fa-facebook"></i>
+                    Login to View Your Characters <span class='dice'>C</span>
                 </button>
               </div>
             </div>
@@ -46,27 +47,27 @@
           <div class="col-sm-6">
             <div class="card card m-2">
               <div class="card-body">
-                <h5 class="card-title">Create A Character</h5>
-                <p class="card-text">Find a character sheet or create character.</p>
-                <a href="charactersheets.htm" class="btn btn-primary">Create <span class='dice'>D</span></a>
+                <h5 class="card-title">Create a Fate Character</h5>
+                <p class="card-text">Find a character sheet for the Fate setting you want or use the standard Fate Core or Fate Acclerated character sheet. Don't see a sheet you want? We take requests.</p>
+                <a href="charactersheets.htm" class="btn btn-primary">Create a Fate Character <span class='dice'>D</span></a>
               </div>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="card card m-2">
               <div class="card-body">
-                <h5 class="card-title">View Adversaries</h5>
-                <p class="card-text">View a codex of adversaries or create your own.</p>
-                <a href="adversary.htm" class="btn btn-primary">Fight <span class='dice'>A</span></a>
+                <h5 class="card-title">View the Adversary Codex</h5>
+                <p class="card-text">View a codex of premade fate adversaries. If you can't find an adversary that you like you can create your own and share it with the community.</p>
+                <a href="adversary.htm" class="btn btn-primary">Fight a Fate Adversary <span class='dice'>A</span></a>
               </div>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="card card m-2">
               <div class="card-body">
-                <h5 class="card-title">Roll Some Dice</h5>
-                <p class="card-text">Roll fate dice and see if you succeed!</p>
-                <a href="#" data-toggle='modal' data-target='#modalDiceRoller' class="btn btn-primary">Roll <span class='dice'>+</span></a>
+                <h5 class="card-title">Need Some Fate Dice?</h5>
+                <p class="card-text">Forgot your dice? Want to keep track of all your session rolls? We've got you covered! Use our fate dice roller to cover your game session needs.</p>
+                <a href="#" data-toggle='modal' data-target='#modalDiceRoller' class="btn btn-primary">Roll Fate Dice <span class='dice'>+</span></a>
               </div>
             </div>
           </div>
