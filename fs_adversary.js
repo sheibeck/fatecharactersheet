@@ -569,7 +569,7 @@
               break;
 
           default:
-              fs_adversary.config.adversarytable = 'fate_charactersheet';
+              fs_adversary.config.adversarytable = 'fate_adversary';
       }
     }
 
