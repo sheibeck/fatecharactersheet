@@ -577,10 +577,13 @@
         //String rule with param:
         //match '/news/123' passing "123" as param to handler
         var advRoute1 = crossroads.addRoute('/', function () {
+            fatesheet.setTitle('Fate Adversary');
             fs_adversary.listAdversaries();
         });
 
         var advRoute2 = crossroads.addRoute('/{slug}', function (slug) {
+            var title = slug.replace(/-/g,' ').toTitleCase();
+            fatesheet.setTitle(title, 'Fate Adversary');
             fs_adversary.listAdversaries(slug);
         });
     }
