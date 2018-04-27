@@ -347,7 +347,7 @@
     fs_char.init = function () {
         domEvents();
         configEnvironment(fatesheet.config.environment);
-        configureRoutes();
+        //configureRoutes();
     }
 
 })(window.fs_char = window.fs_char || {}, jQuery);
