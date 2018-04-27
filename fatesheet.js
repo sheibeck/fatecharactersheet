@@ -330,6 +330,14 @@ String.prototype.toTitleCase = function () {
           case '/home.htm':
             fatesheet.setTitle('Home');
             break;
+
+          case '/login.htm':
+            fatesheet.setTitle('Login');
+            break;
+
+          case '/register.htm':
+            fatesheet.setTitle('Register');
+            break;
         }
 
         hasher.prependHash = '!'; //for proper google crawling
@@ -369,6 +377,11 @@ String.prototype.toTitleCase = function () {
           var searchText = $('#search-text').val(); // get the value of the input, which we filter on
           fatesheet.search(searchText);
         });
+
+        $(document).on('click', '.js-login', function (e) {
+            document.location = '/login.htm';
+        });
+
     }
 
     fatesheet.init = function () {
