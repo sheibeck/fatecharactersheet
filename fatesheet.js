@@ -306,6 +306,16 @@ String.prototype.toTitleCase = function () {
       setupAuthProviders();
     }
 
+    fatesheet.setTitle = function(title, page) {
+      if (!page) {
+        page = 'Fate Character Sheet';
+      }
+      var newTitle = title + ' - ' + page;
+      if (document.title != newTitle) {
+          document.title = newTitle;
+      }
+    }
+
 /***************
   ROUTING
 ****************/
@@ -318,6 +328,7 @@ String.prototype.toTitleCase = function () {
         switch(location.pathname)
         {
           case '/home.htm':
+            fatesheet.setTitle('Home');
             break;
         }
 

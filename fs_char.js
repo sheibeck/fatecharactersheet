@@ -304,10 +304,30 @@
 
         if (location.pathname === '/charactersheets.htm') {
             var csRoute1 = crossroads.addRoute('/{id}', function (id) {
+                var title = id.replace(/-/g,' ').toTitleCase();
+                fatesheet.setTitle(title);
+
+                // update metadata based on the sheet
+                var ogImage = 'https://fatecharactersheet.com/' + id + '/sheets/logo.png';
+
+                $('meta[property="og:title"]').attr('content', title);
+                $('meta[property="og:image"]').attr('content', ogImage);
+                $('meta[property="og:url"]').attr('content', window.location.href);
+
+
                 fs_char.showSheet(id, null, fatesheet.config.content);
             });
 
             var csRoute2 = crossroads.addRoute('/', function () {
+                fatesheet.setTitle('Character Sheets');
+
+                // update metadata based on the sheet
+                var ogImage = "https://fatecharactersheet.com/big-logo.png";
+
+                $('meta[property="og:title"]').attr('content', 'Character Sheets');
+                $('meta[property="og:image"]').attr('content', ogImage);
+                $('meta[property="og:url"]').attr('content', window.location.href);
+
                 fs_char.listSheets(fatesheet.config.content);
             });
         }
@@ -327,7 +347,7 @@
     fs_char.init = function () {
         domEvents();
         configEnvironment(fatesheet.config.environment);
-        configureRoutes();
+        //configureRoutes();
     }
 
 })(window.fs_char = window.fs_char || {}, jQuery);
