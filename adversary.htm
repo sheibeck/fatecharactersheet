@@ -25,6 +25,13 @@
     <div class="container mt-2">
         <!-- list of adversaries -->
         <div class='js-adversary-list'>
+          <div class="row d-print-none requires-noauth hidden mb-2">
+            <div class="col-sm-12 col-md-3">
+              <button type="button" class="btn btn-primary requires-noauth" onclick="fatesheet.authenticateFacebook()">
+                  Login to Create an Adversary <span class='dice'>A</span>
+              </button>
+            </div>
+          </div>
           <div class="row d-print-none requires-auth hidden mb-2">
             <div class="col-sm-12 col-md-3">
               <button type="button" class="btn btn-secondary js-create-adversary">Create Adversary <i class='fa fa-plus'></i></button>
