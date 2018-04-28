@@ -39,10 +39,17 @@ String.prototype.toTitleCase = function () {
         content: $('#results'),
         environment: '',
         isAuthenticated: false,
-        appId: '189783225112476',
+        fbAppId: '189783225112476',
         authorizedUserArn: 'arn:aws:iam::210120940769:role/FateCharacterSheetUser',
         userId: null,
         authProvider: '',
+        cognito: {
+          poolArn: 'arn:aws:cognito-idp:us-east-1:210120940769:userpool/us-east-1_x9gvO6Gy3',
+          poolId: 'us-east-1_x9gvO6Gy3',
+          clientId: '4hds760dsd2acikun12bpcljhk',
+          identityPool: 'us-east-1:ba495e76-4ecc-4ae5-b116-62ed4dd2a596',
+          currentUser: null,
+        }
     }
 
     function configAWS() {
@@ -138,13 +145,6 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.logAnalyticEvent = function(event) {
-      if (fatesheet.config.environment == 'production')
-      {
-        if (FB)
-        {
-          FB.AppEvents.logEvent(event);
-        }
-      }
     }
 
     fatesheet.search = function(searchText) {
@@ -179,34 +179,112 @@ String.prototype.toTitleCase = function () {
   /***************
     AUTHENTICATION
   ****************/
-    function authenticate() {
-        // determine if we already have cached authentication credentials
-        // from a ProviderId and login
 
-        /*!
-          * Login to your application using Facebook.
-          * Uses the Facebook SDK for JavaScript available here:
-          * https://developers.facebook.com/docs/javascript/quickstart/
-          */
-        //see if we're already logged into facebook
-        try {
-            FB.getLoginStatus(function (response) {
-                console.log(response);
-                if (response.status === 'connected') {
-                    fatesheet.setupAuthorizedUser(response);
-                } else {
-                    fatesheet.setupUnAuthorizedUser();
+    fatesheet.register = function(email, password) {
+      var poolData = {
+        UserPoolId : fatesheet.config.cognito.poolId, // Your user pool id here
+        ClientId : fatesheet.config.cognito.clientId // Your client id here
+      };
+
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+      var attributeList = [];
+
+      var dataEmail = {
+          Name : 'email',
+          Value : email
+      };
+
+      userPool.signUp(email, password, null, null, function(err, result){
+          if (err) {
+              $.notify(err.message, 'error');
+              return;
+          }
+          cognitoUser = result.user;
+          console.log('user name is ' + cognitoUser.getUsername());
+          $.notify('Successfully registered!', 'success');
+
+          setTimeout(function() { document.location = 'login.htm' }, 2000);
+      });
+    }
+
+    fatesheet.login = function(username, password)
+    {
+      var authenticationData = {
+          Username : username,
+          Password : password,
+      };
+      var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+      var poolData = {
+          UserPoolId : fatesheet.config.cognito.poolId, // Your user pool id here
+          ClientId : fatesheet.config.cognito.clientId // Your client id here
+      };
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      var userData = {
+          Username : username,
+          Pool : userPool
+      };
+
+      var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+      cognitoUser.authenticateUser(authenticationDetails, {
+          onSuccess: function (result) {
+              console.log('access token + ' + result.getAccessToken().getJwtToken());
+
+              //AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+              fatesheet.config.credentials = new AWS.CognitoIdentityCredentials({
+                  IdentityPoolId : fatesheet.config.cognito.identityPool, // your identity pool id here
+                  Logins : {
+                      // Change the key below according to the specific region your user pool is in.
+                      'cognito-idp.us-east-1.amazonaws.com/us-east-1_x9gvO6Gy3' : result.getIdToken().getJwtToken()
+                  }
+              });
+              fatesheet.config.userId = result.idToken.payload['cognito:username'];
+              fatesheet.setupAuthorizedUser(result);
+
+              fatesheet.config.cognito.cognitoUser = cognitoUser;
+
+              document.location = 'characters.htm';
+          },
+
+          onFailure: function(err) {
+              $.notify(err.message || JSON.stringify(err), 'error');
+          },
+
+      });
+    }
+
+    function authenticate() {
+        // grab an active session
+        var poolData = {
+            UserPoolId : fatesheet.config.cognito.poolId, // Your user pool id here
+            ClientId : fatesheet.config.cognito.clientId // Your client id here
+        };
+        var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        var cognitoUser = userPool.getCurrentUser();
+
+        if (cognitoUser != null) {
+            cognitoUser.getSession(function(err, session) {
+                if (err) {
+                    $.notify(err.message || JSON.stringify(err), 'error');
+                    return;
                 }
-            }, true);
+                console.log('session validity: ' + session.isValid());
+
+                //AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                fatesheet.config.credentials = new AWS.CognitoIdentityCredentials({
+                    IdentityPoolId : fatesheet.config.cognito.identityPool, // your identity pool id here
+                    Logins : {
+                        // Change the key below according to the specific region your user pool is in.
+                        'cognito-idp.us-east-1.amazonaws.com/us-east-1_x9gvO6Gy3' : session.getIdToken().getJwtToken()
+                    }
+                });
+                fatesheet.config.userId = session.idToken.payload['cognito:username'];
+                fatesheet.setupAuthorizedUser(session);
+                fatesheet.config.cognito.cognitoUser = cognitoUser;
+            });
         }
-        catch (ex) {
-            if (ex.message === 'FB is not defined') {
-                fatesheet.setupUnAuthorizedUser();
-            }
-            else {
-                console.log(ex.message, ex);
-                $.notify(ex.message, 'error');
-            }
+        else  {
+          fatesheet.setupUnAuthorizedUser();
         }
     }
 
@@ -230,12 +308,14 @@ String.prototype.toTitleCase = function () {
     fatesheet.setupAuthorizedUser = function (response) {
         fatesheet.config.isAuthenticated = true;
 
+/*
         fatesheet.config.credentials = new AWS.WebIdentityCredentials({
             ProviderId: 'graph.facebook.com',
             RoleArn: fatesheet.config.authorizedUserArn,
             WebIdentityToken: response.authResponse.accessToken
         });
         fatesheet.config.userId = response.authResponse.userID;
+*/
         $('.requires-auth').removeClass('hidden');
         $('.requires-noauth').addClass('hidden');
 
@@ -244,41 +324,12 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.logout = function () {
-        FB.logout(function (response) {
-            fatesheet.setupUnAuthorizedUser();
-        });
+        fatesheet.config.cognito.cognitoUser.signOut();
         document.location.href = 'home.htm';
     };
 
     fatesheet.authenticateFacebook = function () {
-        FB.login(function (response) {
-            fatesheet.setupAuthorizedUser(response);
-        });
         document.location.href = 'home.htm';
-    }
-
-    // load up anything we need to support auth providers
-    function setupAuthProviders() {
-      //auth facebook
-      if (fatesheet.config.environment == 'develop')
-      {
-        fatesheet.config.userId = '1764171710312177'; // localhost auth on FB isn't supported so fake the userid
-        fatesheet.init();
-      }
-      else {
-        $.ajaxSetup({ cache: true });
-        $.getScript('https://connect.facebook.net/en_US/sdk.js', function () {
-            FB.init({
-                appId: fatesheet.config.appId,
-                status: true,
-                cookie: true,
-                xfbml: true,
-                oauth: true,
-                version: 'v2.12'
-            });
-            fatesheet.init();
-        });
-      }
     }
 
   /***************
@@ -302,8 +353,6 @@ String.prototype.toTitleCase = function () {
               fatesheet.config.environment = 'production';
               break;
       }
-
-      setupAuthProviders();
     }
 
     fatesheet.setTitle = function(title, page) {
@@ -385,6 +434,8 @@ String.prototype.toTitleCase = function () {
     }
 
     fatesheet.init = function () {
+      fatesheet.setupForEnvironment(window.location.host);
+
       // load the navigation
       $("nav").load("nav.htm", function() {
         // initialize the application
@@ -397,5 +448,5 @@ String.prototype.toTitleCase = function () {
 })(window.fatesheet = window.fatesheet || {}, jQuery);
 
 $(function () {
-    fatesheet.setupForEnvironment(window.location.host);
+    fatesheet.init();
 });
