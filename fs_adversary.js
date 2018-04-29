@@ -106,7 +106,7 @@
                       Item: adversaryData
                   };
 
-                  console.log("Adding a new item...");
+                  console.log("Adding a new adversary...");
                   docClient.put(params, function (err, data) {
                       if (err) {
                           $.notify(err.code, 'error');
@@ -176,7 +176,7 @@
             ReturnValues:"UPDATED_NEW"
         };
 
-        console.log("Adding a new item...");
+        console.log("Updating adversary...");
         docClient.update(params, function (err, data) {
             if (err) {
                 $.notify(err.code, 'error');
@@ -349,8 +349,7 @@
       $('#adversaryForm').removeClass('hidden');
 
       // Create DynamoDB document client
-      var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-      docClient.service.config.credentials = fatesheet.config.credentials;
+      var docClient = getDBClient();
 
       var params = {
           TableName: fs_adversary.config.adversarytable,

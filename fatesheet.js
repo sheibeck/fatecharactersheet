@@ -238,10 +238,10 @@ String.prototype.toTitleCase = function () {
                       'cognito-idp.us-east-1.amazonaws.com/us-east-1_x9gvO6Gy3' : result.getIdToken().getJwtToken()
                   }
               });
-              fatesheet.config.userId = result.idToken.payload['cognito:username'];
-              fatesheet.setupAuthorizedUser(result);
 
               fatesheet.config.cognito.cognitoUser = cognitoUser;
+              fatesheet.config.userId = fatesheet.config.credentials.identityId; //cognito sub for row based security
+              fatesheet.setupAuthorizedUser(result);
 
               document.location = 'characters.htm';
           },
@@ -278,9 +278,9 @@ String.prototype.toTitleCase = function () {
                         'cognito-idp.us-east-1.amazonaws.com/us-east-1_x9gvO6Gy3' : session.getIdToken().getJwtToken()
                     }
                 });
-                fatesheet.config.userId = session.idToken.payload['cognito:username'];
-                fatesheet.setupAuthorizedUser(session);
                 fatesheet.config.cognito.cognitoUser = cognitoUser;
+                fatesheet.config.userId = fatesheet.config.credentials.identityId; //cognito sub for row based security
+                fatesheet.setupAuthorizedUser(session);
             });
         }
         else  {
@@ -398,7 +398,6 @@ String.prototype.toTitleCase = function () {
         if (!hasher.getHash()) {
         //    hasher.setHash('/');
         }
-
     }
 
     //setup hasher
