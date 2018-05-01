@@ -17,6 +17,9 @@
 
     <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <link rel="import" href="head.htm">
+    <link rel="import" href="nav.htm">
+    <link rel="import" href="footer.htm">
+
     <title>Fate Adversary - Fate Character Sheet</title>
 </head>
 <body>
@@ -32,12 +35,13 @@
               </a>
             </div>
           </div>
-          <div class="row d-print-none requires-auth hidden mb-2">
-            <div class="col-sm-12 col-md-3">
+          <div class="row d-print-none requires-auth mb-2">
+            <div class="col">
               <button type="button" class="btn btn-secondary js-create-adversary">Create Adversary <i class='fa fa-plus'></i></button>
             </div>
-            <div class="col-sm-12 col-md-3">
-              <input type="checkbox" class="form-check-input" id="my_adversaries" /> <label class="form-check-label" for="my_adversaries">Show only my adversaries?</label>
+            <div class="col">
+              <input type="checkbox" class="form-check-input" id="my_adversaries" />
+              <label class="form-check-label" for="my_adversaries">Show only my adversaries?</label>
             </div>
           </div>
 
@@ -200,9 +204,8 @@
             <button type="button" class="btn btn-secondary js-close-adversary-edit">Close <i class='fa fa-times-circle'></i></button>
             <a href='#' class='btn btn-danger'data-toggle='modal' data-target='#modalDeleteAdversaryConfirm'>Delete</i></a>
         </form>
-        <!-- 3rd party stuff -->
-        <div id="fb-root"></div>
     </div>
+    <footer></footer>
 
     <!-- delete confirmation modal-->
     <div class="modal fade" id="modalDeleteAdversaryConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
@@ -276,6 +279,9 @@
             </div>
 
     </script>
+
+    <!-- 3rd party stuff -->
+    <div id="fb-root"></div>
 
     <!-- page specific fatecharactersheet scripts -->
     <script src="fs_adversary.js" type="text/javascript"></script>

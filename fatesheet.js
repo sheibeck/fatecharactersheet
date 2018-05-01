@@ -36,6 +36,7 @@ String.prototype.toTitleCase = function () {
           CONFIG
   ***********************************/
     fatesheet.config = {
+        callback: null,
         content: $('#results'),
         environment: '',
         isAuthenticated: false,
@@ -202,7 +203,7 @@ String.prototype.toTitleCase = function () {
           }
           cognitoUser = result.user;
           console.log('user name is ' + cognitoUser.getUsername());
-          $.notify('Successfully registered!', 'success');
+          $.notify('Successfully registered. Please check your email for a verification link.', 'success');
 
           setTimeout(function() { document.location = 'login.htm' }, 2000);
       });
@@ -278,44 +279,54 @@ String.prototype.toTitleCase = function () {
                         'cognito-idp.us-east-1.amazonaws.com/us-east-1_x9gvO6Gy3' : session.getIdToken().getJwtToken()
                     }
                 });
-                fatesheet.config.cognito.cognitoUser = cognitoUser;
-                fatesheet.config.userId = fatesheet.config.credentials.identityId; //cognito sub for row based security
-                fatesheet.setupAuthorizedUser(session);
+
+                fatesheet.config.credentials.refresh((error) => {
+                  if (error) {
+                      console.error(error);
+                  } else {
+                      console.log('Successfully logged!');
+
+                      fatesheet.config.cognito.cognitoUser = cognitoUser;
+                      fatesheet.config.userId = fatesheet.config.credentials.identityId; //cognito sub for row based security
+                      fatesheet.setupAuthorizedUser(session);
+                  }
+                });
             });
         }
         else  {
-          fatesheet.setupUnAuthorizedUser();
+            //get unathenticated user from pool
+            fatesheet.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId : fatesheet.config.cognito.identityPool, // your identity pool id here
+            });
+
+            fatesheet.config.credentials.refresh((error) => {
+              if (error) {
+                  console.error(error);
+              } else {
+                  console.log('Successfully logged!');
+              }
+
+              fatesheet.config.cognito.cognitoUser = null;
+              fatesheet.config.userId = null; //cognito sub for row based security
+              fatesheet.setupUnAuthorizedUser();
+            });
         }
+
     }
 
     fatesheet.setupUnAuthorizedUser = function () {
         fatesheet.config.isAuthenticated = false;
 
-        var url = window.location.protocol + '//' + window.location.host + '/config.json';
-        $.getJSON(url, function(data) {
+        $('.requires-auth').addClass('hidden');
+        $('.requires-noauth').removeClass('hidden');
 
-            fatesheet.config.credentials = new AWS.Credentials(data.accessKeyId, data.secretAccessKey)
-
-            $('.requires-auth').addClass('hidden');
-            $('.requires-noauth').removeClass('hidden');
-
-            // setup hashes and routes here so we have credentials set
-            configureRoutes();
-        });
-
+        // setup hashes and routes here so we have credentials set
+        configureRoutes();
     }
 
     fatesheet.setupAuthorizedUser = function (response) {
         fatesheet.config.isAuthenticated = true;
 
-/*
-        fatesheet.config.credentials = new AWS.WebIdentityCredentials({
-            ProviderId: 'graph.facebook.com',
-            RoleArn: fatesheet.config.authorizedUserArn,
-            WebIdentityToken: response.authResponse.accessToken
-        });
-        fatesheet.config.userId = response.authResponse.userID;
-*/
         $('.requires-auth').removeClass('hidden');
         $('.requires-noauth').addClass('hidden');
 
@@ -389,15 +400,14 @@ String.prototype.toTitleCase = function () {
             break;
         }
 
-        hasher.prependHash = '!'; //for proper google crawling
-        hasher.initialized.add(parseHash); //parse initial hash
-        hasher.changed.add(parseHash); //parse hash changes
-        hasher.init(); //start listening for history change
+        fatesheet.initHasher();
+    }
 
-        // default to the character sheet list if we don't have a hash to go to
-        if (!hasher.getHash()) {
-        //    hasher.setHash('/');
-        }
+    fatesheet.initHasher = function() {
+      hasher.prependHash = '!'; //for proper google crawling
+      hasher.initialized.add(parseHash); //parse initial hash
+      hasher.changed.add(parseHash); //parse hash changes
+      hasher.init(); //start listening for history change
     }
 
     //setup hasher
@@ -435,13 +445,21 @@ String.prototype.toTitleCase = function () {
     fatesheet.init = function () {
       fatesheet.setupForEnvironment(window.location.host);
 
-      // load the navigation
-      $("nav").load("nav.htm", function() {
-        // initialize the application
-        domEvents();
-        configAWS();
-        authenticate(); //if we have cached auth credentials then login automatically
-  		});
+      <!-- draw the navigation -->
+      var nav = document.querySelector('link[rel="import"][href="nav.htm"]');
+      var navContent = nav.import;
+      $("nav").replaceWith(navContent.querySelector('nav'));
+
+      var footer = document.querySelector('link[rel="import"][href="footer.htm"]');
+      var footContent = footer.import;
+      $("footer").replaceWith(footContent.querySelector('footer'));
+
+      // initialize the application
+      domEvents();
+      configAWS();
+
+      //if we have cached auth credentials then login automatically
+      authenticate();
     }
 
 })(window.fatesheet = window.fatesheet || {}, jQuery);
