@@ -450,6 +450,9 @@ String.prototype.toTitleCase = function () {
       var navContent = nav.import;
       $("nav").replaceWith(navContent.querySelector('nav'));
 
+      <!-- draw the dice tray modal -->
+      $("body").append(navContent.querySelector('#modalDiceRoller'));
+
       var footer = document.querySelector('link[rel="import"][href="footer.htm"]');
       var footContent = footer.import;
       $("footer").replaceWith(footContent.querySelector('footer'));
