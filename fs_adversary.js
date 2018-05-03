@@ -73,9 +73,6 @@
         else {
           updateAdversary(result);
         }
-
-        //refresh the list of adversaries
-        setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
     }
 
     function insertAdversary(adversaryData) {
@@ -115,6 +112,8 @@
                           $.notify('Adversary added.', 'success');
                           console.log("Added item:", JSON.stringify(data, null, 2));
                           fs_adversary.clearAdversaryForm();
+
+                          setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
                       }
                   });
               }
@@ -185,6 +184,9 @@
                 $.notify('Adversary updated.', 'success');
                 console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             }
+
+            //refresh the list of adversaries
+            setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
         });
     }
 
@@ -574,7 +576,6 @@
 
     function configureRoutes() {
         //String rule with param:
-        //match '/news/123' passing "123" as param to handler
         var advRoute1 = crossroads.addRoute('/', function () {
             fatesheet.setTitle('Fate Adversary');
             fs_adversary.listAdversaries();
