@@ -120,16 +120,11 @@ footer {
 
 /* print styles */
 @media print {
-    footer, .footer {
-      display: none !important;
-    }
-
-    button {
-        display: none !important;
-    }
-
+    footer, .footer,
+    button,
+    .addthis-smartlayers,
     hr {
-        display: none;
+      display: none !important;
     }
 
     input::-webkit-input-placeholder {
