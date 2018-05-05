@@ -227,7 +227,7 @@
 
     fs_adversary.listAdversaries = function (searchText) {
       //make sure the search text is up to snuff
-      $('#search-text').val(searchText);
+      $('#search-text').val(searchText).change();
 
       $.views.helpers(fate_adversary_helpers);
 
@@ -550,6 +550,16 @@
       $(document).on('change', '#adversary_name', function (e) {
         var slug = fatesheet.slugify($(this).val());
         $('#adversary_slug').val(slug);
+      });
+
+      $(document).on('change', '#search-text', function (e) {
+        var $this = $(this);
+        if ($this.val() !== '') {
+          $('.fs-tools').removeClass('hidden');
+        }
+        else {
+          $('.fs-tools').addClass('hidden');
+        }
       });
 
       $(document).on('submit', '#adversaryForm', function (e) {

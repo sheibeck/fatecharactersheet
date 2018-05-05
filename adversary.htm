@@ -29,22 +29,27 @@
         <!-- list of adversaries -->
         <div class='js-adversary-list'>
           <div class="row d-print-none requires-noauth hidden mb-2">
-            <div class="col-sm-12 col-md-3">
+            <div class="col col-sm-12 col-md-3">
               <a href='login.htm' type="button" class="btn btn-primary requires-noauth">
                   Login to Create an Adversary <span class='dice'>A</span>
               </a>
             </div>
+            <div class="col col-md-3 fs-tools hidden">
+              <span class="badge badge-warning js-clear-search" style="cursor:pointer;">x Clear Filter</span>
+            </div>
           </div>
           <div class="row d-print-none requires-auth mb-2">
-            <div class="col">
+            <div class="col col-sm-7 col-md-3">
               <button type="button" class="btn btn-secondary js-create-adversary">Create Adversary <i class='fa fa-plus'></i></button>
             </div>
-            <div class="col">
+            <div class="col col-sm-3 col-md-3">
               <input type="checkbox" class="form-check-input" id="my_adversaries" />
               <label class="form-check-label" for="my_adversaries">Show only my adversaries?</label>
             </div>
+            <div class="col col-sm-3 col-md-3 fs-tools hidden">
+              <span class="badge badge-warning js-clear-search" style="cursor:pointer;">x Clear Filter</span>
+            </div>
           </div>
-
           <div class='card-columns' id="adversaryDetail">
           </div>
         </div>
