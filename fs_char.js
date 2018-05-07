@@ -73,20 +73,16 @@
     var fate_character_helpers = {
       slugify: function (val) {
           return fatesheet.slugify(val);
+      },
+      getCharacterValue: function(data, item) {                
+          var itemValue = eval('data.' + item);
+          return itemValue;
       }
     };
 
     function getCharacterInfo(id) {
       // Create DynamoDB document client
       var docClient = getDBClient();
-
-      /*var params = {
-          TableName: fs_char.config.charactertable,
-          Key: {
-            'character_owner_id': fatesheet.config.userId,
-            'character_id': id
-          },
-      }*/
 
       var params = {
           TableName: fs_char.config.charactertable,

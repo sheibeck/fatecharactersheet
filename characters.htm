@@ -42,15 +42,17 @@
    <script id="tmplCharacterList" type="text/x-jsrender">
     <div class='card'>
     	  <div class='card-body'>
-    		<h5 class='card-title character-name'>{{:name}}</h5>
-    		<p class='card-text'>{{:highconcept}}</p>
-    		<p class='card-note font-italic small'>({{:description}})</p>
-    		<a href='#!{{:sheetname}}/{{:character_id}}/{{:~slugify(name)}}' class='btn btn-primary' data-id='{{:character_id}}'>Play</a>
-    		<a href='#' class='btn btn-danger' data-id='{{:character_id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>
+      		<h5 class='card-title character-name'>{{:name}}</h5>
+      		<p class='card-text'>
+            <label class='h6'>High Concept</label>: {{:~getCharacterValue(aspect, 'highconcept')}}<br>
+            <label class='h6'>Trouble</label>: {{:~getCharacterValue(aspect, 'trouble')}}
+          </p>
+      		<a href='#!{{:sheetname}}/{{:character_id}}/{{:~slugify(name)}}' class='btn btn-primary' data-id='{{:character_id}}'>Play</a>
+      		<a href='#' class='btn btn-danger' data-id='{{:character_id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>
     	  </div>
-         <div class='card-footer text-muted'>
-               <span class='badge badge-secondary'>{{:sheetname}}</span>
-         </div>
+        <div class='card-footer text-muted'>
+          <span class='small'>{{:description}}</span> <span class='badge badge-secondary'>{{:sheetname}}</span>
+        </div>
    </div>
    </script>
 
