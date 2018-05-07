@@ -59,14 +59,14 @@
     <!-- list template -->
     <script id="tmplCharacterSheetList" type="text/x-jsrender">
     <div class='card'>
-       <img class='card-img-top img-thumbnail img-fluid' src='sheets/{{:charactersheetname}}/logo.png' alt='Character Sheet Logo'>
+      <img class='card-img-top img-thumbnail img-fluid' src='sheets/{{:charactersheetname}}/logo.png' alt='Character Sheet Logo'>
       <div class='card-body'>
         <h5 class='card-title charactersheet-name'>{{:charactersheetdisplayname}}</h5>
-        <a href='#!{{:charactersheetname}}' class='btn btn-primary' data-id='{{:charactersheetid}}'>Create Character <i class='fa fa-user'></i></a>
+        <a href='#!{{:charactersheetname}}' class='btn btn-primary' data-id='{{:charactersheetid}}'>Create Character <i class='fa fa-user'></i></a>      
       </div>
-          <div class='card-footer text-muted'>
-                 <span class='badge badge-secondary'>{{:charactersheetsystem}}</span>
-           </div>
+      <div class='card-footer text-muted small'>
+             {{:charactersheetdescription}}
+       </div>
      </div>
     </script>
 
