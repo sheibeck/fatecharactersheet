@@ -49,9 +49,9 @@
             <label class='h6'>High Concept</label>: {{:~getCharacterValue(aspect, 'highconcept')}}<br>
             <label class='h6'>Trouble</label>: {{:~getCharacterValue(aspect, 'trouble')}}
           </p>
-      		<a href='#!{{:sheetname}}/{{:character_id}}/{{:~slugify(name)}}' class='btn btn-primary' data-id='{{:character_id}}'>Play</a>
+      		<a href='#!{{:sheetname}}/{{:character_id}}/{{:~slugify(name)}}' class='btn btn-primary' data-id='{{:character_id}}'>Play <i class='fa fa-play-circle'></i></a>
           <a href='#' class='btn btn-secondary js-share-character'>Share <i class='fa fa-share-square'></i></a>
-      		<a href='#' class='btn btn-danger' data-id='{{:character_id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'>Delete <i class='fa fa-trash'></i></a>
+      		<a href='#' class='btn' style='color:red' data-id='{{:character_id}}' data-toggle='modal' data-target='#modalDeleteCharacterConfirm'><i class='fa fa-trash'></i></a>
     	  </div>
         <div class='card-footer text-muted'>
           <span class='small'>{{:description}}</span> <span class='badge badge-secondary'>{{:sheetname}}</span>
