@@ -70,29 +70,49 @@
         });
     }
 
-    function getCharacterIdFromKey(key) {
-        return key.replace(/^.*[\\\/]/, '').replace('.character', '');
-    }
+    var fate_character_helpers = {
+      slugify: function (val) {
+          return fatesheet.slugify(val);
+      }
+    };
 
     function getCharacterInfo(id) {
       // Create DynamoDB document client
       var docClient = getDBClient();
 
-      var params = {
+      /*var params = {
           TableName: fs_char.config.charactertable,
           Key: {
             'character_owner_id': fatesheet.config.userId,
             'character_id': id
           },
+      }*/
+
+      var params = {
+          TableName: fs_char.config.charactertable,
+          Select: 'ALL_ATTRIBUTES',
+          ExpressionAttributeValues: {':character_id' : id },
+          FilterExpression: 'character_id = :character_id'
       }
 
-      docClient.get(params, function (err, data) {
+      docClient.scan(params, function (err, data) {
           if (err) {
               console.log("Error", err);
           } else {
-              console.log("Success", data.Item);
+              var characterData = data.Items[0];
+              console.log("Success", characterData);
 
-              $('form').populate(data.Item);
+              fatesheet.setTitle(characterData.name + ' (Character)')
+
+              //if the viewer isn't the character owner then don't let them save it
+              // it would just copy it to their account, but for now we'll just
+              // remove the option
+              if (characterData.character_owner_id !== fatesheet.config.userId)
+              {
+                $('.js-save-character').remove();
+              }
+
+              $('form').populate(characterData);
 
               //check if there is an autocalc function and runit
               if (typeof autocalc !== "undefined") {
@@ -106,6 +126,8 @@
 
         /// show a list of the users characters
         $contentElem.empty();
+
+        $.views.helpers(fate_character_helpers);
 
         $('.hide-on-detail').removeClass('hidden');
 
@@ -131,24 +153,24 @@
                 //list the sheets
                 $contentElem.append("<div class='card-columns'></div>");
                 data.Items.forEach(function (obj) {
-                  var character = template.render(obj);
+                  var character = template.render(obj, fate_character_helpers);
                   $('.card-columns', $contentElem).append(character);
                 });
             }
         });
     }
 
-    fs_char.showSheet = function (id, character, $contentElem) {
+    fs_char.showSheet = function (id, characterId, $contentElem) {
 
         $('.hide-on-detail').addClass('hidden');
 
         // if we are showing a blank sheet then null out the character
         // so we properly create a new one if needed
-        if (!character) {
+        if (!characterId) {
           fs_char.config.characterId = null;
         }
         else {
-          fs_char.config.characterId = character;
+          fs_char.config.characterId = characterId;
         }
 
         /// show a list of available character sheets
@@ -172,8 +194,8 @@
                 $contentElem.html(data.Item.charactersheetcontent);
 
                 // add navigation
-                if (character != null) {
-                    getCharacterInfo(character);
+                if (characterId != null) {
+                    getCharacterInfo(characterId);
                     fatesheet.addNav(fs_char.navigation.character);
                 }
                 else {
@@ -333,6 +355,10 @@
         }
 
         if (location.pathname === '/characters.htm') {
+            var charRoute1 = crossroads.addRoute('/{sheetid}/{id}/{name}', function (sheetid, id) {
+                fs_char.showSheet(sheetid, id, fatesheet.config.content)
+            });
+
             var charRoute1 = crossroads.addRoute('/{sheetid}/{id}', function (sheetid, id) {
                 fs_char.showSheet(sheetid, id, fatesheet.config.content)
             });
@@ -341,13 +367,12 @@
                 fs_char.listCharacters(fatesheet.config.content);
             });
         }
-
     }
 
     fs_char.init = function () {
         domEvents();
         configEnvironment(fatesheet.config.environment);
-        //configureRoutes();
+        configureRoutes();
     }
 
 })(window.fs_char = window.fs_char || {}, jQuery);

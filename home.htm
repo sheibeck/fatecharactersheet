@@ -16,6 +16,9 @@
 
     <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <link rel="import" href="head.htm">
+    <link rel="import" href="nav.htm">
+    <link rel="import" href="footer.htm">
+
    	<title>Fate Character Sheet</title>
 </head>
 
@@ -37,9 +40,9 @@
                 <h5 class="card-title">View Your Fate Characters</h5>
                 <p class="card-text">Create and manage all of your fate characters online. You can store and edit as many characters as you want using any of our Fate Character Sheets.</p>
                 <a href="characters.htm" class="btn btn-primary requires-auth hidden">Play a Fate Character <span class='dice'>C</span></a>
-                <button type="button" class="btn btn-primary requires-noauth" onclick="fatesheet.authenticateFacebook()">
+                <a href="login.htm" type="button" class="btn btn-primary requires-noauth">
                     Login to View Your Characters <span class='dice'>C</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -72,6 +75,8 @@
           </div>
       </div>
   </div>
+
+  <footer class="footer"></footer>
 
   <!-- 3rd party stuff -->
   <div id="fb-root"></div>

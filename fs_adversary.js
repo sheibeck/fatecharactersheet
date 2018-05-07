@@ -73,9 +73,6 @@
         else {
           updateAdversary(result);
         }
-
-        //refresh the list of adversaries
-        setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
     }
 
     function insertAdversary(adversaryData) {
@@ -106,7 +103,7 @@
                       Item: adversaryData
                   };
 
-                  console.log("Adding a new item...");
+                  console.log("Adding a new adversary...");
                   docClient.put(params, function (err, data) {
                       if (err) {
                           $.notify(err.code, 'error');
@@ -115,6 +112,8 @@
                           $.notify('Adversary added.', 'success');
                           console.log("Added item:", JSON.stringify(data, null, 2));
                           fs_adversary.clearAdversaryForm();
+
+                          setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
                       }
                   });
               }
@@ -176,7 +175,7 @@
             ReturnValues:"UPDATED_NEW"
         };
 
-        console.log("Adding a new item...");
+        console.log("Updating adversary...");
         docClient.update(params, function (err, data) {
             if (err) {
                 $.notify(err.code, 'error');
@@ -185,6 +184,9 @@
                 $.notify('Adversary updated.', 'success');
                 console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             }
+
+            //refresh the list of adversaries
+            setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
         });
     }
 
@@ -225,7 +227,7 @@
 
     fs_adversary.listAdversaries = function (searchText) {
       //make sure the search text is up to snuff
-      $('#search-text').val(searchText);
+      $('#search-text').val(searchText).change();
 
       $.views.helpers(fate_adversary_helpers);
 
@@ -349,8 +351,7 @@
       $('#adversaryForm').removeClass('hidden');
 
       // Create DynamoDB document client
-      var docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-      docClient.service.config.credentials = fatesheet.config.credentials;
+      var docClient = getDBClient();
 
       var params = {
           TableName: fs_adversary.config.adversarytable,
@@ -551,6 +552,16 @@
         $('#adversary_slug').val(slug);
       });
 
+      $(document).on('change', '#search-text', function (e) {
+        var $this = $(this);
+        if ($this.val() !== '') {
+          $('.fs-tools').removeClass('hidden');
+        }
+        else {
+          $('.fs-tools').addClass('hidden');
+        }
+      });
+
       $(document).on('submit', '#adversaryForm', function (e) {
           e.preventDefault();
           upsertAdversary();
@@ -575,7 +586,6 @@
 
     function configureRoutes() {
         //String rule with param:
-        //match '/news/123' passing "123" as param to handler
         var advRoute1 = crossroads.addRoute('/', function () {
             fatesheet.setTitle('Fate Adversary');
             fs_adversary.listAdversaries();
