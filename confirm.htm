@@ -43,7 +43,7 @@
           <input type="password" class="form-control" id="password" aria-describedby="emailHelp" placeholder="Enter new password">
           <input type="confirmationcode" class="form-control" id="confirmationcode" aria-describedby="emailHelp" placeholder="Enter confirmation code">
         </div>
-        <button id="RecoverPassword" type="button" class="btn btn-primary col-sm-12 col-md-5 mt-1 mb-1">
+        <button id="RecoverPassword" type="button" class="btn btn-primary col-sm-12 mt-1 mb-1">
             Update Password <i class="fas fa-sign-in-alt"></i>
         </button>
       </div>
@@ -88,8 +88,8 @@ $(function() {
     cognitoUser.confirmPassword($('#confirmationcode').val(), $('#password').val(), {
       onSuccess: function (result) {
           console.log('Successfully reset password');
-          $.notify('Your password was successfully reset.<br/>You will automatically be redirected to the login screen in 5 seconds...', 'success');
-          setTimeout(function() { location.href = 'login.htm'}, 5000);
+          $.notify('Your password was successfully reset.', 'success');
+          setTimeout(function() { location.href = 'login.htm'}, 2000);
       },
       onFailure: function(err) {
           alert(err.message);
