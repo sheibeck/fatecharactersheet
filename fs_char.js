@@ -74,7 +74,7 @@
       slugify: function (val) {
           return fatesheet.slugify(val);
       },
-      getCharacterValue: function(data, item) {                
+      getCharacterValue: function(data, item) {
           var itemValue = eval('data.' + item);
           return itemValue;
       }
@@ -274,7 +274,30 @@
       });
     }
 
+    fs_char.getShareUrl = function($obj) {
+      var baseUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+location.pathname;
+      var shareUrl = baseUrl + $obj.prev().attr('href');
+
+      var tempInput = document.createElement("input");
+      tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+      tempInput.value = shareUrl;
+      console.log(shareUrl);
+
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+
+      $.notify('Copied character url to clipboard', 'success');
+    }
+
     function domEvents() {
+        $(document).on('click', '.js-share-character', function (e) {
+            e.preventDefault();
+
+            fs_char.getShareUrl($(this));
+        });
+
         $(document).on('click', '.js-delete-character', function (e) {
             e.preventDefault();
 
