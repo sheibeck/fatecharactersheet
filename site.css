@@ -121,7 +121,6 @@ textarea:-ms-input-placeholder {
 /* print styles */
 @media print {
     div.sheet:last-child {
-      width: 8.5in;
       height: 11in;      
       page-break-after: auto !important;
     }
