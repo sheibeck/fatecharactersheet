@@ -63,7 +63,7 @@ $(function() {
 
   $('#RecoverPassword').on('click', function() {
     if ($('#email').val() == '') {
-      alert('You must enter your email address.');
+      fatesheet.notify('You must enter your email address.');
       return;
     }
 
@@ -81,7 +81,7 @@ $(function() {
             location.href = 'confirm.htm?u=' + $('#email').val();
         },
         onFailure: function(err) {
-            alert(err.message);
+            fatesheet.notify(err.message || JSON.stringify(err));
         }
     });
 

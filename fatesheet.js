@@ -176,6 +176,29 @@ String.prototype.toTitleCase = function () {
 
     }
 
+    fatesheet.notify = function(message, type, timeout, callback) {
+      Noty.closeAll();
+
+      if (!type)
+      {
+        type = 'error';
+      }
+
+      if (!timeout) {
+        timeout = false;
+      }
+
+      new Noty({
+          theme: 'metroui',
+          type: type,
+          timeout: timeout,
+          text: message,
+          callbacks: {
+            onClose: callback || null,
+          }
+      }).show();
+    }
+
 
   /***************
     AUTHENTICATION
@@ -198,12 +221,12 @@ String.prototype.toTitleCase = function () {
 
       userPool.signUp(email, password, null, null, function(err, result){
           if (err) {
-              $.notify(err.message, 'error');
+              fatesheet.notify(err.message || JSON.stringify(err));
               return;
           }
           cognitoUser = result.user;
           console.log('user name is ' + cognitoUser.getUsername());
-          $.notify('Successfully registered. Please check your email for a verification link.', 'success');
+          fatesheet.notify('Successfully registered. Please check your email for a verification link.', 'success', 2000);
 
           setTimeout(function() { document.location = 'login.htm' }, 2000);
       });
@@ -248,7 +271,7 @@ String.prototype.toTitleCase = function () {
           },
 
           onFailure: function(err) {
-              $.notify(err.message || JSON.stringify(err), 'error');
+              fatesheet.notify(err.message || JSON.stringify(err));
           },
 
       });
@@ -266,7 +289,7 @@ String.prototype.toTitleCase = function () {
         if (cognitoUser != null) {
             cognitoUser.getSession(function(err, session) {
                 if (err) {
-                    $.notify(err.message || JSON.stringify(err), 'error');
+                    fatesheet.notify(err.message || JSON.stringify(err));
                     return;
                 }
                 console.log('session validity: ' + session.isValid());

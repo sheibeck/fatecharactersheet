@@ -69,13 +69,13 @@ $(function() {
   $('#RegisterCognito').on('click', function() {
     if ($('#password').val() != $('#passwordConfirm').val())
     {
-      $.notify('Passwords do not match.', 'error');
+      fatesheet.notify('Passwords do not match.' 'error', 3000);
       return false;
     }
 
     if (!validateEmail($('#email').val()))
     {
-      $.notify('Email is not valid.', 'error');
+      fatesheet.notify('Email is not valid.', 'error', 3000);
       return false;
     }
 
