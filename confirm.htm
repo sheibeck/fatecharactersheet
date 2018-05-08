@@ -67,15 +67,15 @@ $(function() {
 
   $('#RecoverPassword').on('click', function() {
     if ($('#email').val() == '') {
-      alert('You must enter your email address.');
+      fatesheet.notify('You must enter your email address.');
       return;
     }
     if ($('#password').val() == '') {
-      alert('You must enter your new password.');
+      fatesheet.notify('You must enter your new password.');
       return;
     }
     if ($('#confirmationcode').val() == '') {
-      alert('You must enter your confirmation code from your email.');
+      fatesheet.notify('You must enter your confirmation code from your email.');
       return;
     }
 
@@ -88,11 +88,10 @@ $(function() {
     cognitoUser.confirmPassword($('#confirmationcode').val(), $('#password').val(), {
       onSuccess: function (result) {
           console.log('Successfully reset password');
-          $.notify('Your password was successfully reset.', 'success');
-          setTimeout(function() { location.href = 'login.htm'}, 2000);
+          fatesheet.notify('Your password was successfully reset.', 'success', 2000, function() { location.href = 'login.htm'});
       },
       onFailure: function(err) {
-          alert(err.message);
+          fatesheet.notify(err.message || JSON.stringify(err));
       }
     });
 

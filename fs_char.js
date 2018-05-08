@@ -233,12 +233,11 @@
 
             docClient.put(params, function (err, data) {
                 if (err) {
-                    $.notify(err.code, 'error');
+                    fatesheet.notify(err.message || JSON.stringify(err));
                     console.error("Unable to save item. Error JSON:", JSON.stringify(err, null, 2));
                 } else {
-                    $.notify('Character saved.', 'success');
+                    fatesheet.notify('Character saved.', 'success', 2000);
                     console.log("Added item:", JSON.stringify(data, null, 2));
-
                 }
             });
         }
@@ -261,15 +260,12 @@
       console.log("Deleting a character...");
       docClient.delete(params, function (err, data) {
           if (err) {
-              $.notify(err.code, 'error');
+              fatesheet.notify(err.message || JSON.stringify(err));
               console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
           } else {
               $('#modalDeleteCharacterConfirm').modal('hide');
-              $.notify('Character deleted.', 'success');
+              fatesheet.notify('Character deleted.', 'success', 2000, function() { fs_char.listCharacters(fatesheet.config.content) });
               console.log("Added item:", JSON.stringify(data, null, 2));
-
-              //back to the character list screen
-              setTimeout(fs_char.listCharacters(fatesheet.config.content), 1000);
           }
       });
     }
@@ -288,7 +284,7 @@
       document.execCommand("copy");
       document.body.removeChild(tempInput);
 
-      $.notify('Copied character url to clipboard', 'success');
+      fatesheet.notify('Copied character url to clipboard', 'info', 2000);
     }
 
     function domEvents() {

@@ -94,7 +94,7 @@
             } else {
               if (data.Item)
               {
-                $.notify('You already have an adversary with this name.', 'danger');
+                fatesheet.notify('You already have an adversary with this name.', 'info', '2000');
               }
               else {
                   // create a new creature
@@ -106,14 +106,15 @@
                   console.log("Adding a new adversary...");
                   docClient.put(params, function (err, data) {
                       if (err) {
-                          $.notify(err.code, 'error');
+                          fatesheet.notify(err.message || JSON.stringify(err));
                           console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
                       } else {
-                          $.notify('Adversary added.', 'success');
+                          fatesheet.notify('Adversary added.', 'success', 2000, function() {
+                            fs_adversary.listAdversaries($('#search-text').val())
+                          } );
                           console.log("Added item:", JSON.stringify(data, null, 2));
-                          fs_adversary.clearAdversaryForm();
 
-                          setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
+                          fs_adversary.clearAdversaryForm();
                       }
                   });
               }
@@ -134,18 +135,14 @@
         console.log("Deleting an adversary...");
         docClient.delete(params, function (err, data) {
             if (err) {
-                $.notify(err.code, 'error');
+                fatesheet.notify(err.message || JSON.stringify(err));
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
                 $('#modalDeleteAdversaryConfirm').modal('hide');
-                $.notify('Adversary deleted.', 'success');
-
-                setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
+                fatesheet.notify('Adversary deleted.', 'success', 2000, function() {
+                  fs_adversary.listAdversaries($('#search-text').val());
+                } );
                 fs_adversary.clearAdversaryForm();
-
-                $('.js-adversary-list').removeClass('hidden');
-                $('#adversaryForm').addClass('hidden');
-
                 console.log("Added item:", JSON.stringify(data, null, 2));
             }
         });
@@ -178,15 +175,12 @@
         console.log("Updating adversary...");
         docClient.update(params, function (err, data) {
             if (err) {
-                $.notify(err.code, 'error');
+                fatesheet.notify(err.message || JSON.stringify(err));
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
-                $.notify('Adversary updated.', 'success');
+                fatesheet.notify('Adversary updated.', 'success', 2000, function() {fs_adversary.listAdversaries($('#search-text').val()} );
                 console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             }
-
-            //refresh the list of adversaries
-            setTimeout(fs_adversary.listAdversaries($('#search-text').val()), 1000);
         });
     }
 
@@ -226,6 +220,9 @@
     };
 
     fs_adversary.listAdversaries = function (searchText) {
+      $('.js-adversary-list').removeClass('hidden');
+      $('#adversaryForm').addClass('hidden');
+
       //make sure the search text is up to snuff
       $('#search-text').val(searchText).change();
 
