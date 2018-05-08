@@ -88,8 +88,7 @@ $(function() {
     cognitoUser.confirmPassword($('#confirmationcode').val(), $('#password').val(), {
       onSuccess: function (result) {
           console.log('Successfully reset password');
-          fatesheet.notify('Your password was successfully reset.', 'success', 2000);
-          setTimeout(function() { location.href = 'login.htm'}, 2000);
+          fatesheet.notify('Your password was successfully reset.', 'success', 2000, function() { location.href = 'login.htm'});
       },
       onFailure: function(err) {
           fatesheet.notify(err.message || JSON.stringify(err));

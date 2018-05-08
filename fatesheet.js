@@ -226,9 +226,7 @@ String.prototype.toTitleCase = function () {
           }
           cognitoUser = result.user;
           console.log('user name is ' + cognitoUser.getUsername());
-          fatesheet.notify('Successfully registered. Please check your email for a verification link.', 'success', 2000);
-
-          setTimeout(function() { document.location = 'login.htm' }, 2000);
+          fatesheet.notify('Successfully registered. Please check your email for a verification link.', 'success', 2000, function() { document.location = 'login.htm' });
       });
     }
 
