@@ -1,11 +1,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <!-- css libraries -->
-<link rel="stylesheet" 
-		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<style>	
+<style>
     @import url('https://fonts.googleapis.com/css?family=Archivo+Black');
 
 	.sheet {
@@ -13,12 +13,12 @@
 		margin-top: 40px;
 		max-width: 1024px;
 	}
-	
-	.fate-logo {		
+
+	.fate-logo {
 		margin-top: -27px;
 		max-height: 130px;
 	}
-	
+
 	.fate-header {
         font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
@@ -29,51 +29,51 @@
 		margin-top: 5px;
 		font-size: 22px;
 	}
-	
+
 	.col-form-label {
         font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		font-size: 22px;
 		font-weigth: 700;
 	}
-	
+
 	.fate-skills .form-group {
 		margin-bottom: 12px;
 		margin-top: 12px;
 	}
-	
+
 	.fate-skills .col-form-label {
         font-family: 'Archivo Black', sans-serif;
 		font-size: 10px;
 		font-weigth: 600;
 		color: gray;
 	}
-	
+
 	.fate-aspects .form-group {
 		margin-bottom: 12px;
 		margin-top: 0px;
 	}
-		
+
 	.fate-consequences .form-group {
 		margin-bottom: 0px;
 		margin-top: 1px;
 	}
-	
+
 	input[type=checkbox] {
 		height: 50px;
 		width: 50px;
 	}
-	
+
 	.fate-consequences label {
         font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
 		font-weight: 700;
-		font-size: 28px;		
+		font-size: 28px;
 		padding-top: 0px;
 		padding-bottom: 0px;
 		padding-left: 25px;
 	}
-	
+
 	.fate-stress label {
         font-family: 'Archivo Black', sans-serif;
         text-transform: uppercase;
@@ -82,15 +82,15 @@
 		margin-left: -5px;
 		margin-right: -5px;
 	}
-	
+
 	.stat-requirement {
 		color: #ccc
 	}
-	
+
 	select {
 		font-size: 0.85em !important;
 	}
-	
+
 </style>
 
 <div class="sheet">
@@ -98,12 +98,12 @@
     <input type="hidden" id="system" name="system" value="core" />
 	<div class="row">
 		<div class="col-sm-6 col-md-4 order-md-2">
-			<div class="row">	
+			<div class="row">
 				<div class="col text-center">
-					<img alt="FATE CORE" class="img-fluid fate-logo" src="sheets/fate-core/logo.png" />						
+					<img alt="FATE CORE" class="img-fluid fate-logo" src="sheets/fate-core-custom/logo.png" />						
 				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-6 text-center">
 					<div for="refresh" class="fate-header">Refresh</div>
@@ -115,19 +115,19 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="col-sm-6 col-md-8 order-md-1">
 			<div class="form-group">
 				<div for="name" class="fate-header">ID</div>
 				<input type="text" class="form-control" id="name" name="name" placeholder="Name" />
 			</div>
-		  
+
 			<div class="form-group">
 				<textarea class="form-control" id="description" name="description" rows="3" placeholder="Description"></textarea>
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<!-- aspects -->
 		<div class="col-sm-12 col-md-4 fate-aspects">
@@ -150,12 +150,12 @@
 				<input type="text" class="form-control" value="" id="aspect[other3]" name="aspect[other3]" placeholder="Aspect" />
 			</div>
 		</div>
-		
+
 		<div class="col-sm-12 col-md-8 fate-skills">
 			<div class="form-group mt-0">
 				<div class="fate-header">Skills</div>
 			</div>
-			
+
 			<div class="form-group row mr-0">
 			  <label class="col-xs-12 pr-md-0 col-md-2 col-form-label">Superb (+5)</label>
 			  <div class="col-xs-12 col-md-2 p-md-0">
@@ -174,7 +174,7 @@
 				<input type="text" class="form-control" id="skill[superb][s5]" name="skill[superb][s5]" placeholder="" />
 			  </div>
 			</div>
-			
+
 			<div class="form-group row mr-0">
 			  <label class="col-xs-12 pr-md-0 col-md-2 col-form-label">Great (+4)</label>
 			  <div class="col-xs-12 col-md-2 p-md-0">
@@ -193,7 +193,7 @@
 				<input type="text" class="form-control" id="skill[great][s5]" name="skill[great][s5]" placeholder="" />
 			  </div>
 			</div>
-			
+
 			<div class="form-group row mr-0">
 			  <label class="col-xs-12 pr-md-0 col-md-2 col-form-label">Good (+3)</label>
 			  <div class="col-xs-12 col-md-2 p-md-0">
@@ -212,7 +212,7 @@
 				<input type="text" class="form-control" id="skill[good][s5]" name="skill[good][s5]" placeholder="" />
 			  </div>
 			</div>
-			
+
 			<div class="form-group row mr-0">
 			  <label class="col-xs-12 pr-md-0 col-md-2 col-form-label">Fair (+2)</label>
 			  <div class="col-xs-12 col-md-2 p-md-0">
@@ -231,7 +231,7 @@
 				<input type="text" class="form-control" id="skill[fair][s5]" name="skill[fair][s5]" placeholder="" />
 			  </div>
 			</div>
-			
+
 			<div class="form-group row mr-0">
 			  <label class="col-xs-12 pr-md-0 col-md-2 col-form-label">Average (+1)</label>
 			  <div class="col-xs-12 col-md-2 p-md-0">
@@ -252,25 +252,25 @@
 			</div>
 		</div>
 	</div>
-	
-	<div class="row">		
+
+	<div class="row">
 		<div class="col-sm-12 col-md-6">
 			<div class="form-group">
 				<div for="stunts" class="fate-header">Stunts</div>
 				<textarea class="form-control" id="stunts" name="stunts" rows="23" placeholder="Stunts"></textarea>
-			</div>			
+			</div>
 		</div>
 		<div class="col-sm-12 col-md-6">
 			<div class="form-group">
 				<div for="stunts" class="fate-header">Extras</div>
 				<textarea class="form-control" id="extras" name="extras" rows="23" placeholder="Extras"></textarea>
-			</div>			
+			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-sm-12 col-md-6 fate-stress">
-				<!-- physical stress -->			
+				<!-- physical stress -->
 				<div class="form-group">
 					<div for="" class="fate-header">Physical Stress</div>
 				</div>
@@ -281,14 +281,14 @@
 					  </label>
 					  <input type="checkbox" value="1" id="stress[stress1]" name="stress[stress1]">
 					</div>
-					
+
 					<div class="col">
 					  <label for="stress">
 						2
 					  </label>
-					  <input type="checkbox" value="2" id="stress[stress2]" name="stress[stress2]">			 
+					  <input type="checkbox" value="2" id="stress[stress2]" name="stress[stress2]">
 					</div>
-					
+
 					<div class="col">
 					  <label class="stat-requirement" for="stress">
 						3
@@ -296,16 +296,16 @@
 					  <input type="checkbox" value="3" id="stress[stress3]" name="stress[stress3]">
 					  <span class="figure-caption small">Average+</span>
 					</div>
-					
+
 					<div class="col">
 					  <label class="stat-requirement" for="stress">
 						4
 					  </label>
-					  <input type="checkbox" value="3" id="stress[stress4]" name="stress[stress4]" class="mb-0">	
-					  <span class="figure-caption small text-center">Good+</span>					  
+					  <input type="checkbox" value="3" id="stress[stress4]" name="stress[stress4]" class="mb-0">
+					  <span class="figure-caption small text-center">Good+</span>
 					</div>
 				</div>
-			
+
 				<!-- mental stress -->
 				<div class="form-group">
 					<div for="" class="fate-header">Mental Stress</div>
@@ -317,28 +317,28 @@
 					  </label>
 					  <input type="checkbox" value="1" id="stress[mental1]" name="stress[mental1]">
 					</div>
-					
+
 					<div class="col">
 					  <label for="stress">
 						2
 					  </label>
-					  <input type="checkbox" value="2" id="stress[mental2]" name="stress[mental2]">			 
+					  <input type="checkbox" value="2" id="stress[mental2]" name="stress[mental2]">
 					</div>
-					
+
 					<div class="col">
 					  <label class="stat-requirement" for="stress">
 						3
 					  </label>
-					  <input type="checkbox" value="3" id="stress[mental3]" name="stress[mental3]">	
-					  <span class="figure-caption small">Average+</span>					  
+					  <input type="checkbox" value="3" id="stress[mental3]" name="stress[mental3]">
+					  <span class="figure-caption small">Average+</span>
 					</div>
-					
+
 					<div class="col">
 					  <label class="stat-requirement" for="stress">
 						4
 					  </label>
-					  <input type="checkbox" value="3" id="stress[mental4]" name="stress[mental4]">	
-					  <span class="figure-caption small">Good+</span>					  
+					  <input type="checkbox" value="3" id="stress[mental4]" name="stress[mental4]">
+					  <span class="figure-caption small">Good+</span>
 					</div>
 				</div>
 		</div>
@@ -346,38 +346,38 @@
 			<div class="form-group">
 				<div class="fate-header col-12">Consequences</div>
 			</div>
-			
+
 			<div class="form-group row">
 			  <label class="col-2 col-form-label">2</label>
 			  <div class="col-10">
 				<input class="form-control" type="text" value="" id="consequence[mild]" name="consequence[mild]" placeholder="Mild">
 			  </div>
 			</div>
-			
+
 			<div class="form-group row">
 			  <label class="col-2 col-form-label">4</label>
 			  <div class="col-10">
 				<input class="form-control" type="text" value="" id="consequence[moderate]" name="consequence[moderate]" placeholder="Moderate">
 			  </div>
 			</div>
-			
+
 			<div class="form-group row">
 			  <label class="col-2 col-form-label">6</label>
 			  <div class="col-10">
 				<input class="form-control" type="text" value="" id="consequence[severe]" name="consequence[severe]" placeholder="Severe">
 			  </div>
 			</div>
-			
+
 			<div class="form-group row">
 			  <label class="col-2 col-form-label stat-requirement">2</label>
 			  <div class="col-10">
 				<input class="form-control" type="text" value="" id="consequence[mild2]" name="consequence[mild2]" placeholder="Mild">
 				<span class="figure-caption small">Superb+</span>
-			  </div>			  
-			</div>	
+			  </div>
+			</div>
 		</div>
-		
-	</div>	
+
+	</div>
 </div>
 
 
@@ -387,28 +387,28 @@
 
 <script type="text/javascript">
 	// autocalculate stuff
-	function getSkillValue(name) {		
+	function getSkillValue(name) {
 		if (name.indexOf('average') > -1)
 			return 1;
-		
+
 		if (name.indexOf('fair') > -1)
 			return 2;
-		
+
 		if (name.indexOf('good') > -1)
 			return 3;
-				
+
 		if (name.indexOf('great') > -1)
 			return 4;
-		
+
 		if (name.indexOf('superb') > -1)
 			return 5;
-			
+
 		return 0;
 	}
-	
-	function autocalc() {		
-	}	
-	
-	$(function() {		
+
+	function autocalc() {
+	}
+
+	$(function() {
 	});
 </script>
