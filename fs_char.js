@@ -264,11 +264,8 @@
               console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
           } else {
               $('#modalDeleteCharacterConfirm').modal('hide');
-              fatesheet.notify('Character deleted.', 'success', 2000);
+              fatesheet.notify('Character deleted.', 'success', 2000, function() { fs_char.listCharacters(fatesheet.config.content) });
               console.log("Added item:", JSON.stringify(data, null, 2));
-
-              //back to the character list screen
-              setTimeout(fs_char.listCharacters(fatesheet.config.content), 1000);
           }
       });
     }
