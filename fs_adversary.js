@@ -178,7 +178,7 @@
                 fatesheet.notify(err.message || JSON.stringify(err));
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
-                fatesheet.notify('Adversary updated.', 'success', 2000, function() {fs_adversary.listAdversaries($('#search-text').val()} );
+                fatesheet.notify('Adversary updated.', 'success', 2000, function() { fs_adversary.listAdversaries($('#search-text').val()) } );
                 console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             }
         });
