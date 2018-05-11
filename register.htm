@@ -21,6 +21,11 @@
     <link rel="import" href="footer.htm">
 
   	<title>Register - Fate Character Sheet</title>
+
+    <script type="text/javascript">
+      var webComponentsSupported = ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template'));
+      if (!webComponentsSupported) alert('This site uses the HTML Imports feature of Web Components. Your browser does not currently support this. Please use the latest version of Chrome or Opera.')
+    </script>
 </head>
 
 <body>
@@ -58,6 +63,12 @@
   <footer></footer>
 </body>
 </html>
+
+<!-- web components alert -->
+<script type="text/javascript">
+  var webComponentsSupported = ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template'));
+  if (!webComponentsSupported) alert('This site uses the HTML Imports feature of Web Components. Your browser does not currently support this. Please use the latest version of Chrome or Opera.')
+</script>
 
 <script type="text/javascript">
 $(function() {
