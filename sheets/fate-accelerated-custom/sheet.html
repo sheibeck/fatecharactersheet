@@ -1,3 +1,5 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 <!-- css libraries -->
 <link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -29,10 +31,21 @@
 	}
 
 	.col-form-label {
-        font-family: 'Archivo Black', sans-serif;
-        text-transform: uppercase;
+    font-family: 'Archivo Black', sans-serif;
+    text-transform: uppercase;
 		font-size: 22px;
 		font-weigth: 700;
+	}
+
+	input.approachlabel {
+		font-family: 'Archivo Black', sans-serif;
+    text-transform: uppercase;
+		font-size: 22px;
+		font-weigth: 700;
+		border: 0;
+	  outline: 0;
+	  background: transparent;
+	  border-bottom: 1px solid lightgray;
 	}
 
 	.fate-approaches .form-group {
@@ -77,13 +90,13 @@
 </style>
 
 <div class="sheet">
-    <input type="hidden" id="sheetname" name="sheetname" value="fate-accelerated" />
+    <input type="hidden" id="sheetname" name="sheetname" value="fate-accelerated-custom" />
     <input type="hidden" id="system" name="system" value="accelerated" />
 	<div class="row">
 		<div class="col-sm-6 col-md-4 order-md-2">
 			<div class="row">
 				<div class="col text-center">
-					<img alt="FATE ACCELERATED" class="img-fluid fate-logo" src="sheets/fate-accelerated/logo.png" />
+					<img alt="FATE ACCELERATED" class="img-fluid fate-logo" src="sheets/fate-accelerated-custom/logo.png" />
 				</div>
 			</div>
 
@@ -144,44 +157,56 @@
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Careful</label>
+				<div class="col-9">
+				  <input class="form-control approachlabel" type="text" value="" id="approach[label1]" name="approach[label1]" placeholder="Approach Name">
+				</div>
 			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[careful]" name="approach[careful]" placeholder="+">
+					<input class="form-control text-center" type="text" value="" id="approach[approach1]" name="approach[approach1]" placeholder="+">
 			  </div>
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Clever</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[clever]" name="approach[clever]" placeholder="+">
+				<div class="col-9">
+			  	<input class="form-control approachlabel" type="text" value="" id="approach[label2]" name="approach[label2]" placeholder="Approach Name">
+				</div>
+				<div class="col-3">
+					<input class="form-control text-center" type="text" value="" id="approach[approach2]" name="approach[approach2]" placeholder="+">
 			  </div>
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Flashy</label>
+				<div class="col-9">
+			  	<input class="form-control approachlabel" type="text" value="" id="approach[label3]" name="approach[label3]" placeholder="Approach Name">
+				</div>
 			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[flashy]" name="approach[flashy]" placeholder="+">
+					<input class="form-control text-center" type="text" value="" id="approach[approach3]" name="approach[approach3]" placeholder="+">
 			  </div>
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Forceful</label>
-			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[forceful]" name="approach[forceful]" placeholder="+">
+				<div class="col-9">
+				  <input class="form-control approachlabel" type="text" value="" id="approach[label4]" name="approach[label4]" placeholder="Approach Name">
+				</div>
+				<div class="col-3">
+					<input class="form-control text-center" type="text" value="" id="approach[approach4]" name="approach[approach4]" placeholder="+">
 			  </div>
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Quick</label>
+				<div class="col-9">
+			  	<input class="form-control approachlabel" type="text" value="" id="approach[label5]" name="approach[label5]" placeholder="Approach Name">
+				</div>
 			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[quick]" name="approach[quick]" placeholder="+">
+					<input class="form-control text-center" type="text" value="" id="approach[approach5]" name="approach[approach5]" placeholder="+">
 			  </div>
 			</div>
 
 			<div class="form-group row">
-			  <label class="col-9 col-form-label">Sneaky</label>
+				<div class="col-9">
+			  	<input class="form-control approachlabel" type="text" value="" id="approach[label6]" name="approach[label6]" placeholder="Approach Name">
+				</div>
 			  <div class="col-3">
-				<input class="form-control text-center" type="text" value="" id="approach[sneaky]" name="approach[sneaky]" placeholder="+">
+					<input class="form-control text-center" type="text" value="" id="approach[approach6]" name="approach[approach6]" placeholder="+">
 			  </div>
 			</div>
 		</div>
