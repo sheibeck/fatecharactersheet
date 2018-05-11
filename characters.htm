@@ -88,5 +88,11 @@
 
   <!-- Go to www.addthis.com/dashboard to customize your tools -->
   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5aba8fd219ea6151"></script>
+
+  <!-- web components alert -->
+  <script type="text/javascript">
+    var webComponentsSupported = ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template'));
+    if (!webComponentsSupported) alert('This site uses the HTML Imports feature of Web Components. Your browser does not currently support this. Please use the latest version of Chrome or Opera.')
+  </script>
 </body>
 </html>
