@@ -309,7 +309,8 @@
 
               //dynamodb doesn't order items, it's a NODB. WE'll manually tweak a few
               // things to try and make them consistent
-              $.each(data.Items, function(i, v) {
+              var adversaries = data.Items.sort(function(a,b) {return (a["adversary_name"] > b["adversary_name"]) ? 1 : ((b["adversary_name"] > a["adversary_name"]) ? -1 : 0);} );
+              $.each(adversaries, function(i, v) {
                 if (v.adversary_aspects)
                 {
                   const orderedAspects = {};
