@@ -336,7 +336,7 @@
                 });
                 v.adversary_consequences = orderedConsequences;
               });
-              var htmlOutput = template.render(data.Items, fate_adversary_helpers);
+              var htmlOutput = template.render(adversaries, fate_adversary_helpers);
               $("#adversaryDetail").html(htmlOutput);
           }
       });
@@ -443,14 +443,14 @@
     }
 
     fs_adversary.adversaryAddConsequences = function(aConsequences) {
-      $('.js-adversary-consequence.adversary-item-copy', '#adversaryForm').remove();
+      $('.js-adversary-consequences.adversary-item-copy', '#adversaryForm').remove();
       $('.js-adversary-consequences input', '#adversaryForm').val('');
       $('.js-adversary-consequences textarea', '#adversaryForm').val('');
 
       for( var i = 0; i < aConsequences.length-1; i++) {
-        fs_adversary.appendDeletableRow($(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last"));
+        fs_adversary.appendDeletableRow($(".js-adversary-consequences:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequences:last"));
       };
-      $.each($('.js-adversary-consequence'), function(i, val) {
+      $.each($('.js-adversary-consequences'), function(i, val) {
         $(this).find('input[name="adversary_consequences[name]"]').val(aConsequences[i][0]);
         $(this).find('textarea[name="adversary_consequences[value]"]').val(aConsequences[i][1]);
       })
@@ -507,13 +507,13 @@
       });
 
       $(document).on('click', '.js-add-consequence', function (e) {
-         var $item = $(".js-adversary-consequence:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequence:last")
+         var $item = $(".js-adversary-consequences:first").clone().addClass('adversary-item-copy').insertAfter(".js-adversary-consequences:last")
             $('div:first', $item).addClass('input-group-prepend')
               .append('<div class="input-group-text btn btn-danger js-delete-adversary-item">X</div>');
       });
 
       $(document).on('click', '.js-add-consequence-default', function (e) {
-          var aConsequences = [["Mild","-2"],["Moderate","-4"],["Severe","-2"]]
+          var aConsequences = [["Mild","-2"],["Moderate","-4"],["Severe","-6"]]
           fs_adversary.adversaryAddConsequences(aConsequences);
       });
 
