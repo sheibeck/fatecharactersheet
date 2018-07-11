@@ -154,7 +154,7 @@
                     <div class="form-group row">
                         <label for="name" class="col-sm-12 col-md-2 col-form-label">Consequences</label>
                         <div class="col-sm-12 col-md-10">
-                            <div class="row js-adversary-consequence">
+                            <div class="row js-adversary-consequences">
                                 <div class="col-12">
                                     <input class="form-control" type="text" value="" name="adversary_consequences[name]" id="adversary_consequences[name]" placeholder="Consequence Name (Mild, Serious, Exhausted)">
                                 </div>
@@ -262,6 +262,13 @@
                 {{/props }}
                 {{/if}}
 
+                {{if ~isEmpty(adversary_stunts) !== true}}
+                <h5 class='card-header py-0'>Stunts</h5>
+                {{props adversary_stunts}}
+                <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>
+                {{/props}}
+                {{/if}}
+
                 {{if ~isEmpty(adversary_stress) !== true}}
                 <h5 class='card-header py-0'>Stress</h5>
                 {{/if}}
@@ -269,11 +276,13 @@
                 <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:~stress(prop)}}</p>
                 {{/props }}
 
-                {{if ~isEmpty(adversary_stunts) !== true}}
-                <h5 class='card-header py-0'>Stunts</h5>
-                {{props adversary_stunts}}
-                <p class='card-text px-4 my-0'><strong>{{:~fixLabel(key)}}:</strong> {{:prop}}</p>
-                {{/props}}
+                {{if ~isEmpty(adversary_consequences) !== true}}
+                <h5 class='card-header py-0'>Consequences</h5>
+                {{props adversary_consequences}}
+                <p class='card-text px-4 my-0'>
+                    <strong>{{:~fixLabel(key)}}:</strong> {{:prop}}
+                </p>
+                {{/props }}
                 {{/if}}
 
                 <div class='card-footer'>
