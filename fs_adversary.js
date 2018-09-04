@@ -338,6 +338,15 @@
               });
               var htmlOutput = template.render(adversaries, fate_adversary_helpers);
               $("#adversaryDetail").html(htmlOutput);
+
+              //make the display wider if we only have 1 adversary
+              if ($('.card').length === 1)
+              {
+                $('#adversaryDetail').removeClass('card-columns');
+              }
+              else {
+                $('#adversaryDetail').addClass('card-columns');
+              }
           }
       });
     }
@@ -568,8 +577,12 @@
       $(document).on('show.bs.modal', '#modalDeleteAdversaryConfirm', function (event) {
           var modal = $(this);
       })
-    }
 
+      new Taggle('adversary_tags', {
+        tags: ['These', 'are', 'prefilled', 'tags']
+      });
+    }
+    
     function configEnvironment(env) {
       switch (env) {
           case 'develop':

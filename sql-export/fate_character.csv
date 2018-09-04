@@ -1,0 +1,209 @@
+"character_owner_id (S)","character_id (S)","aspect (M)","sheetname (S)","system (S)","name (S)","consequence (M)","stunts (S)","refresh (S)","fatepoints (S)","skill (M)","description (S)","approach (M)","extras (S)","stress (M)","condition (M)","gear (S)","insanity (S)","spells (S)"
+"10105808477017433","4b04ca76-3223-4071-b9c6-5cffd3922212","{  ""highconcept"" : { ""S"" : ""Expert Sharpshooter"" },  ""other1"" : { ""S"" : ""Honorable"" },  ""other2"" : { ""S"" : ""My Father's Pistols from the Revolution"" },  ""other3"" : { ""S"" : ""New to the City"" },  ""trouble"" : { ""S"" : ""Thrillseeker"" }}","fate-core","core","HONORABLE SHARPSHOOTER","{}","Expert Shot—When aspects are invoked to defend against you shooting an opponent (or opponents), the invocations only give a +1 bonus instead of the usual +2.
+
+My Father Was a Revolutionary Hero—Because of your father's reputation when citizens of [City] attack you socially it is harder for their words to stick. Reduce any social stress from a [City] citizen by two.
+
+Better at Doing it the Dangerous Way—When using Athletics to Overcome an obstacle, if your physical safety is at risk you get a +2 to the roll. Yes, this means that you can intentionally choose to do something easy in a more dangerous way to get the bonus.",,,"{  ""average"" : { ""M"" : {    }  },  ""fair"" : { ""M"" : {    }  },  ""good"" : { ""M"" : {    }  },  ""great"" : { ""M"" : {    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"10215736143176104","c6ab159d-b5e2-44ca-853c-014525422af0","{  ""highconcept"" : { ""S"" : ""Resistance Sniper"" },  ""other1"" : { ""S"" : ""Former Wheelman"" },  ""other2"" : { ""S"" : ""Shoulda Been a Family Man"" },  ""other3"" : { ""S"" : ""No More Shackles"" },  ""trouble"" : { ""S"" : ""Haunted by My Past"" }}","fate-accelerated","default","Mac",,"Fortify
+Gain +2 to Quickly Create an Advantage by fortifying a location in preparation for an attack.
+ 
+Show of Strength
+Gain +2 to Flashily Create an advantage by building rapport with rough and tumble types.
+ 
+The Easy Way
+Gain +2 to Flashily Overcome when talking someone out of violence.",,,,,"{  ""careful"" : { ""S"" : ""3"" },  ""clever"" : { ""S"" : ""1"" },  ""flashy"" : { ""S"" : ""0"" },  ""forceful"" : { ""S"" : ""2"" },  ""quick"" : { ""S"" : ""1"" },  ""sneaky"" : { ""S"" : ""2"" }}",,,,,,
+"10215736143176104","de155344-2908-4999-a224-591e9d366749","{  ""highconcept"" : { ""S"" : ""Courageous Dwarven Paladin"" },  ""other1"" : { ""S"" : ""Protector of the Down Trodden"" },  ""trouble"" : { ""S"" : ""Bound by the Oath of the Ancients"" }}","fate-accelerated","default","Rurick Ungart",,"Divine Favor - Once per scene, you may channel the divine, gaining +2 to attack evil opponents.
+ 
+Shield of Faith - Gain +2 to Flashily defend an ally against an evil opponent.
+ 
+Contagious Optimism - Gain +2 to Overcome by cheering up an ally.
+ 
+Aid - Once per session, spend an action to clear one stress point from all nearby allies.","2","2",,,"{  ""careful"" : { ""S"" : ""+1"" },  ""clever"" : { ""S"" : ""+2"" },  ""flashy"" : { ""S"" : ""+2"" },  ""forceful"" : { ""S"" : ""+3"" },  ""quick"" : { ""S"" : ""+1"" },  ""sneaky"" : { ""S"" : ""0"" }}",,,,,,
+"us-east-1:3c2c4a69-5761-4159-a84f-226cc37aff31","8be93657-b3c8-40eb-a5be-9c89dd964da7","{  ""highconcept"" : { ""S"" : ""Special Agent of Shadow Lodge"" },  ""other1"" : { ""S"" : ""Curses are my jam !"" },  ""other2"" : { ""S"" : ""Self Confident"" },  ""trouble"" : { ""S"" : ""Low-key Sadist"" }}","fate-accelerated","accelerated","Giovanna Blackword","{}","Whip of Crascium
++2 Flashy when using whip to cast curses","3","3",,,"{  ""careful"" : { ""S"" : ""1"" },  ""clever"" : { ""S"" : ""1"" },  ""flashy"" : { ""S"" : ""3"" },  ""forceful"" : { ""S"" : ""0"" },  ""quick"" : { ""S"" : ""2"" },  ""sneaky"" : { ""S"" : ""2"" }}",,,,,,
+"us-east-1:229273e1-5310-46df-811d-3db70d8e252a","bfa05a72-a44b-47bc-9064-0ee91eee6d75","{  ""highconcept"" : { ""S"" : ""I wanna be a hero!"" },  ""other1"" : { ""S"" : ""Hero Notebook"" },  ""other2"" : { ""S"" : ""More Power Than I Can Handle"" },  ""trouble"" : { ""S"" : ""Standing in All Might's Shadow"" }}","fate-core-custom","core","Izuku ""Deku"" Miidoriya","{}","One for All!:
+Once per session if his ""I wanna be a hero!"" aspect is invoked, he can roll at All-Might's scale.
+
+C'mon, think!:
+When he uses Attentive to create advantage by studying their quirk, he gets an extra invoke.
+
+I know them!:
+When trying to recognize a hero, he gets +2 to his Attentive roll to Overcome.",,,"{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Attentive"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Strategic"" },      ""s2"" : { ""S"" : ""Courageous"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Selfless"" }    }  },  ""great"" : { ""M"" : {    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"us-east-1:baf5d1d0-b8d0-44cb-a1f7-7a6951f962f1","2ea8fa8b-21dd-47e4-be8f-d3de6177e494","{  ""highconcept"" : { ""S"" : ""Regelaffine Mikrobiologin"" },  ""other1"" : { ""S"" : ""Ich habe davon schonmal gelesen!"" },  ""other2"" : { ""S"" : ""Mein Vater wollte eigentlich einen Jungen"" },  ""other3"" : { ""S"" : ""Im Zweifel, traue niemandem"" },  ""trouble"" : { ""S"" : ""Empathielose Einzelgängerin"" }}","fate-core-custom","core","Eliana Lenvarez (Ellen)                                                                                                        Roxi","{}","Spezialist: Biologie | +2 bei Wissensproben
+
+Krav Maga | (1x pro Szene) +2 beim Kämpfen","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Heimlichkeit"" },      ""s2"" : { ""S"" : ""Kraft"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Nachforsch."" },      ""s2"" : { ""S"" : ""Kämpfen"" },      ""s3"" : { ""S"" : ""Wille"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Wahrnehm."" },      ""s2"" : { ""S"" : ""Täuschung"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Wissen"" }    }  },  ""superb"" : { ""M"" : {    }  }}","Mikrobiologin der Terraformingabteilung der Helios Station
+36 Jahre alt, Astronautin & seit 5 Jahren auf der Station",,,"{  ""mental3"" : { ""S"" : ""3"" },  ""stress3"" : { ""S"" : ""3"" }}",,,,
+"us-east-1:baf5d1d0-b8d0-44cb-a1f7-7a6951f962f1","b8f3e96a-1ef4-4a73-944b-5d7df4d01b58","{  ""highconcept"" : { ""S"" : ""Ich beschütze meine Freunde, komme was wolle"" },  ""other1"" : { ""S"" : ""Was Chef sagt, wird gemacht"" },  ""other2"" : { ""S"" : ""Mit dem Kopf durch die Wand"" },  ""trouble"" : { ""S"" : ""Erst schießen, dann fragen"" }}","fate-core-custom","core","Vladimir Shephard","{}",,,,"{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Wille"" },      ""s2"" : { ""S"" : ""Täuschung"" },      ""s3"" : { ""S"" : ""Charisma"" },      ""s4"" : { ""S"" : ""Heimlichkeit"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Kämpfen"" },      ""s2"" : { ""S"" : ""Diebeskunst"" },      ""s3"" : { ""S"" : ""Wahrnehm."" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Kraft"" },      ""s2"" : { ""S"" : ""Athletik"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Schießen"" }    }  },  ""superb"" : { ""M"" : {    }  }}","Eine der Wachmänner der Helios Station",,,"{  ""mental3"" : { ""S"" : ""3"" },  ""stress3"" : { ""S"" : ""3"" },  ""stress4"" : { ""S"" : ""3"" }}",,,,
+"us-east-1:baf5d1d0-b8d0-44cb-a1f7-7a6951f962f1","bd5fbdfb-0a92-4e86-ad77-e2e5c3e2e197","{  ""highconcept"" : { ""S"" : ""Wissbegierige Ingenieurin"" },  ""other1"" : { ""S"" : ""Regeln sind nur Vorschläge"" },  ""other2"" : { ""S"" : ""Ich muss der Sache auf den Grund gehen"" },  ""other3"" : { ""S"" : ""Mad Scientist"" },  ""trouble"" : { ""S"" : ""Problem mit Authorität"" }}","fate-core-custom","core","Olivia                                                                                                                               Neele","{}","Sting Like A Bee | (Du kannst deine Athletik zum Kämpfen verwenden)
+
+Bastler | (Du musst keinen Fate‑Punkt ausgeben, um das Detail hinzuzufügen, dass du genau die richtigen Werkzeuge dabei hast.)","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Wille"" },      ""s2"" : { ""S"" : ""Empathie"" },      ""s3"" : { ""S"" : ""Naturwiss."" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Athletik"" },      ""s2"" : { ""S"" : ""Wahrnehm."" },      ""s3"" : { ""S"" : ""Sprache"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Handwerk"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Nachforsch."" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,"{  ""mental3"" : { ""S"" : ""3"" }}",,,,
+"us-east-1:baf5d1d0-b8d0-44cb-a1f7-7a6951f962f1","ffd73123-3987-493b-9085-3f16ffc6ea72","{  ""highconcept"" : { ""S"" : ""Einfühlsamer Beschützer"" },  ""other1"" : { ""S"" : ""Lass uns bei einem Tee darüber reden"" },  ""other2"" : { ""S"" : ""Ein Gesicht in der Menge"" },  ""other3"" : { ""S"" : ""Eine Nase für Ärger"" },  ""trouble"" : { ""S"" : ""Ich kann nachts noch ihre Schreie hören"" }}","fate-core-custom","core","Michael Anderson (Mike)                                                                                                 Sören","{}","Berserker (2x pro Session -> im Kampf neu würfeln oder +2)
+
+Combat Medic (+2 auf Wille/Erste Hilfe beim Erzeugen von Aspekten zum Ausruhen oder der Behandlung von Wunden)
+
+Sieh es mal von meiner Seite (1 Fatepunkt einsetzen um mit Empathie zu überzeugen)
+","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Athletik"" },      ""s2"" : { ""S"" : ""Nachforsch."" },      ""s3"" : { ""S"" : ""Kraft"" },      ""s4"" : { ""S"" : ""Erste Hilfe"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Heimlichkeit"" },      ""s2"" : { ""S"" : ""Wahrnehm."" },      ""s3"" : { ""S"" : ""Wille"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Kämpfen"" },      ""s2"" : { ""S"" : ""Schießen"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Empathie"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,"{  ""mental3"" : { ""S"" : ""3"" },  ""stress3"" : { ""S"" : ""3"" }}",,,,
+"us-east-1:5b00d3cf-0de3-4fe8-971a-a67475b784bc","0701ecd9-a8a1-453f-8992-8f883569cac1","{  ""highconcept"" : { ""S"" : ""Proximal retrieval specialist"" },  ""other1"" : { ""S"" : ""Pellet gun Enthusiast"" },  ""trouble"" : { ""S"" : ""I don't kill, and neither will you."" }}","fate-accelerated","accelerated","Brin Kaerne","{}","Pellets for every occasion - 1fp - 
+
+
+
+
+
+
+
+
+Extra  - Proximal - Night vision","2","2",,,"{  ""careful"" : { ""S"" : ""3"" },  ""clever"" : { ""S"" : ""2"" },  ""flashy"" : { ""S"" : ""2"" },  ""forceful"" : { ""S"" : ""0"" },  ""quick"" : { ""S"" : ""1"" },  ""sneaky"" : { ""S"" : ""1"" }}",,,,,,
+"us-east-1:5b00d3cf-0de3-4fe8-971a-a67475b784bc","d3720355-937c-461a-83bb-0734f74b9a4d","{}","fate-accelerated","accelerated","Gyarx Dithi","{}",,,,,"Alpha Centauran","{  ""careful"" : { ""S"" : ""3"" },  ""clever"" : { ""S"" : ""2"" },  ""flashy"" : { ""S"" : ""1"" },  ""forceful"" : { ""S"" : ""0"" },  ""quick"" : { ""S"" : ""1"" },  ""sneaky"" : { ""S"" : ""2"" }}",,,,,,
+"us-east-1:aa6aa097-a8f0-4017-ab72-02a65d6fd129","983d937c-80b8-4e54-a5dc-e5a05a9c13fa","{  ""highconcept"" : { ""S"" : ""Charismatic Cheerleader with Moxy"" },  ""other1"" : { ""S"" : ""The Angel Devil Quirk"" },  ""trouble"" : { ""S"" : ""Haunted by my Dark Family"" }}","fate-core","core","Layla Mara O'Donnell","{}","My Father Will Hear About This: 
+    When using your father's name to provoke, may use Physique 
+    by pointing out your relation to Oppum O'Donnell.
+Cheerleading to Survive
+    Can use Athletics in place of fight when fighting hand to hand 
+    in close quarters combat, but deal one less shift of damage. ","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Lore"" },      ""s2"" : { ""S"" : ""Deceive"" },      ""s3"" : { ""S"" : ""Contacts"" },      ""s4"" : { ""S"" : ""Will"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Burglary"" },      ""s2"" : { ""S"" : ""Provoke"" },      ""s3"" : { ""S"" : ""Empathy"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" },      ""s2"" : { ""S"" : ""Rapport"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Athletics"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"us-east-1:9ed30492-f964-43fc-abd4-4530376cc969","3515ac0a-e8a9-4712-809d-abd30caa6a78","{}","fate-core-custom","core",,"{}","Базовое предвидение: Вы заранее предвидите атаки противника, что позволяет вам использовать Причуду, чтобы защищаться от всех физических атак. Кроме того в конфликте вы всегда действуете раньше других персонажей, не имеющих Предвидения.
+
+Базовая телепортация: Вы можете передвигаться на расстояние до трёх зон за одно действие, если вы видите точку, куда хотите попасть. Если вы лишь частично видите местоположение вам необходимо преодолев неплохую (+2) сложность от Причуды (например: за стойку бара, где вы понимаете примерно расположение предметов, но лишь догадываетесь о том что твориться под ней), если же вы абсолютно не понимаете куда приземлитесь то сложность увеличивается до фантастической (+6). При этом не пройдя проверку вы все равно телепортируетесь, но попутно получаете количество стресса равное остатку, покрыть которое можно лишь последствиями, ибо появившийся в ноге стул, не списать на усталость.
+
+Игрушки: Ваши впечатляющие технологии не возникли из воздуха. Вы получаете +2 к контактам с людьми, которые либо создали их, либо работают в этой сфере.","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Телосложение"" },      ""s2"" : { ""S"" : ""Воля"" },      ""s3"" : { ""S"" : ""Ресурсы"" },      ""s4"" : { ""S"" : ""Образование"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Причуда"" },      ""s2"" : { ""S"" : ""Контакты"" },      ""s3"" : { ""S"" : ""Эмпатия"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Взаимпонимание"" },      ""s2"" : { ""S"" : ""Драка"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Атлетика"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,"Ваша способность видеть будущее так эффективна, что мешает фиксироваться на настоящем. Вы постоянно отвечаете на ещё не заданные вопросы и уклоняетесь от ещё не нанесённых ударов. У вас проблемы со здесь-и-сейчас. За любое использование мастер получает очко “не сейчас”, в любой момент он может потратить их все, снижая любой ваш бросок на 1, за каждый.
+
+Ваша техника не работает без источника энергии, и это не могут быть батарейки из соседнего магазина. У вас ограничено топливо, в начале сцены с использованием ваших сил, вам придется пройти проверку ресурсов от неплохой (+2) сложности, проверив запасы топлива. Иначе вы получаете Липкий аспект “без топлива” или последствие по ресурсам, и не сможете применить ваши силы пока от него не избавитесь",,,,,
+"us-east-1:445d50d1-cfac-4d55-a0be-d80baccd5e10","0c4f720b-2778-459b-a152-67501e51419d","{  ""highconcept"" : { ""S"" : ""Reunite with his Daughter "" }}","fate-core-custom","core",,"{}",,,,"{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Intimidate"" },      ""s2"" : { ""S"" : ""Drive"" },      ""s3"" : { ""S"" : ""Persuasion/Empathy"" },      ""s4"" : { ""S"" : ""Fight"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" },      ""s3"" : { ""S"" : ""Shoot"" },      ""s4"" : { ""S"" : ""Will"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Contacts "" },      ""s3"" : { ""S"" : ""Investigate "" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Notice/Perception"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"us-east-1:445d50d1-cfac-4d55-a0be-d80baccd5e10","a1f7f768-216e-4fc9-94ac-ed837f194afa","{  ""highconcept"" : { ""S"" : ""Reunite with his Daughter "" },  ""other1"" : { ""S"" : ""Only Happiness is Music "" }}","fate-core","core","Steely Dan ","{}",,,,"{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Will"" },      ""s2"" : { ""S"" : ""Physique"" },      ""s3"" : { ""S"" : ""Drive"" },      ""s4"" : { ""S"" : ""Fight"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Shoot"" },      ""s2"" : { ""S"" : ""Rapport"" },      ""s3"" : { ""S"" : ""Stealth"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Contacts"" },      ""s2"" : { ""S"" : ""Investigate"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Notice"" }    }  },  ""superb"" : { ""M"" : {    }  }}","Name's Steely Dan, Private Investigator. Cash only, no checks, no questions asked. Cigarette? No? Good that was my last one. Half my body has been augmented with cybernetics since my incident. Lost my daughter that day. No, no she didn't die. She, uh... I guess you could say we're no longer on speaking terms. She's about 22 now, finishing her degree in... Music history... Yeah I don't get it either. I've been making sure her tuition has been funded through a scholarship I started. She wouldn't accept the money if she knew it came from me. The only thing I have to remember her by is this music player. She found it one day and it was pre loaded with great music. She wrote ""60s-80s"" on it. Don't know what it means, I'm no historian. It's probably the only thing that can make me smile nowadays... Enough about me, who do you need me to find? ",,,,,,,
+"us-east-1:44fbbf95-eb29-43d0-b1dc-f7066ca114f2","3e4b3812-f022-45f1-9232-2aa99a23dc3f","{}","fate-core-custom","core","bob gettem","{}",,,,"{  ""average"" : { ""M"" : {    }  },  ""fair"" : { ""M"" : {    }  },  ""good"" : { ""M"" : {    }  },  ""great"" : { ""M"" : {    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"us-east-1:dbfba00b-1fc7-427c-a7ed-9e0d8f94e935","47e8543f-abd2-467c-a214-5f8c62abc09f","{  ""highconcept"" : { ""S"" : ""Kohein of the goblin Folk"" },  ""other1"" : { ""S"" : ""A little crazy, a little unpredictable"" },  ""other2"" : { ""S"" : ""The aether whispers to me"" },  ""other3"" : { ""S"" : ""Future Masked Lord of the Shadow Fleet"" },  ""trouble"" : { ""S"" : ""A goblin in a tux is still a goblin"" }}","fate-accelerated","accelerated","Danzig's Sixth, High Roller","{}","Stunt:  Because I am the First Goblin Graduate of ""Aloysius Quartermain's School of the Magical Arts for Solo Street Performers,"" I get +2 when I Carefully Create an Advantage when using Animation Magic.","2","0",,"A  goblin, wielding his ancestral naginata, which would be more intimidating if he wasn't wearing a ruffled shirt.","{  ""careful"" : { ""S"" : ""3"" },  ""clever"" : { ""S"" : ""2"" },  ""flashy"" : { ""S"" : ""1"" },  ""forceful"" : { ""S"" : ""0"" },  ""quick"" : { ""S"" : ""1"" },  ""sneaky"" : { ""S"" : ""2"" }}",,,,,,
+"us-east-1:6e0b7d41-cc63-4fcb-a0be-3f3ac6695364","b5cd2213-fcea-45be-ae58-37fb8704b139","{  ""highconcept"" : { ""S"" : ""controlled by Creator"" },  ""other1"" : { ""S"" : "" uncontrollable rage"" },  ""other2"" : { ""S"" : ""heavy body of stone"" },  ""other3"" : { ""S"" : "" unaffiliated by magic"" },  ""trouble"" : { ""S"" : ""no willpower"" }}","fate-core","core","infernoist Golem","{}",,,,"{  ""average"" : { ""M"" : {    }  },  ""fair"" : { ""M"" : {    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Notice"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" }    }  },  ""superb"" : { ""M"" : {    }  }}","hellbound Golem monster",,"special ability: extra
+Fire fist: inflict +1 wound with success with style with fire fist
+Large size: get extra 1 minor consequences box
+Dark vision 60 feet in sight in near pitch darkness
+Fast heal golem can remove a stress box after 2 around
++2 armor +1 damage
+",,,,,
+"us-east-1:c28862b9-5459-4986-a456-b5ba2b72b56b","033065c8-b13d-4f5b-8f7f-40b3385a0cce","{  ""highconcept"" : { ""S"" : ""Do you really know what you're doing"" },  ""other1"" : { ""S"" : ""Git'r Done"" },  ""other2"" : { ""S"" : ""Don't Touch My Shit"" },  ""trouble"" : { ""S"" : ""Remember the Reactor"" }}","fate-core-custom","core","Austin (AC) Casey","{}","Mod the Magnum Opus: Remove Scatter and add +1 to Range and Shoot
+
+Overcharge: +2 damage (adds Hazardous)
+
+Rapid Fire: Adds Recoil + 1 damage","3",,"{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Computer"" },      ""s2"" : { ""S"" : ""Resources"" },      ""s3"" : { ""S"" : ""Explosives"" },      ""s4"" : { ""S"" : ""Physique"" },      ""s5"" : { ""S"" : ""Empathy"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Rapport"" },      ""s2"" : { ""S"" : ""Shoot"" },      ""s3"" : { ""S"" : ""Notice"" },      ""s4"" : { ""S"" : ""Investigate"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Pilot"" },      ""s2"" : { ""S"" : ""Athletics"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Engineering"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,"Magnum Opus: Range: 1 Thermal: 1 (Scatter)
+
+Anamnesis +1 or up to +4 per fate point
+
+Flechette Gun: Kinetic (2) Range (0) (spray) 
+
+3 Rations
+
+3D Compass
+
+Explosive Kit, Invoke for +1 to Explosives. 
+
+Executive Decision: anti-Flash sunglasses
+
+Pump action shotgun; Spray, Range: 1 Kinetic:1 Durable in harsh conditions. 
+
+Ammo
+
+2 Boxes of Shotgun Shells.
+1 Plasma core.",,,,,
+"us-east-1:048f0f3c-9b84-43f4-a36b-41b2fc3ffbed","4163299b-b0c2-42fc-9f02-003a08337edd","{  ""highconcept"" : { ""S"" : ""Dwarven Cleric of Moradin"" },  ""other1"" : { ""S"" : ""Getting too old for this shit"" },  ""other2"" : { ""S"" : ""Part-time baker"" },  ""other3"" : { ""S"" : ""I love my hammer more than my family"" },  ""trouble"" : { ""S"" : ""Can't we just talk this out?"" }}","fate-core","core","Kildrak Healbeard","{}","Dwarven Constitution. +2 to overcome rolls with Physique to resist poisons.
+
+Another Round? +2 to Rapport when drinking with someone in a tavern.
+
+Scholar, Healer. Can make physical recovery attempts with Lore.","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Athletics"" },      ""s2"" : { ""S"" : ""Contacts"" },      ""s3"" : { ""S"" : ""Empathy"" },      ""s4"" : { ""S"" : ""Resources"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Fight"" },      ""s2"" : { ""S"" : ""Notice"" },      ""s3"" : { ""S"" : ""Will"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" },      ""s2"" : { ""S"" : ""Rapport"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Lore"" }    }  },  ""superb"" : { ""M"" : {    }  }}","A beautiful dwarf armed with a holy symbol and his trusty hammer. Loves beer, cracking wise and healing his allies.",,"Dwarven Plate (Armor:2)
+
+Warhammer (Weapon:2)",,,,,
+"us-east-1:751ee817-e152-4ef1-ae3e-87d2451263e5","dc2cb569-00b5-4539-86ba-caf4f2f48d17","{  ""highconcept"" : { ""S"" : ""What is best in life? To create and deconstruct things."" },  ""trouble"" : { ""S"" : ""Must know how machines work."" }}","fate-core-custom","core","Fulcro","{}","I got a tool for that - tool bag either had exactly what I need or something similar enough to get the job done.",,,"{  ""average"" : { ""M"" : {    }  },  ""fair"" : { ""M"" : {    }  },  ""good"" : { ""M"" : {    }  },  ""great"" : { ""M"" : {    }  },  ""superb"" : { ""M"" : {    }  }}","Tinkerer with a background apprenticing in various machine shops.",,,,,,,
+"us-east-1:baa47284-0c57-49d8-9c24-5e9aee097438","4b055696-13b7-49a2-9eb9-7a8721d588ce","{}","fate-accelerated","accelerated","Test","{}",,,,,,"{}",,,,,,
+"us-east-1:91dc38ef-aded-4e20-b54b-c8a0a8fd19b2","8b1f1fb1-b5f1-4386-a249-4ffb27db56ad","{  ""highconcept"" : { ""S"" : ""Quietly Discharged Human Royal Navy Pilot"" },  ""other1"" : { ""S"" : ""Infamous"" },  ""other2"" : { ""S"" : ""SCU Trained in Transference Magic"" },  ""trouble"" : { ""S"" : ""SCU Wants Me Back"" }}","fate-accelerated","accelerated","Noctis Maelborn","{}","Dabble in Alteration Magic
+","3","3",,,"{  ""careful"" : { ""S"" : ""+2"" },  ""clever"" : { ""S"" : ""+2"" },  ""flashy"" : { ""S"" : ""+1"" },  ""forceful"" : { ""S"" : ""+0"" },  ""quick"" : { ""S"" : ""+3"" },  ""sneaky"" : { ""S"" : ""+1"" }}",,,,,,
+"us-east-1:90cff429-f72c-4009-8ff7-ece28ff6a806","6d8a514a-b797-4002-9cad-916fda31e388","{  ""highconcept"" : { ""S"" : ""Chaotic Drow Gravity Mage"" },  ""other1"" : { ""S"" : ""Flexible Morality"" },  ""other2"" : { ""S"" : ""Skilled Rifleman"" },  ""trouble"" : { ""S"" : ""Last Of His Kind"" }}","fate-accelerated-custom","accelerated","Ayrin Varric","{}","Magnetic Field
+   -  All metal objects within 20ft are now magnetized to the center of the field
+
+Quick Thinking
+   -  you are able to gain a +2 to any Magical Role at will
+
+Lever-Action Mag Rifle
+   -  Rifle that shoots Normal Cast Bullets with magnetism 
+","3","3",,,"{  ""approach1"" : { ""S"" : ""3"" },  ""approach2"" : { ""S"" : ""2"" },  ""approach3"" : { ""S"" : ""2"" },  ""approach4"" : { ""S"" : ""1"" },  ""approach5"" : { ""S"" : ""1"" },  ""approach6"" : { ""S"" : ""0"" },  ""label1"" : { ""S"" : ""MAGICAL "" },  ""label2"" : { ""S"" : ""Shoot"" },  ""label3"" : { ""S"" : ""ForceFul"" },  ""label4"" : { ""S"" : ""Sneaky"" },  ""label5"" : { ""S"" : ""Clever"" },  ""label6"" : { ""S"" : ""Careful"" }}",,,,,,
+"10215475866315648","9e37ca16-1207-4c9e-9b71-2a10bc819e03","{  ""highconcept"" : { ""S"" : ""Nasty One-Eyed Kobold Bard"" },  ""other1"" : { ""S"" : ""Insults Are My Specialty"" },  ""other2"" : { ""S"" : ""You Hit Like My Mother"" },  ""other3"" : { ""S"" : ""Bigger Lies Are More Believable"" },  ""trouble"" : { ""S"" : ""Everyone Hates Kobolds"" }}","fate-core","core","Snivelard Yark","{}","Stop Me If You've Heard This: +2 to Deceive rolls when telling a long story.
+You Hit Like My Mother: When Snivelard goes on Full Defense, he gets a +3 instead of a +2.
+Slam Poetry Semifinalist: +2 to Provoke rolls when Creating an Advantage by insulting someone.
+","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Crafts"" },      ""s2"" : { ""S"" : ""Physique"" },      ""s3"" : { ""S"" : ""Stealth"" },      ""s4"" : { ""S"" : ""Will"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Empathy"" },      ""s2"" : { ""S"" : ""Notice"" },      ""s3"" : { ""S"" : ""Burglary"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Deceive"" },      ""s2"" : { ""S"" : ""Athletics"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Provoke"" }    }  },  ""superb"" : { ""M"" : {    }  }}","A poor ukelele player, Snivelard nevertheless gets by on his ability to spin a yarn and to duck when someone takes a swing at him.",,"Poorly tuned ukelele",,,,,
+"10215475866315648","e8655693-dfa2-400e-a608-815280179296","{  ""highconcept"" : { ""S"" : ""Last of the Copper Flats Megasquids"" },  ""other1"" : { ""S"" : ""Peace Brain/Anger Brain"" },  ""other2"" : { ""S"" : ""I Must Find Out If I Am the Last of My Kind"" },  ""other3"" : { ""S"" : ""You Are the Family I Found When I Lost My First Family"" },  ""other4"" : { ""S"" : ""Often Mistaken for a Pack Animal"" },  ""trouble"" : { ""S"" : ""Lost in the World of Memory"" }}","fate-accelerated","default","Enowar","{}","Tentacles (+2 to Sneakily create an advantage by disarming or stealing from an opponent)
+Long Memories (+2 to Cleverly overcome when trying to figure out ancient technology)
+
+
+Peace Brain/Anger Brain (Enowar is peaceful and kind, but when friends are injured and threatened, Anger Brain may take over. Anger Brain is violent and destructive.)
+Anger Brain
+Careful +0
+Clever +1
+Flashy +2
+Forceful +3
+Quick +2
+Sneaky +1","2","2",,"An elephant-sized megasquid, Enowar has two long tentacles, four short arms around his mouth, and four thick legs like tree trunks. His village was destroyed by vaxene raiders, ratlike bipeds armed with chains.","{  ""careful"" : { ""S"" : ""+1"" },  ""clever"" : { ""S"" : ""+3"" },  ""flashy"" : { ""S"" : ""+0"" },  ""forceful"" : { ""S"" : ""+2"" },  ""quick"" : { ""S"" : ""+1"" },  ""sneaky"" : { ""S"" : ""+2"" }}",,,,,,
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","58192221-195a-4718-9bdc-9d412374e3b5","{  ""highconcept"" : { ""S"" : ""Shape-shifter, demigod of the wind and sea, hero of men"" },  ""other1"" : { ""S"" : ""Magical tatoo of the history of men"" },  ""other2"" : { ""S"" : ""Veteran Wayfarer"" },  ""other3"" : { ""S"" : ""Magical Fishhook"" },  ""trouble"" : { ""S"" : ""You're welcome!"" }}","fate-accelerated","default","Maui","{}","Shapeshifting
+While holding his Fishhook, Maui can Create an Advantage on himself to take the shape of any beast or he may spend a fate point to transform as a free action.
+
+Knowledge of Man
+Gain +2 to Create Advantage with Careful related to recalling the history of mankind.
+
+Wayfare to Anywhere
+Maui can find his way to any location once per session.","3","3",,"Polynesian demigod.","{  ""careful"" : { ""S"" : ""1"" },  ""clever"" : { ""S"" : ""1"" },  ""flashy"" : { ""S"" : ""3"" },  ""forceful"" : { ""S"" : ""2"" },  ""quick"" : { ""S"" : ""2"" },  ""sneaky"" : { ""S"" : ""0"" }}",,,,,,
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","800ecfe4-64b4-4a58-9a86-3e5fd979f","{  ""highconcept"" : { ""S"" : ""Patient and Calm Patrol Leader"" },  ""other1"" : { ""S"" : ""Veteran of the Winter War"" },  ""other2"" : { ""S"" : ""Assistant to the Assistant Weaponsmith of Lockhaven"" },  ""trouble"" : { ""S"" : ""Always consults Saxon before taking action"" }}","mouse-guard","accelerated","Kenzie",,"Calm: In the midst of chaos you remain level-headed. Gain a +2 bonus to Overcome aspects related to fear and chaos with Orator.
+
+Tall: You are very tall for mousekind. Gain a +2 to Attack with Orator when attempting to persuade or intimidate other mice and mice-sized creatures.
+
+Leader: Mousefolk naturally look to you when decisions need to be made. Gain a +2 to Create Advantages with Orator that embolden and encourage your allies.
+
+Staff, map, and orders from Gwendolyn.","3","3",,"Kenzie is a patient and calm patrol leader. Fur Color: Gray. Cloak Color: Royal Blue.","{  ""craftsmouse"" : { ""S"" : ""1"" },  ""fighter"" : { ""S"" : ""2"" },  ""healer"" : { ""S"" : ""1"" },  ""hunter"" : { ""S"" : ""0"" },  ""orator"" : { ""S"" : ""2"" },  ""scout"" : { ""S"" : ""3"" }}",,,,,,
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","91ba25ec-6b69-41b2-a3b9-d9f968d6a77a","{  ""highconcept"" : { ""S"" : ""Oath of Ancients Half-Elf Paladin"" },  ""other1"" : { ""S"" : ""Follower of Tyr, god of justice"" },  ""trouble"" : { ""S"" : ""Haunted by memories of war"" }}","fate-core","core","Kel Shieldbasher","{}","Divine Smite
+When you successfully attack with a melee weapon you may spend a fate point to deal an additional +2 shifts.
+
+Aura of Warding
+You have Armor:2 against spell-based attacks. You may spend a fate point to extend this benefit to all friendly creatures in your zone until the scene ends. 
+
+Defender
+While wielding a shield when a creature in your zone is attacked, you may give up your action for the turn to defend on their behalf with Physique.
+
+Lay Hands
+Once per adventure you may clear all stress boxes on yourself or another willing creature in your zone.","2","2","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Drive"" },      ""s2"" : { ""S"" : ""Empathy"" },      ""s3"" : { ""S"" : ""Contacts"" },      ""s4"" : { ""S"" : ""Shoot"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" },      ""s2"" : { ""S"" : ""Rapport"" },      ""s3"" : { ""S"" : ""Notice"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Athletics"" },      ""s2"" : { ""S"" : ""Will"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Fight"" }    }  },  ""superb"" : { ""M"" : {    }  }}","D&D Conversion",,,,,,,
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","bcfdf66e-2ca0-4dd2-9ce2-3f5f56df33b5","{  ""highconcept"" : { ""S"" : ""Battle-hardened Patrol Guard from Flintrust"" },  ""other1"" : { ""S"" : ""Kenzie is my brainy-half"" },  ""other2"" : { ""S"" : ""Survivor of the Darkheather"" },  ""trouble"" : { ""S"" : ""Fiery and Stubborn"" }}","mouse-guard","accelerated","Saxon",,"Short - Because of your small stature, when you Create Advantage with Fighter against larger than mouse-sized opponents you gain a +2.
+
+Fearless - You are brave in the face of danger. Once per scene you may spend 1 fate point to remove the Frightened condition.
+
+Reckless - When you are in pursuit of your foes you throw caution to the wind. Gain a +2 bonus to Create Advantage with Hunter when tracking your prey.
+
+Sword and a belt.","3","3",,"Saxon is a fiery and stubborn mouse, famous in the Guard for his skill in battle. Fur Color: Brown. Cloak: Red.","{  ""craftsmouse"" : { ""S"" : ""1"" },  ""fighter"" : { ""S"" : ""3"" },  ""healer"" : { ""S"" : ""1"" },  ""hunter"" : { ""S"" : ""2"" },  ""orator"" : { ""S"" : ""0"" },  ""scout"" : { ""S"" : ""2"" }}",,,,,,
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","cdbc6428-b064-495e-9a32-0aa720a8e973","{  ""highconcept"" : { ""S"" : ""Cynical Half-orc prophet of Luna"" },  ""other1"" : { ""S"" : ""Cunning linguist"" },  ""other2"" : { ""S"" : ""Uncannily observant"" },  ""other3"" : { ""S"" : ""The fate of the world rests on my shoulders"" },  ""trouble"" : { ""S"" : ""A face only a mother could love"" }}","fate-freeport","freeport","Agog Lunarmoon","{}","* Staff Expertise
+Use Wisdom w/ Attack using Staff
+
+* Blessing of the Trickster
++2 Create Advantage with regard to stealth
+
+* Seer
+3 spells from the Divination school","3","3",,"Cynical Half-orc prophet of Luna
+solo character","{  ""charisma"" : { ""S"" : ""0"" },  ""constitution"" : { ""S"" : ""2"" },  ""dexterity"" : { ""S"" : ""1"" },  ""intelligence"" : { ""S"" : ""2"" },  ""strength"" : { ""S"" : ""1"" },  ""wisdom"" : { ""S"" : ""3"" }}",,,,,"Fortune, Detect Magic, Arcane Site","Fortune, Detect Magic, Arcane Site"
+"us-east-1:21598ef1-7df9-4c74-b3be-95b9645adbeb","fbf8d2ef-1965-4f45-9f20-783125b6c064","{  ""highconcept"" : { ""S"" : ""Ranger of the North"" },  ""other1"" : { ""S"" : ""Arwen is my true love"" },  ""other2"" : { ""S"" : ""Raised in the house of Elrond"" },  ""trouble"" : { ""S"" : ""Heir to fallen King Isildur"" }}","middle-earth","accelerated","Aragorn ""Strider""",,"Bane of Orcs
+Gain +2 when using Survival to Create Advantage against orc and goblin-kind.
+
+Fire & Steel 
+Once per scene, you may inflict the Injured condition when generating at least 1 shift on a successful attack.
+
+Kingly Stature
+Once per scene you may spend a fate point to Attack multiple targets in your zone with Personality. Any targets who fail to defend gain the Frightened condition.
+","3","3",,"Last Chieftain of the Dunedain and the last High King of both Arnor and Gondor.","{  ""custom"" : { ""S"" : ""1"" },  ""movement"" : { ""S"" : ""1"" },  ""perception"" : { ""S"" : ""2"" },  ""personality"" : { ""S"" : ""0"" },  ""survival"" : { ""S"" : ""3"" },  ""vocation"" : { ""S"" : ""2"" }}",,,"{  ""hopeful"" : { ""S"" : ""2"" }}","Elfstone
+Broken Sword of Gondor",,
+"us-east-1:07b31420-6ad1-4e9c-82be-3d626cf658c4","9c291f9e-e012-4e7b-a587-1c26f56de571","{}","fate-core","core",,"{}",,"3","3","{  ""average"" : { ""M"" : {    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Will"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Deceive"" },      ""s2"" : { ""S"" : ""Shoot"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
+"us-east-1:c73bdf7f-f07e-4333-9021-17b8f8b415eb","d1421b48-8914-4e03-80d1-3fd73bec69c2","{}","fate-accelerated","default",,"{}","Blah
+","3","3",,,"{  ""careful"" : { ""S"" : ""0"" },  ""clever"" : { ""S"" : ""0"" },  ""flashy"" : { ""S"" : ""1"" },  ""forceful"" : { ""S"" : ""2"" },  ""quick"" : { ""S"" : ""4"" },  ""sneaky"" : { ""S"" : ""5"" }}",,,,,,
+"10155599536608473","986193c1-698d-4aac-98be-c139fd33f2da","{  ""highconcept"" : { ""S"" : ""Special Forces Traning"" },  ""other1"" : { ""S"" : ""Ex-Villian"" },  ""other2"" : { ""S"" : ""Shapeshifter"" },  ""other3"" : { ""S"" : ""Bilingual"" },  ""trouble"" : { ""S"" : ""Wanted by the UN"" }}","fate-core","core","Copycat (Andrew Greenfield)","{}","Silver Tongue (if a fate point is payed then +3 to decieve)
+
+
+CQC Training (if fate point played then can attack and defend in same turn)
+
+
+Slippery Fingers (if fate point is played then targets of burglary lose 2 points to all perception skills)
+
+
+Trigger Discipline (if fate [point is played then +2 to shoot skill)","3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Lore"" },      ""s2"" : { ""S"" : ""Drive"" },      ""s3"" : { ""S"" : ""Provoke"" },      ""s4"" : { ""S"" : ""Athletics"" },      ""s5"" : { ""S"" : ""Crafts"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Investigate"" },      ""s2"" : { ""S"" : ""Contacts"" },      ""s3"" : { ""S"" : ""Stealth"" },      ""s4"" : { ""S"" : ""Will"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" },      ""s2"" : { ""S"" : ""Notice"" },      ""s3"" : { ""S"" : ""Burglary"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Shoot"" },      ""s2"" : { ""S"" : ""Fight"" }    }  },  ""superb"" : { ""M"" : {      ""s1"" : { ""S"" : ""Deceive"" }    }  }}","All clothing is black. Longcoat, shirt, trousers, combat boots. Carries a knife, custom 1911 Colt pistol, AR-18. Mask that covers entire head with mirror on facial area.",,"Custom Pistol (when shoot skill is used it is only detected by hostile NPCs who can see the target)
+
+
+Shapeshifter (Copycat can take the form and voice of any NPC for 6 turns. While in another form every skill loses 1 point except Deceive which gets plus 2) ","{  ""mental3"" : { ""S"" : ""3"" },  ""stress4"" : { ""S"" : ""3"" }}",,,,
+"us-east-1:b21908a0-b8e2-46ab-ac11-2ee21960e981","b9959a58-9177-4ddb-b45f-fa1bb4c18d95","{  ""highconcept"" : { ""S"" : ""Violent barbarian of the Northern Plains"" },  ""trouble"" : { ""S"" : ""I must find those responsible"" }}","fate-core","core","Dagmar","{}",,"3","3","{  ""average"" : { ""M"" : {      ""s1"" : { ""S"" : ""Shoot"" },      ""s2"" : { ""S"" : ""Notice"" },      ""s3"" : { ""S"" : ""Lore"" },      ""s4"" : { ""S"" : ""Deceive"" }    }  },  ""fair"" : { ""M"" : {      ""s1"" : { ""S"" : ""Will"" },      ""s2"" : { ""S"" : ""Provoke"" },      ""s3"" : { ""S"" : ""Notice"" }    }  },  ""good"" : { ""M"" : {      ""s1"" : { ""S"" : ""Fight"" },      ""s2"" : { ""S"" : ""Athletics"" }    }  },  ""great"" : { ""M"" : {      ""s1"" : { ""S"" : ""Physique"" }    }  },  ""superb"" : { ""M"" : {    }  }}",,,,,,,,
