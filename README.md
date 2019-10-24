@@ -1,2 +1,4 @@
 # fatecharactersheet
-Online Character Sheets for fate
+This project is Deprecated.
+
+See https://github.com/sheibeck/fcs
